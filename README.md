@@ -33,9 +33,9 @@ From time to time, I use the following terms on my software:
 - **Bass note:** for me, a bass note is the note that comes when you hit a bass pedal; it is usually the root note of a chord, but since you can setup your pedals as you want, this may not be always the case.
 
 - **Bass pedal controller:** to be honest, I don't know if this term is correct; I think that **pedalboard** may be better, but I want to emphasize that it is a foot controller that looks like those bass pedals from an old organ, for example, the studiologic MP-117:
-![studiologic MP-117 pedalboard](https://raw.githubusercontent.com/jmeile/JMMidiBassPedalController/master/Studiologic_MP-117.jpg "studiologic MP-117 pedalboard"  | width=200)
+![studiologic MP-117 pedalboard](https://raw.githubusercontent.com/jmeile/JMMidiBassPedalController/master/Studiologic_MP-117.jpg "studiologic MP-117 pedalboard")
 Please note that it is not necessary that you use a bass pedal controller, you can also use a foot controller like the Behringer FCB1010:
-![Behringer FCB1010 foot controller](https://raw.githubusercontent.com/jmeile/JMMidiBassPedalController/master/Behringer_FCB1010.jpg "Behringer FCB1010 foot controller"   | width=300)
+![Behringer FCB1010 foot controller](https://raw.githubusercontent.com/jmeile/JMMidiBassPedalController/master/Behringer_FCB1010.jpg "Behringer FCB1010 foot controller")
 However the feeling won't be the same as when you use a real bass pedal; for example the switches may be harder and so difficult to push. Another advantace of the bass pedal controller is that it may also include the force (velocity) that you use to push an specific pedal.
 Finally, you can also use both together, ie: the bass pedal controller for sending your chords and the foot controller to switch between banks and setup other things on your keyboard.
 
@@ -56,7 +56,7 @@ Finally, you can also use both together, ie: the bass pedal controller for sendi
 - **MIDI port:** it is the physical connection where you connect your MIDI cables on the keyboard and your foot controllers. Please note that you can also have virtual ports, which are used inside the software to simulate a real port. You can have **IN** (input) and **OUT** (output) ports to receive and send messages comming from or to other connected devices.
 
 - **MIDI to USB cable**: since modern computers don't have **MIDI ports**, this cable allows you to have two ports: **MIDI IN and OUT** connected through an USB port. Right now, I use M-Audio Uno USB cable:
-![M-Audio Uno USB cable](https://raw.githubusercontent.com/jmeile/JMMidiBassPedalController/master/M-Audio_Uno_USB_cable.jpg "M-Audio Uno USB cable" | width=400)
+![M-Audio Uno USB cable](https://raw.githubusercontent.com/jmeile/JMMidiBassPedalController/master/M-Audio_Uno_USB_cable.jpg "M-Audio Uno USB cable")
 
 - **NOTE ON/OFF message:** messages that results when hitting or releasing a note on a keyboard or a foot controller respectively. **NOTE ON** messages are commonly associated with at note velocity. You may also have this on a **NOTE OFF** message, but it is uncommon.
 
