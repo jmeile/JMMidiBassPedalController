@@ -5,6 +5,7 @@ This software translates NOTE ON/OFF messages comming from a foot controller to 
 
 - [Features](#features)
 - [Definitions](#definitions)
+- [Prerequisites](#prerequisites)
 
 ## Features
 
@@ -59,7 +60,7 @@ Please note that it is not necessary that you use a bass pedal controller, you c
 - **MIDI port:** it is the physical connection where you connect your MIDI cables on the keyboard and your foot controllers. Please note that you can also have virtual ports, which are used inside the software to simulate a real port. You can have **IN** (input) and **OUT** (output) ports to receive and send messages comming from or to other connected devices.
 
 - **MIDI to USB cable**: since modern computers don't have **MIDI ports**, this cable allows you to have two ports: **MIDI IN and OUT** connected through an USB port. Right now, I use M-Audio Uno USB cable:
-[![M-Audio Uno USB cable](M-Audio_Uno_USB_cable_small.jpg)
+[![M-Audio Uno USB cable](M-Audio_Uno_USB_cable_small.jpg)](M-Audio_Uno_USB_cable.jpg)
 
 - **NOTE ON/OFF message:** messages that results when hitting or releasing a note on a keyboard or a foot controller respectively. **NOTE ON** messages are commonly associated with at note velocity. You may also have this on a **NOTE OFF** message, but it is uncommon.
 
@@ -82,14 +83,14 @@ They are really small and allow you to excecute some tasks that a computer also 
 
 Before installing the requirements, please make sure that you have admin
 rights. Under Linux/MACOS use:
+
 `sudo <install_command>`
 
 Under Windows run a "**cmd**" (Command propt) as Administrator.
 
 - [Python 3.7](https://www.python.org/downloads/release/python-376)
-Under
-  Windows, I tried the pip installation with python 3.8 and it didn't work, it
-  fired this error:
+
+  Under Windows, I tried the pip installation with python 3.8 and it didn't work, it fired this error:
   ```
   TypeError: stat:
   path should be string, bytes, os.PathLike or integer, not NoneType
@@ -123,10 +124,6 @@ Under
   
 - MIDI USB interface, for example the [M-Audio Uno USB cable](https://www.m-audio.com/products/view/uno)
 
-  Another MIDI Audio interface or cable may also work. I tested this with the
-  M-Audio cable.
+  Another MIDI Audio interface or cable may also work. I tested this with the M-Audio cable.
   
-- A foot controller capable of sending NOTE ON/OFF messages, ie: a Studiologic
-  MP-117, which looks like more as organ bass pedals, or an Behringer FCB1010,
-  which allows you to do more things, but it doesn't give you the same feeling
-  as the organ bass pedals.
+- A foot controller capable of sending NOTE ON/OFF messages, ie: a Studiologic MP-117, which looks like more as organ bass pedals, or an Behringer FCB1010, which allows you to do more things, but it doesn't give you the same feeling as the organ bass pedals.
