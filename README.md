@@ -1,5 +1,5 @@
 # JMMidiBassPedalController
-This software translates NOTE ON/OFF messages comming from a foot controller to chords. It allows you to save several configurations in banks, which can be switched via controller change messages.
+This software translates NOTE ON/OFF messages comming from a foot controller to chords. It allows you to save several configurations in banks, which can be switched via control change messages.
 
 ## Table of Contents
 
@@ -141,9 +141,36 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
   
 - A foot controller capable of sending **NOTE ON/OFF messages**, ie: a **Studiologic MP-117**, which looks like more as organ bass pedals, or a **Behringer FCB1010**, which allows you to do more things, but it doesn't give you the same feeling as the organ bass pedals.
 
+- And off course you need a keyboard with the old **MIDI ports**. USB MIDI may also work, but you will have to use two USB ports on your laptop or Raspberry Pi.
+
 # Installation
 The easiest way of installing the software is getting it from [here]((https://github.com/jmeile/JMMidiBassPedalController/archive/master.zip), then decompress the zip file and put it contents whereever you want.
 
 Alternatively, you can also clone the git repository:
 
 `git clone https://github.com/jmeile/JMMidiBassPedalController.git`
+
+# Hardware connections
+Before running the software, it is important that you make the right connections between your devices and your computer, which can be also a **Raspberry Pi**.
+
+## Connection a foot controller to a laptop or a Rasberry Pi
+This setup is ideal if only have a foot controller, ie: a **Studiologic MP-117** (bass pedal controller) or a **Behringer FCB1010** (foot controller). Do the following connections:
+
++----------+                       +---------+
+|Foot      +---+  TO MIDI OUT  +---+Laptop   |
+|Controller|OUT+<------+-------+USB|Raspberry|
+|          +---+       |       +---+         |
++----------+           |           +---------+
+                       |TO
+                       |MIDI IN
+                       |
+                       |           +--------+
+                       |       +---+        |
+                       +------>+IN |Keyboard|
+                               +---+        |
+                                   +--------+
+
+**Explanation:**
+- Connect the USB-TO-MIDI cable to the USB-Port from your Laptop or the Raspberry Pi.
+- Connect the MIDI end labeled with "TO MIDI OUT" to the MIDI OUT port from your foot controller.
+- Connect the MIDI end labeled with "TO MIDI IN" to the MIDI IN port from your keyboard.
