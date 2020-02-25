@@ -1,11 +1,9 @@
 # JMMidiBassPedalController
 This software translates NOTE ON/OFF messages comming from a foot controller to chords. It allows you to save several configurations in banks, which can be switched via controller change messages.
 
-**Table of Contents**
+## Table of Contents
 
-[TOCM]
-
-[TOC]
+[Features](#features)
 
 ## Features
 
@@ -48,7 +46,7 @@ Please note that it is not necessary that you use a bass pedal controller, you c
 - **Foot controller:** it is basically a MIDI controller that you can manipulate with your feet. It allows you to do some common MIDI tasks, ie: send **NOTE ON**, **NOTE OFF**, **PROGRAM** and **CONTROLLER  CHANGE** messages. There are some that even allow you to send **SYSTEM EXCLUSIVE** messages.
 
 - **MIDI** and related terms: this would cost me a lot of time to write down everything here, so, I will just let you some links:
-  -  [Summary of MIDI Messages from the MIDI association.](https://www.midi.org/specifications-old/item/table-1-summary-of-midi-message "Summary of MIDI Messages from the MIDI association.")
+  -  [Summary of MIDI Messages from the MIDI association.](https://www.midi.org/specifications-old/item/table-1-summary-of-midi-message "Summary of MIDI Messages from the MIDI association")
   - [MIDI definition from Wikipedia](https://en.wikipedia.org/wiki/MIDI "MIDI definition from Wikipedia")
  - [MIDI tutorial from Dominique Vandenneucker.](http://www.music-software-development.com/midi-tutorial.html "MIDI tutorial from Dominique Vandenneucker.")
  - [How MIDI Works, YouTube playlist from Andrew Kilpatrick.](https://www.youtube.com/watch?v=5IQvu8zlmJk&list=PLgWv1tajHyBsAo5OBLiQlY0hLC4ZagyJB "How MIDI Works, YouTube playlist from Andrew Kilpatrick.")
