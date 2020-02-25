@@ -13,6 +13,7 @@ This software translates **NOTE ON/OFF** messages comming from a **foot controll
 - [Setting up the hardware](#setting-up-the-hardware)
 - [Setting up the software](#setting-up-the-software)
 - [Running the software](#running-the-software)
+- [Troobleshooting](#troobleshooting)
 
 ## Features
 
@@ -257,3 +258,49 @@ or under Linux:
 If your file is saved on the same folder as *FootController.py*, then this should be enough:
 
 `python FootController.py --config "my-config.xml"`
+
+## Troobleshooting
+If your equipment is not reacting as expected, then activate the **debug mode** as follows:
+
+`python FootController.py --config "my-config.xml" --verbose`
+
+Then check the **log file**, which should be called: *debug.log* and it should be stored in the same folder of *FootController.py*. Please enable this mode only if you are experiencing problems; it may decrease the performance of your system.
+
+You can also debug your system by watching the **MIDI** messages comming out from your laptop or the **Raspberry Pi**. For doing this use a software for intercepting MIDI messages, ie:
+
+- Under Windows:
+  - [Bome Send SX](https://www.bome.com/products/sendsx).
+  
+  - Additionaly need [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) to create virtual ports on Windows.
+
+- Under Ubuntu Linux/MACOS:
+  - [MIOS Studio 2](http://www.ucapps.de/mios_studio.html).
+
+
+Then create some virtual **MIDI ports** to route the messages going outside of your laptop or **Raspberry Pi**:
+
+- Under Windows, just double click on the **loopMIDI** icon from the notification area, then create a new port by clicking entering the port's name and clicking the **'+'** sign. Usually, the app will suggest you: *"loopMIDI Port"*
+
+- Under Linux run the software as follows:
+  
+  `python FootController.py --list`
+  
+  If you see something similar to: *"Midi Through Port-0"*, then you can use that port; otherwise, you can create new ports with the command:
+  
+  `sudo modprobe snd-virmidi snd_index=1`
+
+  Run again:
+  
+  `python FootController.py --list`
+  
+  You will see something similar to:
+  
+  `'VirMIDI 1-0', 'VirMIDI 1-1', 'VirMIDI 1-2', and 'VirMIDI 1-3'`
+  
+  You can use whatever port from those you want.
+  
+Next setup your config file to use one virtual port as output port, then open either "Bome Send SX" (Windows) or "MIOS Studio 2" (Linux/MACOS) and setup that port as the input port.
+
+Finally start hitting your pedals and see the messages comming on the software.
+
+Alternativelly you could also use a **sequencer software**, ie: under Windows: *Aria Maestosa*, *Anvil Studio*, *KaraKEYoke Karaoke*; under Linux: *Aria Maestosa*, or any other sequencer you know. The idea would be to route the **vitual port inputs** to that software and start looking at the **MIDI** data comming. You have there several views: *staff view* (you will see the notes) or *message list* (you will see the MIDI messages on a human-readable format).
