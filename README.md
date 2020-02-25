@@ -3,7 +3,8 @@ This software translates NOTE ON/OFF messages comming from a foot controller to 
 
 ## Table of Contents
 
-[Features](#features)
+- [Features](#features)
+- [Definitions](#definitions)
 
 ## Features
 
@@ -32,11 +33,11 @@ From time to time, I use the following terms on my software:
 
 - **Bass pedal controller:** to be honest, I don't know if this term is correct; I think that **pedalboard** may be better, but I want to emphasize that it is a foot controller that looks like those bass pedals from an old organ, for example, the studiologic MP-117:
 
-[![studiologic MP-117 pedalboard](Studiologic_MP-117_small.jpg "studiologic MP-117 pedalboard")](Studiologic_MP-117.jpg)
+[![studiologic MP-117 pedalboard](Studiologic_MP-117_small.jpg)](Studiologic_MP-117.jpg)
 
 Please note that it is not necessary that you use a bass pedal controller, you can also use a foot controller like the Behringer FCB1010:
 
-[![Behringer FCB1010 foot controller](Behringer_FCB1010_small.jpg "Behringer FCB1010 foot controller")](Behringer_FCB1010.jpg)
+[![Behringer FCB1010 foot controller](Behringer_FCB1010_small.jpg)](Behringer_FCB1010.jpg)
 
   However the feeling won't be the same as when you use a real bass pedal; for example the switches may be harder and so difficult to push. Another advantace of the bass pedal controller is that it may also include the force (velocity) that you use to push an specific pedal.
   Finally, you can also use both together, ie: the bass pedal controller for sending your chords and the foot controller to switch between banks and setup other things on your keyboard.
@@ -46,10 +47,10 @@ Please note that it is not necessary that you use a bass pedal controller, you c
 - **Foot controller:** it is basically a MIDI controller that you can manipulate with your feet. It allows you to do some common MIDI tasks, ie: send **NOTE ON**, **NOTE OFF**, **PROGRAM** and **CONTROLLER  CHANGE** messages. There are some that even allow you to send **SYSTEM EXCLUSIVE** messages.
 
 - **MIDI** and related terms: this would cost me a lot of time to write down everything here, so, I will just let you some links:
-  -  [Summary of MIDI Messages from the MIDI association.](https://www.midi.org/specifications-old/item/table-1-summary-of-midi-message "Summary of MIDI Messages from the MIDI association")
-  - [MIDI definition from Wikipedia](https://en.wikipedia.org/wiki/MIDI "MIDI definition from Wikipedia")
- - [MIDI tutorial from Dominique Vandenneucker.](http://www.music-software-development.com/midi-tutorial.html "MIDI tutorial from Dominique Vandenneucker.")
- - [How MIDI Works, YouTube playlist from Andrew Kilpatrick.](https://www.youtube.com/watch?v=5IQvu8zlmJk&list=PLgWv1tajHyBsAo5OBLiQlY0hLC4ZagyJB "How MIDI Works, YouTube playlist from Andrew Kilpatrick.")
+  -  [Summary of MIDI Messages from the MIDI association.](https://www.midi.org/specifications-old/item/table-1-summary-of-midi-message )
+  - [MIDI definition from Wikipedia](https://en.wikipedia.org/wiki/MIDI)
+ - [MIDI tutorial from Dominique Vandenneucker.](http://www.music-software-development.com/midi-tutorial.html)
+ - [How MIDI Works, YouTube playlist from Andrew Kilpatrick.](https://www.youtube.com/watch?v=5IQvu8zlmJk&list=PLgWv1tajHyBsAo5OBLiQlY0hLC4ZagyJB)
  
 - **MIDI Echo function:** this is the ability of the software to fordward other not recognized messages to the connected devices. ie: let's say that you want to send a **System Exclusive** message, you can do it; the software won't process it, but it will send it through the **MIDI OUT** port.
  
@@ -58,7 +59,7 @@ Please note that it is not necessary that you use a bass pedal controller, you c
 - **MIDI port:** it is the physical connection where you connect your MIDI cables on the keyboard and your foot controllers. Please note that you can also have virtual ports, which are used inside the software to simulate a real port. You can have **IN** (input) and **OUT** (output) ports to receive and send messages comming from or to other connected devices.
 
 - **MIDI to USB cable**: since modern computers don't have **MIDI ports**, this cable allows you to have two ports: **MIDI IN and OUT** connected through an USB port. Right now, I use M-Audio Uno USB cable:
-[![M-Audio Uno USB cable](M-Audio_Uno_USB_cable_small.jpg "M-Audio Uno USB cable")](M-Audio_Uno_USB_cable.jpg)
+[![M-Audio Uno USB cable](M-Audio_Uno_USB_cable_small.jpg)
 
 - **NOTE ON/OFF message:** messages that results when hitting or releasing a note on a keyboard or a foot controller respectively. **NOTE ON** messages are commonly associated with at note velocity. You may also have this on a **NOTE OFF** message, but it is uncommon.
 
@@ -67,7 +68,7 @@ Please note that it is not necessary that you use a bass pedal controller, you c
 - **Note velocity**: it is the pressure you apply to hit a key on your keyboard or bass pedal controller. It is commonly associated to the volume (see MIDI for more details).
 
 - **Raspberry Pi**: think of it as a mini computer (mini controller to be exact), for example, the Raspberry Pi 4:
-[![Raspberry Pi 4](Raspberry_pi_4_small.jpg "Raspberry Pi 4")](Raspberry_pi_4.jpg)
+[![Raspberry Pi 4](Raspberry_pi_4_small.jpg)](Raspberry_pi_4.jpg)
 
 They are really small and allow you to excecute some tasks that a computer also can do, but with the advantage that they are really small and usually after you setup them, then you don't need a keyboard or a screen to start it.
 
