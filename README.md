@@ -32,12 +32,12 @@ From time to time, I use the following terms on my software:
 
 - **Bass note:** for me, a bass note is the note that comes when you hit a bass pedal; it is usually the root note of a chord, but since you can setup your pedals as you want, this may not be always the case.
 
-- **Bass pedal controller:** to be honest, I don't know if this term is correct; I think that **pedalboard** may be better, but I want to emphasize that it is a foot controller that looks like those bass pedals from an old organ, for example, the studiologic MP-117
+- **Bass pedal controller:** to be honest, I don't know if this term is correct; I think that **pedalboard** may be better, but I want to emphasize that it is a foot controller that looks like those bass pedals from an old organ, for example, the studiologic MP-117:
 
 [![studiologic MP-117 pedalboard](Studiologic_MP-117_small.jpg "studiologic MP-117 pedalboard")](Studiologic_MP-117.jpg)
 
 Please note that it is not necessary that you use a bass pedal controller, you can also use a foot controller like the Behringer FCB1010:
-  
+
 ![Behringer FCB1010 foot controller](Behringer_FCB1010_small.jpg "Behringer FCB1010 foot controller")
 
   However the feeling won't be the same as when you use a real bass pedal; for example the switches may be harder and so difficult to push. Another advantace of the bass pedal controller is that it may also include the force (velocity) that you use to push an specific pedal.
@@ -70,6 +70,7 @@ Please note that it is not necessary that you use a bass pedal controller, you c
 
 - **Raspberry Pi**: think of it as a mini computer (mini controller to be exact), for example, the Raspberry Pi 4:
 ![Raspberry Pi 4](Raspberry_pi_4_small.jpg "Raspberry Pi 4")
+
 They are really small and allow you to excecute some tasks that a computer also can do, but with the advantage that they are really small and usually after you setup them, then you don't need a keyboard or a screen to start it.
 
 - **Sequencer software:** since the MIDI message are send sequentially to your keyboard, sequencer is a software that is used to catch those messages or send them. It counts with nice graphical tools, ie: message list (human readable list) and also a staff view to see the note messages.
