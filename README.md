@@ -10,6 +10,7 @@ This software translates NOTE ON/OFF messages comming from a foot controller to 
 - [Hardware connections](#hardware-connections)
   - [Connecting a foot controller to a laptop or a Rasberry Pi](#connecting-a-foot-controller-to-a-laptop-or-a-rasberry-pi)
   - [Connecting a foot and a bass pedal controller with a laptop or a Raspberry Pi](#connecting-a-foot-and-a-bass-pedal-controller-with-a-laptop-or-a-raspberry-pi)
+- [Setting up the hardware](#setting-up-the-hardware)
 
 ## Features
 
@@ -207,3 +208,18 @@ If you own a foot controller (ie: a **FCB1010**) and a bass pedal controller (ie
 
 **Remarks:**
 - The only thing that you need to be aware of if you are using a **Behringer FCB1010** is that you will have to enable the **Merge** function under the **GLOBAL CONFIGURATION**. This will fordward all messages comming from the **MIDI IN** to the **MIDI OUT** port.
+
+## Setting up the hardware
+In order to make this to work, you will have to do the following steps:
+
+- Setup the **MIDI OUT channel** of your bass pedal controller to whatever you want to use. If you are using both: a bass pedal controller and a foot controller, then setup the same port on both devices. Since the **Studiologic MP-117** I have is an old version and settings will be resseted on power off, I will leave the default **MIDI channel**, which is channel 1.
+
+- Setup the **NOTE ON** messages on your foot or bass pedal controller:
+  - For a **FCB1010** or similar: you only need to setup **NOTE ON** messages and write down each MIDI note number that you are using.
+  - For a **Studiologic MP-117**: the only thing you have to do is to setup the **Transpose** parameter; on my case, I will leave the default, which is 0 (zero), no transposition. Here you need to see write down the **NOTE ON** messages are comming out from your bass pedal controller (specially if you changed the transpose parameter and used semitones).
+
+- If using both a bass pedal and a foot controller, then you can also use your foot controller to switch between banks. For this, you need to send **CONTROL CHANGE** messages on controller 32 (see the comments on the *sample-config.xml* file). Additionally, if you want to send other MIDI messages, then you can do it as well, but be aware that **NOTE ON** messages should use either use a different channel or use notes that you are not listenning to. Also be careful with **CONTROL CHANGE** messages on control 32; if you need to send something to the keyboard, then make sure to use a different channel for this message.
+
+- Setup your keyboard to do chord detection on a specific **MIDI channel**. If you have an old MIDI keyboard and you can't set this up, then you need to figure out, which channel your keyboard uses; usually old keyboards have one or two voices for the right hand, and one voice for the left hand. and they use consecutive **MIDI channels**, so, if you have one right voice and one left voice, then the used channels would be channel 1 and channel 2 respectivelly.
+
+- If you want also want to play bass notes, then setup a **MIDI channel** on your keyboard for doing this. If you have an old keyboard, then you can select the channel from your right or left voices.
