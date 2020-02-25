@@ -97,30 +97,41 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
   ```
 
 - [Python rtmidi module](https://pypi.org/project/python-rtmidi)
+
   This can be installed as follows:
+  
   `pip install python-rtmidi`
+  
   If you have an older version, then you can upgrade it with:
+  
   `pip install --upgrade python-rtmidi`
   
 - [Python Autologging module](https://pypi.org/project/Autologging)
+
   This can be installed as follows:
+  
   `pip install Autologging`
   
   If you have an older version, then you can upgrade it with:
+  
   `pip install --upgrade Autologging`
   
 - [Python xmlschema module](https://pypi.org/project/xmlschema)
+
   This can be installed as follows:
+  
   `pip install xmlschema`
   
   If you have an older version, then you can upgrade it with:
+  
   `pip install --upgrade xmlschema`
   
 - Under Windows, you may need to upgrade setuptools if you get the error:
+
   `error: command 'cl.exe' failed: No such file or directory`
   
   To do so, run this command:
-  `pip install --upgrade setuptools`
+  ```pip install --upgrade setuptools```
   
 - MIDI USB interface, for example the [M-Audio Uno USB cable](https://www.m-audio.com/products/view/uno)
 
