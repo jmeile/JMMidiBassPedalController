@@ -49,8 +49,8 @@ Please note that it is not necessary that you use a bass pedal controller, you c
 - **MIDI** and related terms: this would cost me a lot of time to write down everything here, so, I will just let you some links:
   -  [Summary of MIDI Messages from the MIDI association.](https://www.midi.org/specifications-old/item/table-1-summary-of-midi-message )
   - [MIDI definition from Wikipedia](https://en.wikipedia.org/wiki/MIDI)
- - [MIDI tutorial from Dominique Vandenneucker.](http://www.music-software-development.com/midi-tutorial.html)
- - [How MIDI Works, YouTube playlist from Andrew Kilpatrick.](https://www.youtube.com/watch?v=5IQvu8zlmJk&list=PLgWv1tajHyBsAo5OBLiQlY0hLC4ZagyJB)
+  - [MIDI tutorial from Dominique Vandenneucker.](http://www.music-software-development.com/midi-tutorial.html)
+  - [How MIDI Works, YouTube playlist from Andrew Kilpatrick.](https://www.youtube.com/watch?v=5IQvu8zlmJk&list=PLgWv1tajHyBsAo5OBLiQlY0hLC4ZagyJB)
  
 - **MIDI Echo function:** this is the ability of the software to fordward other not recognized messages to the connected devices. ie: let's say that you want to send a **System Exclusive** message, you can do it; the software won't process it, but it will send it through the **MIDI OUT** port.
  
