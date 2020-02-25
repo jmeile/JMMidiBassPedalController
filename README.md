@@ -6,6 +6,7 @@ This software translates NOTE ON/OFF messages comming from a foot controller to 
 - [Features](#features)
 - [Definitions](#definitions)
 - [Prerequisites](#prerequisites)
+- [Installation](#installation)
 
 ## Features
 
@@ -138,4 +139,10 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
 
   Another MIDI Audio interface or cable may also work. I tested this with the M-Audio cable.
   
-- A foot controller capable of sending NOTE ON/OFF messages, ie: a Studiologic MP-117, which looks like more as organ bass pedals, or an Behringer FCB1010, which allows you to do more things, but it doesn't give you the same feeling as the organ bass pedals.
+- A foot controller capable of sending **NOTE ON/OFF messages**, ie: a **Studiologic MP-117**, which looks like more as organ bass pedals, or a **Behringer FCB1010**, which allows you to do more things, but it doesn't give you the same feeling as the organ bass pedals.
+
+# Installation
+The easiest way of installing the software is getting it from here:
+[Zip file](https://github.com/jmeile/JMMidiBassPedalController/archive/master.zip)
+
+Then decompress the zip file and put it contents whereever you want.
