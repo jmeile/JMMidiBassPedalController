@@ -142,7 +142,8 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
 - A foot controller capable of sending **NOTE ON/OFF messages**, ie: a **Studiologic MP-117**, which looks like more as organ bass pedals, or a **Behringer FCB1010**, which allows you to do more things, but it doesn't give you the same feeling as the organ bass pedals.
 
 # Installation
-The easiest way of installing the software is getting it from here:
-[Zip file](https://github.com/jmeile/JMMidiBassPedalController/archive/master.zip)
+The easiest way of installing the software is getting it from [here]((https://github.com/jmeile/JMMidiBassPedalController/archive/master.zip), then decompress the zip file and put it contents whereever you want.
 
-Then decompress the zip file and put it contents whereever you want.
+Alternatively, you can also clone the git repository:
+
+`git clone https://github.com/jmeile/JMMidiBassPedalController.git`
