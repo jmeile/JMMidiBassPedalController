@@ -1,5 +1,5 @@
 # JMMidiBassPedalController
-This software translates NOTE ON/OFF messages comming from a foot controller to chords. It allows you to save several configurations in banks, which can be switched via control change messages.
+This software translates **NOTE ON/OFF** messages comming from a **foot controller** to **chords**. It allows you to save several configurations in **banks**, which can be switched through **CONTROL CHANGE** messages.
 
 ## Table of Contents
 
@@ -14,38 +14,38 @@ This software translates NOTE ON/OFF messages comming from a foot controller to 
 
 ## Features
 
-- XML configuration file.
+- **XML configuration file**.
 - Fully customizable parameters:
-  - MIDI IN and OUT ports and channels.
-  - MIDI Echo function.
-  - Setup custom bass note and chord velocities and transpositions.
-  - Define multiple banks to store different pedal layouts.
+  - **MIDI IN and OUT** ports and channels.
+  - **MIDI Echo** function.
+  - Setup custom **bass note** and **chord velocities** and **octave transpositions**.
+  - Define multiple **banks** to store different pedal layouts.
   - Each pedal can send this messages:
-    - Bass notes.
-	- Chords.
-	- Bank select messages.
-	- MIDI messages.
-	- SysEx messages.
-- Its flexibility allows it to be used with several foot controllers at once.
+    - **Bass notes**.
+    - **Chords**.
+    - **BANK SELECT** messages.
+    - **MIDI** messages.
+    - **SysEx** messages.
+- Its flexibility allows it to be used with several **foot controllers** at once.
 
 ## Definitions
 From time to time, I use the following terms on my software:
 
 - **Bank**: in my software I reffer this to be a way of grouping different settings. So, you can have for example a bank with the C Major scale chords and another bank with the C Minor scale chords. The nice thing of these groups is that you can easily switch them while playing your keyboard.
 
-- **Bank select message**: message used to change the active bank to another one, for example: you can navigate to the next, previous, or last banks, or you can eben jump to a specific bank.
+- **BANK SELECT message**: message used to change the active bank to another one, for example: you can navigate to the next, previous, or last banks, or you can eben jump to a specific bank.
 
 - **Bass note:** for me, a bass note is the note that comes when you hit a bass pedal; it is usually the root note of a chord, but since you can setup your pedals as you want, this may not be always the case.
 
-- **Bass pedal controller:** to be honest, I don't know if this term is correct; I think that **pedalboard** may be better, but I want to emphasize that it is a foot controller that looks like those bass pedals from an old organ, for example, the studiologic MP-117:
+- **Bass pedal controller:** to be honest, I don't know if this term is correct; I think that **pedalboard** may be better, but I want to emphasize that it is a foot controller that looks like those bass pedals from an old organ, for example, the **studiologic MP-117**:
 
 [![studiologic MP-117 pedalboard](Studiologic_MP-117_small.jpg)](Studiologic_MP-117.jpg)
 
-Please note that it is not necessary that you use a bass pedal controller, you can also use a foot controller like the Behringer FCB1010:
+Please note that it is not necessary that you use a bass pedal controller, you can also use a foot controller like the **Behringer FCB1010**:
 
 [![Behringer FCB1010 foot controller](Behringer_FCB1010_small.jpg)](Behringer_FCB1010.jpg)
 
-  However the feeling won't be the same as when you use a real bass pedal; for example the switches may be harder and so difficult to push. Another advantace of the bass pedal controller is that it may also include the force (velocity) that you use to push an specific pedal.
+  However the feeling won't be the same as when you use a real bass pedal; for example the switches may be harder and so difficult to push. Another advantage of the bass pedal controller is that it may also include the force (velocity) that you use to push an specific pedal.
   Finally, you can also use both together, ie: the bass pedal controller for sending your chords and the foot controller to switch between banks and setup other things on your keyboard.
 
 - **CONTROL CHANGE message**: this message allows you to modify several settings on a keyboard or a controller, ie: switch between banks, change modulation and pitch wheel levels, modify the main volume, set several accoustic effects, etc.. In the software, I will use this mainly to switch between banks.
@@ -58,9 +58,9 @@ Please note that it is not necessary that you use a bass pedal controller, you c
   - [MIDI tutorial from Dominique Vandenneucker.](http://www.music-software-development.com/midi-tutorial.html)
   - [How MIDI Works, YouTube playlist from Andrew Kilpatrick.](https://www.youtube.com/watch?v=5IQvu8zlmJk&list=PLgWv1tajHyBsAo5OBLiQlY0hLC4ZagyJB)
  
-- **MIDI Echo function:** this is the ability of the software to fordward other not recognized messages to the connected devices. ie: let's say that you want to send a **System Exclusive** message, you can do it; the software won't process it, but it will send it through the **MIDI OUT** port.
+- **MIDI Echo function:** this is the ability of the software to fordward other not recognized messages to the connected devices. ie: let's say that you want to send a **System Exclusive** message; the software won't process it, but it will send it through the **MIDI OUT** port.
  
-- **Log file:** file where the debug information is going to be stored. It is usally named debug.log and it is located in the same folder of the main program. It is useful to help you detect possible issues that you may have with your equimpment.
+- **Log file:** file where the debug information is going to be stored. It is usally named *debug.log* and it is located in the same folder of the main program. It is useful to help you detect possible issues that you may have with your equimpment.
  
 - **MIDI port:** it is the physical connection where you connect your MIDI cables on the keyboard and your foot controllers. Please note that you can also have virtual ports, which are used inside the software to simulate a real port. You can have **IN** (input) and **OUT** (output) ports to receive and send messages comming from or to other connected devices.
 
