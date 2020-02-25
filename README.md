@@ -7,6 +7,8 @@ This software translates NOTE ON/OFF messages comming from a foot controller to 
 - [Definitions](#definitions)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
+- [Hardware connections](#hardware-connections)
+  - [Connecting a foot controller to a laptop or a Rasberry Pi]#connecting-a-foot-controller-to-a-laptop-or-a-rasberry-pi
 
 ## Features
 
@@ -153,9 +155,10 @@ Alternatively, you can also clone the git repository:
 # Hardware connections
 Before running the software, it is important that you make the right connections between your devices and your computer, which can be also a **Raspberry Pi**.
 
-## Connection a foot controller to a laptop or a Rasberry Pi
+## Connecting a foot controller to a laptop or a Rasberry Pi
 This setup is ideal if only have a foot controller, ie: a **Studiologic MP-117** (bass pedal controller) or a **Behringer FCB1010** (foot controller). Do the following connections:
 
+```
 +----------+                       +---------+
 |Foot      +---+  TO MIDI OUT  +---+Laptop   |
 |Controller|OUT+<------+-------+USB|Raspberry|
@@ -169,6 +172,7 @@ This setup is ideal if only have a foot controller, ie: a **Studiologic MP-117**
                        +------>+IN |Keyboard|
                                +---+        |
                                    +--------+
+```
 
 **Explanation:**
 - Connect the USB-TO-MIDI cable to the USB-Port from your Laptop or the Raspberry Pi.
