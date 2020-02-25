@@ -12,6 +12,7 @@ This software translates **NOTE ON/OFF** messages comming from a **foot controll
   - [Connecting a foot and a bass pedal controller with a laptop or a Raspberry Pi](#connecting-a-foot-and-a-bass-pedal-controller-with-a-laptop-or-a-raspberry-pi)
 - [Setting up the hardware](#setting-up-the-hardware)
 - [Setting up the software](#setting-up-the-software)
+- [Running the software](#running-the-software)
 
 ## Features
 
@@ -239,3 +240,20 @@ In order to make this to work, you will have to do the following steps:
 - After you have done this, open either the file: *sample-config.xml*, an **XML configuration file** with lots of comments documenting what to do, or: *bass-pedal-config.xml*, simple configuration with a **bass pedal controller**, or *foot-bass-pedal-config.xml*, configuration with a **foot and bass pedal controller** and save it as: *config.xml*
 
 - Open that file and modify it as you wish by filling your parameters, ie: **MIDI IN** port, **MIDI IN and OUT** channels, **NOTE ON** messages, etc..
+
+## Running the software
+Now you are ready to go. You can just type:
+
+`python FootController.py`
+
+Alternativelly, you can also setup another name for your configuration file, ie: *my-config.xml*. Under Windows, run the sofware as follows:
+
+`python FootController.py --config "C:\file\path\my-config.xml"`
+
+or under Linux:
+
+`python FootController.py --config "/file/path/my-config.xml"`
+
+If your file is saved on the same folder as *FootController.py*, then this should be enough:
+
+`python FootController.py --config "my-config.xml"`
