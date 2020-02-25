@@ -131,7 +131,8 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
   `error: command 'cl.exe' failed: No such file or directory`
   
   To do so, run this command:
-  ```pip install --upgrade setuptools```
+  
+  `pip install --upgrade setuptools`
   
 - MIDI USB interface, for example the [M-Audio Uno USB cable](https://www.m-audio.com/products/view/uno)
 
