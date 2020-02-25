@@ -11,6 +11,7 @@ This software translates **NOTE ON/OFF** messages comming from a **foot controll
   - [Connecting a foot controller to a laptop or a Rasberry Pi](#connecting-a-foot-controller-to-a-laptop-or-a-rasberry-pi)
   - [Connecting a foot and a bass pedal controller with a laptop or a Raspberry Pi](#connecting-a-foot-and-a-bass-pedal-controller-with-a-laptop-or-a-raspberry-pi)
 - [Setting up the hardware](#setting-up-the-hardware)
+- [Setting up the software](#setting-up-the-software)
 
 ## Features
 
@@ -223,3 +224,18 @@ In order to make this to work, you will have to do the following steps:
 - Setup your keyboard to do chord detection on a specific **MIDI channel**. If you have an old MIDI keyboard and you can't set this up, then you need to figure out, which channel your keyboard uses; usually old keyboards have one or two voices for the right hand, and one voice for the left hand. and they use consecutive **MIDI channels**, so, if you have one right voice and one left voice, then the used channels would be channel 1 and channel 2 respectivelly.
 
 - If you want also want to play bass notes, then setup a **MIDI channel** on your keyboard for doing this. If you have an old keyboard, then you can select the channel from your right or left voices.
+
+## Setting up the software
+- First figure out how the ports used by your **USB-TO-MIDI cable** are called. If your **MIDI** setup isn't going to change, then the port number should be also enough. In order to figure this out, run the software as follows:
+  
+  `python FootController.py --list`
+  
+  If using an **M-Audio USB UNO cable**, then the ports should be named similar to:
+  * 1: USB Uno MIDI Interface
+  
+  where:
+  - The first part is the port number and the last part the port name.
+
+- After you have done this, open either the file: *sample-config.xml*, an **XML configuration file** with lots of comments documenting what to do, or: *bass-pedal-config.xml*, simple configuration with a **bass pedal controller**, or *foot-bass-pedal-config.xml*, configuration with a **foot and bass pedal controller** and save it as: *config.xml*
+
+- Open that file and modify it as you wish by filling your parameters, ie: **MIDI IN** port, **MIDI IN and OUT** channels, **NOTE ON** messages, etc..
