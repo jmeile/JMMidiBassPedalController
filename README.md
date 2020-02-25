@@ -33,6 +33,7 @@ From time to time, I use the following terms on my software:
 - **Bass note:** for me, a bass note is the note that comes when you hit a bass pedal; it is usually the root note of a chord, but since you can setup your pedals as you want, this may not be always the case.
 
 - **Bass pedal controller:** to be honest, I don't know if this term is correct; I think that **pedalboard** may be better, but I want to emphasize that it is a foot controller that looks like those bass pedals from an old organ, for example, the studiologic MP-117:
+
 [![studiologic MP-117 pedalboard](Studiologic_MP-117_small.jpg "studiologic MP-117 pedalboard")](Studiologic_MP-117.jpg)
 Please note that it is not necessary that you use a bass pedal controller, you can also use a foot controller like the Behringer FCB1010:
 ![Behringer FCB1010 foot controller](Behringer_FCB1010_small.jpg "Behringer FCB1010 foot controller")
