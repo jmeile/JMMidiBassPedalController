@@ -77,3 +77,56 @@ They are really small and allow you to excecute some tasks that a computer also 
 - **System Exclusive message or SysEx:** this is a way of sending a manufacturer specific message to your keyboard, ie: activate a voice on the keyboard's panel.
 
 - **XML file**: this is just a file where you can save the configuration of your bass foot controller.
+
+## Prerequisites
+
+Before installing the requirements, please make sure that you have admin
+rights. Under Linux/MACOS use:
+`sudo <install_command>`
+
+Under Windows run a "**cmd**" (Command propt) as Administrator.
+
+- [Python 3.7](https://www.python.org/downloads/release/python-376)
+Under
+  Windows, I tried the pip installation with python 3.8 and it didn't work, it
+  fired this error:
+  ```
+  TypeError: stat:
+  path should be string, bytes, os.PathLike or integer, not NoneType
+  ```
+
+- [Python rtmidi module](https://pypi.org/project/python-rtmidi)
+  This can be installed as follows:
+  `pip install python-rtmidi`
+  If you have an older version, then you can upgrade it with:
+  `pip install --upgrade python-rtmidi`
+  
+- [Python Autologging module](https://pypi.org/project/Autologging)
+  This can be installed as follows:
+  `pip install Autologging`
+  
+  If you have an older version, then you can upgrade it with:
+  `pip install --upgrade Autologging`
+  
+- [Python xmlschema module](https://pypi.org/project/xmlschema)
+  This can be installed as follows:
+  `pip install xmlschema`
+  
+  If you have an older version, then you can upgrade it with:
+  `pip install --upgrade xmlschema`
+  
+- Under Windows, you may need to upgrade setuptools if you get the error:
+  `error: command 'cl.exe' failed: No such file or directory`
+  
+  To do so, run this command:
+  `pip install --upgrade setuptools`
+  
+- MIDI USB interface, for example the [M-Audio Uno USB cable](https://www.m-audio.com/products/view/uno)
+
+  Another MIDI Audio interface or cable may also work. I tested this with the
+  M-Audio cable.
+  
+- A foot controller capable of sending NOTE ON/OFF messages, ie: a Studiologic
+  MP-117, which looks like more as organ bass pedals, or an Behringer FCB1010,
+  which allows you to do more things, but it doesn't give you the same feeling
+  as the organ bass pedals.
