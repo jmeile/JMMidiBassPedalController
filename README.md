@@ -36,10 +36,12 @@ From time to time, I use the following terms on my software:
 
 [![studiologic MP-117 pedalboard](Studiologic_MP-117_small.jpg "studiologic MP-117 pedalboard")](Studiologic_MP-117.jpg)
 
-Please note that it is not necessary that you use a bass pedal controller, you can also use a foot controller like the Behringer FCB1010:
+  Please note that it is not necessary that you use a bass pedal controller, you can also use a foot controller like the Behringer FCB1010:
+  
 ![Behringer FCB1010 foot controller](Behringer_FCB1010_small.jpg "Behringer FCB1010 foot controller")
-However the feeling won't be the same as when you use a real bass pedal; for example the switches may be harder and so difficult to push. Another advantace of the bass pedal controller is that it may also include the force (velocity) that you use to push an specific pedal.
-Finally, you can also use both together, ie: the bass pedal controller for sending your chords and the foot controller to switch between banks and setup other things on your keyboard.
+
+  However the feeling won't be the same as when you use a real bass pedal; for example the switches may be harder and so difficult to push. Another advantace of the bass pedal controller is that it may also include the force (velocity) that you use to push an specific pedal.
+  Finally, you can also use both together, ie: the bass pedal controller for sending your chords and the foot controller to switch between banks and setup other things on your keyboard.
 
 - **CONTROL CHANGE message**: this message allows you to modify several settings on a keyboard or a controller, ie: switch between banks, change modulation and pitch wheel levels, modify the main volume, set several accoustic effects, etc.. In the software, I will use this mainly to switch between banks.
 
