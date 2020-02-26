@@ -147,7 +147,7 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
 
   Another MIDI Audio interface or cable may also work. I tested this with the M-Audio cable.
   
-- A foot controller capable of sending **NOTE ON/OFF messages**, ie: a **Studiologic MP-117**, which looks like more as organ bass pedals, or a **Behringer FCB1010**, which allows you to do more things, but it doesn't give you the same feeling as the organ bass pedals.
+- A foot controller capable of sending **NOTE ON/OFF messages**, ie: a **Studiologic MP-117**, which looks like more as organ bass pedals, or a **Behringer FCB1010**, which allows you to do more things, but it doesn't give you the same feeling as the organ bass pedals, or both.
 
 - And off course you need a keyboard with the old **MIDI ports**. USB MIDI may also work, but you will have to use two USB ports on your laptop or Raspberry Pi.
 
