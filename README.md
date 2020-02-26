@@ -167,7 +167,7 @@ This setup is ideal if only have a foot controller, ie: a **Studiologic MP-117**
 <!-- Text Version
 +----------+                       +---------+
 |Foot      +---+  TO MIDI OUT  +---+Laptop   |
-|Controller|OUT+<------+-------+USB|Raspberry|
+|Controller|OUT+◄------+-------+USB|Raspberry|
 |          +---+       |       +---+         |
 +----------+           |           +---------+
                        |TO
@@ -175,11 +175,11 @@ This setup is ideal if only have a foot controller, ie: a **Studiologic MP-117**
                        |
                        |           +--------+
                        |       +---+        |
-                       +------>+IN |Keyboard|
+                       +------►+IN |Keyboard|
                                +---+        |
                                    +--------+
 -->
-[![Connecting foot controller only](images/connecting_foot_controller_only_small.jpg)](images/connecting_foot_controller.jpg)
+[![Connecting foot controller only](images/connecting_foot_controller_only_small.jpg)](images/connecting_foot_controller_only.jpg)
 
 **Explanation:**
 - Connect the USB-TO-MIDI cable to the USB-Port from your Laptop or the Raspberry Pi.
@@ -192,7 +192,7 @@ If you own a foot controller (ie: a **FCB1010**) and a bass pedal controller (ie
 <!-- Text Version
 +----------+              +----------+                       +---------+
 |Pedal     +---+      +---+Foot      +---+  TO MIDI OUT  +---+Laptop   |
-|Controller|OUT+----->+IN |Controller|OUT+<------+-------+USB|Raspberry|
+|Controller|OUT+-----►+IN |Controller|OUT+◄------+-------+USB|Raspberry|
 |          +---+      +---+          +---+       |       +---+         |
 +----------+              +----------+           |           +---------+
                                                  |
@@ -200,7 +200,7 @@ If you own a foot controller (ie: a **FCB1010**) and a bass pedal controller (ie
                                                  |MIDI IN
                                                  |           +--------+
                                                  |       +---+        |
-                                                 +------>+IN |Keyboard|
+                                                 +------►+IN |Keyboard|
                                                          +---+        |
                                                              +--------+
 -->
