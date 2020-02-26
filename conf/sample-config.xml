@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  With this file you will be able to setup every parameter for this Controller.
+  Please note that this application will only catch NOTE ON and NOTE OFF
+  messages, then it will look in the current selected Bank if there is a Pedal
+  definition for that note, then it will proceed to excecute the specified
+  commands.
+
+  In order to setup your system, you need to follow this steps:
+  * First you always have to include this four lines:
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.technosoft.solutions/xsd 
+    MidiBassPedalController.xsd"
+    xmlns="https://www.technosoft.solutions/xsd"
+         
+  * Then you can start by defining the MIDI in and out ports you are going to
+    use. You can either use: 
+    - the port number:
+      InPort="1" OutPort="3"
+    - or the port name: 
+      InPort="loopMIDI Port 1" OutPort="*loopMIDI*"
+      
+      On the first definition: "InPort", the full port name will be used. On the
+      second definition: "OutPort" only part of the name is given; here you can
+      use wildcards '*' to match part of the name or the question mark '?' to
+      match only one character.
+    Remarks:
+    - This two definitions are optional. If you don't give them, then the last
+      MIDI port will be used.
+    - You can see the port numbers and names by running the python script with
+      the "list" command line switch (See the README.md file for more details).
+  * Next you need to set the MIDI channels, which can be values starting from 1
+    to  16:
+    - First the MIDI in channel to which this controller will listen to:
+      InChannel="1"
+    - Next the MIDI out port for the general MIDI messages comming from this
+      controller:
+      OutGeneralMidiChannel="1"
+    - And finally the MIDI out ports for the bass pedal and chord notes:
+      OutBassPedalChannel="3" OutChordChannel="4"
+      Here I'm using two diffent channels since sometimes you may only want to
+      auto detect the chords, but not playing them. In some MIDI keyboards you
+      can set this special use case.
+    Please note that these ports are optional; if not given, then channel '1'
+    will be assumed.
+  * Then setup the controller to either echo or not other MIDI messages comming
+    to it:
+    MidiEcho="true"
+    If not given, then it defaults to "true".
+  * Next setup the bass pedal and chord notes velocities (volumes):
+    BassPedalVelocity="70" ChordVelocity="fff"
+    
+    Here you can either set a number between 0 and 127, or one of the following
+    symbols:
+    - s:      silence,                            numeric value: 0
+    - pppp:   minimum value,                      numeric value: 10
+    - ppp:    pianississimo,  very very soft,     numeric value: 23
+    - pp:     pianissimo,     very soft,          numeric value: 36
+    - p:      piano,          soft,               numeric value: 49
+    - mp:     mezzo-piano,    moderately soft,    numeric value: 62
+    - mf:     mezzo-forte,    moderately loud,    numeric value: 75
+    - f:      forte,          loud,               numeric value: 88
+    - ff:     fortissimo,     very loud,          numeric value: 101
+    - fff:    fortississimo,  very very loud,     numeric value: 114
+    - ffff:   maximum value,                      numeric value: 127
+    
+    Avoid using the minimum value (zero or 's'). This is normally interpreted as
+    a NOTE OFF message. If you really need to send it, then you could either set
+    it to 1 or use another MIDI channel.
+
+    Remarks:
+    - If "BassPedalVelocity" is not given, then the note velocity comming from
+      your foot controller will be assumed.
+    - If "ChordVelocity" is not given, then "BassPedalVelocity" will be assumed.
+  * Finally setup the octave transposition for the bass pedal and chord notes:
+    BassPedalTranspose="-2" ChordTranspose="2"
+    The "Transpose" values are between -10 and 10. So, if you set 2, then the
+    note will be transposed by two higher octaves, similarly, if you set -2,
+    then the note will be trasposed by two lower octaves. Note that here I won't
+    transpose by using semitones; I don't see any utility in transposing chords
+    that way.
+           
+    Please also be aware that if the resulting note is lower than the minimum
+    possible note (C-2 or 0), then the octave -2 will be assumed.
+
+    Similarly, if the resulting note is bigger than the maximum possible note
+    (G8 or 127), then the following cases will be considered:
+    - If the note is between C and G, then the octave 8 will be assumed.
+    - If the note is between G# and B, then the octave 7 will be assumed.
+    
+    Default values:
+    - If "BassPedalTranspose" is not given, then it defaults to 0 (zero), which
+      means that no transposition will be done.
+    - On the contrary, if "ChordTranspose" is not given, then the same
+      transposition of the pedal notes will be used. So, if you want to disable
+      transposition, you have to set this to 0 (zero).
+-->
+
+<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="https://www.technosoft.solutions/xsd 
+            MidiBassPedalController.xsd"
+            xmlns="https://www.technosoft.solutions/xsd"
+            InPort="1" OutPort="test"
+            InChannel="1"
+            OutGeneralMidiChannel="1"
+            OutBassPedalChannel="3" OutChordChannel="4"
+            MidiEcho="true"
+            BassPedalVelocity="70" ChordVelocity="fff"
+            BassPedalTranspose="-2" ChordTranspose="2">
+  <!--
+    Next you can define the different Banks for each bass pedal. You need to
+    have at least one and maximum 125. Inside each bank, you can overwrite the 
+    BassPedalVelocity, ChordVelocity, BassPedalTranspose, and ChordTranspose if
+    you want.
+  -->
+    
+  <!--
+    The following bank overwrites the BassPedalVelocity, ChordVelocity, 
+    BassPedalTranspose, and ChordTranspose settings comming from the Controller
+    node.
+  -->
+  <Bank BassPedalVelocity="p" ChordVelocity="40"
+        BassPedalTranspose="-8" ChordTranspose="0">
+    <!--
+      Next you can define the different Pedal actions for each NOTE ON and OFF
+      messages that you send. You can define up to 128 Pedals, which is the
+      maximum number of MIDI notes; however take in mind that the number of
+      pedals is in deed the number of switches of your pedal board.
+      
+      Inside each pedal, you can overwrite the BassPedalVelocity, ChordVelocity,
+      BassPedalTranspose, and ChordTranspose if you want.
+      
+      Next you have to set the following attributes:
+      * Note: MIDI note number or note name to catch. Note must be a number
+        between 0 and 127 or one of the following symbols: A, A#, B, C, C#, D,
+        D#, E, F, F#, G, or G#; please note that I don't intend to include the
+        usage of flat intervals (ie: Gb) because excentially they can be also
+        expressed in terms of the sharp intervals. It is not really necessary
+        and including them would mean to make my code longer and perhaps
+        complicated. Please also be aware that the values of "Note" must be
+        unique inside a Bank, so, you can't define two pedals for the MIDI note
+        34; only one must be setup.
+        
+      * Octave: This parameter only applies if you use a note symbol and it is
+        the octave of that note, wich can be a value between -2 and 8, so, the
+        middle C would be:
+        Note="C" Octave="3" or C3 for short.
+        The only thing you need to know is that the maximum note is G8, so,
+        giving a note like: A#8 will raise an error.
+    -->
+        
+    <!--
+      The following pedal will overwrite the values of BassPedalVelocity,
+      ChordVelocity, BassPedalTranspose, and ChordTranspose, and it will listen
+      to the note C1. Then it will send the bass note "C#-2" (-2 = Octave +
+      BassPedalTranspose = 1 - 3) and the chord notes: C#3, F3, G#3 (C# Major);
+      note that the octave was calculated according to the octave of the pedal
+      note and the chord transposition; in other words:
+      3 = Octave + ChordTranspose = 1 + 2 = 3
+      
+      Please also be aware that the order of the chord notes matters when
+      calculating the chord note octaves, ie: if you enter: G#, F, and C#, then
+      the octaves will be calculated based on the first note: G#, so, the
+      resulting chord would be: G#3, F4, and C#5, which is called "spread
+      voicing". Anyway, normally you would work with standard inversions like:
+      G#3, C#2, and F2. Finally, the minimum length of a chord would be one
+      note; you can also set your keyboard to fingered note, so that's really
+      what you need on this case.
+    -->
+    <Pedal BassPedalVelocity="pp" ChordVelocity="f"
+           BassPedalTranspose="-3" ChordTranspose="2"
+           Note="C" Octave="1" BassNote="C#" ChordNotes="C#,F,G#"/>
+
+    <!--
+      The following pedal won't overwrite the values of BassPedalVelocity,
+      ChordVelocity, BassPedalTranspose, and ChordTranspose, and it will listen
+      to the note C#-2 (-2 = default of Octave), then it will switch to the
+      Bank number 2.
+      
+      Note: you don't need to send BankSelect messages on your pedal
+      definitions; alternativelly, you can send a MIDI CONTROL CHANGE message,
+      so, assuming that your InChannel is 2 and that the bank you want to select
+      is the number 11, then this is the message that you need to send:
+      * B1 20 0A
+      Explanation:
+      - 'B' indicates that your message is a CONTROL CHANGE
+      - '1' is the MIDI channel to use; since it begins from 0, then channel 2
+        is in reality a '1' in the hexadecimal string
+      - 20 is the hexadecimal equivalence of controller 32 (Bank Select)
+      - 0A would be the bank number 11. Again since banks on the hexadecimal
+        strings begin with 0, you need to rest 1 to the 0B hexadecimal number
+        representing 11.
+      This last alternative ways gives you the flexibility to use two or more
+      foot controllers connected serially, ie: a StudioLogic MP-117 for the bass
+      notes and a FCB1010 for changing banks and sending another messages for
+      your keyboard.
+    -->
+    <Pedal Note="C#" BankSelect="2"/>
+    
+    <!--
+      The following pedal won't overwrite any value, then it will listen to the
+      note 60 (C3 or middle C). Next, the chord: G3, C4, and E4 will be send;
+      please note that the chord octave was calculated according to the octave
+      of the note 60, which is 3, and the ChordTranspose value, which will
+      assume 0, since is the one defined on the Bank node.
+      
+      Finally, the next bank will be selected. Please note that if here you
+      instead use the '-' (minus) sign, and because this is the first bank, then
+      the last bank will be selected. Please note that if you are in a bank in
+      the middle and you want to select the last bank, then you can also use the
+      '*' sign for this; this is usefull if you are continuing changing your
+      configuration, but the last bank always remains the same.
+    -->
+    <Pedal Note="60" ChordNotes="G,C,E" BankSelect="+"/>
+    
+    <!--
+      If you wish, you can also setup pedals that only send general MIDI or
+      system exclusive messages. You only need to setup the note to which listen
+      to, then define the messages inside the pedal. You can set as many
+      messages as you want, either: MIDI, SysEx, or both; they will be
+      sequentially excecuted
+    -->
+    <Pedal Note="61">
+      <!-- Sends a rhythm start -->
+      <Message Type="Midi" String="FA"/>
+
+      <!--
+        On a Yamaha Electone HS-8 organ, this command will turn on the upper
+        combination voice.
+      -->
+      <Message Type="SysEx" String="F0 43 70 72 41 30 01 F7"/>
+
+      <!-- Sends a program change on channel 1, program = 1A -->
+      <Message Type="Midi" String="C0 1A"/>
+      
+      <!-- Sets the modulation wheel on chanel 2 to its maximum -->
+      <Message Type="Midi" String="B1 01 7F"/>
+      
+      <!--
+        Again a Yamaha Electone message, which will set the lower orchestral
+        voice to 1
+      -->
+      <Message Type="SysEx" String="F0 43 70 72 41 03 03 F7"/>
+    </Pedal>
+  </Bank>
+  
+  <!--
+    The following bank won't overwrite the BassPedalVelocity, ChordVelocity,
+    BassPedalTranspose, and ChordTranspose settings comming from the Controller
+    node (note that it is written without any attribute).
+  -->
+  <Bank>
+    <Pedal Note="123"/>
+  </Bank>
+</Controller>

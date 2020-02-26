@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
+           vc:minVersion="1.1"
+           targetNamespace="https://www.technosoft.solutions/xsd"
+           xmlns="https://www.technosoft.solutions/xsd"
+           elementFormDefault="qualified"
+>
+  <xs:element name="Controller">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Note: this controller will basically transmit four types of messages:
+        * Bass pedal messages: it is basically a NOTE ON/OFF message with the
+          bass pedal note of a chord.
+        * Chord messages: it is a combination of MIDI NOTE ON messages
+          describing the chord that will follow the pedal message, ie: after the
+          pedal G, the chord G7 may be sent, which has the notes: G, B, D, and
+          F.
+        * General MIDI messages: for example, a PROGRAM CHANGE message.
+        * System Exclusive messages (or SysEx for short): some times you may
+          want to send SysEx messages to your connected MIDI keyboard, ie: you
+          want to send a rhythm fill in, for this you need to send the SysEx
+          that your keyboard has for this purpose.
+        Each message excepting the SysEx messages need to use a MIDI channel.
+        The following lines allow you to customize this channels for the
+        different messages. This is useful since some times you want to hear
+        only the bass pedal note of your chords, but use the chord autodetection
+        of your keyboard; for this, you can send the pedal notes to a channel
+        used by your left voice and the chord notes can be sent to another
+        channel that doesn't play voices. If your keyboard plays all MIDI
+        channels, then a way of solving this would be to send the chord notes
+        with their minimum velocity: 1 (do not choose 0 since it is considered
+        as NOTE OFF messages for lots of MIDI devices).
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="CommonAttributes">
+          <xs:sequence>
+            <xs:element name="Bank" type="BankType" maxOccurs="125">
+              <xs:annotation>
+                <xs:documentation xml:lang="en">
+                  You can define up to 125 Banks. Here you will define the
+                  different combinations for your Bass pedal and chord notes.
+                  See the Bank complexType definition to see what's inside.
+                </xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute name="InPort" type="MidiPortType">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">
+                MIDI in port that the controller will use to listen messages. 
+                This is a number between 1 and the number of available MIDI in
+                ports or a string with the port name (for using wildcards, see
+                MidiPortType).
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="OutPort" type="MidiPortType">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">
+                MIDI out port that the controller will use to send messages.
+                This is a number between 1 and the number of available MIDI in
+                ports or a string with the port name (for using wildcards, see
+                MidiPortType).
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="InChannel" type="MidiChannelType" default="1">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">
+                MIDI channel to which the controller will listen to. Here you
+                must use values between 1 and 16. If not given, then 1 will be
+                assumed.             
+                Please note that the controller will listen only for the
+                following messages:
+                * NOTE ON / NOTE OFF: are used basically to transmit the bass
+                  pedal notes for each chord. They occur when the musician
+                  presses and releases a pedal switch.
+                * Bank Select messages: here you have to distinguish between two
+                  types of Bank Select messages:
+                  - The ones sent to the controller: those will use the same
+                    MIDI channel that the controller is using for processing
+                    messages and they will change Banks for the controller. Here
+                    only controller 32 (20H) will be used, so this will give you
+                    the posibility of setting up maximum 125 banks, so, if you
+                    send CC32 + 13 (0DH), then the bank 12 will be selected
+                    (please note that the index is zero based, so the first bank
+                    would be 0). There will be three special operations:
+                    > Sending a CC32 with a value of 125 (7DH) will go to the
+                      previous bank.
+                    > Sending a CC32 with a value of 126 (7EH) will go to the
+                      next bank.
+                    > Sending a CC32 with a value of 127 (7FH) will go to the
+                      last bank.
+                  - The ones forwarded to your connected MIDI devices: they must   
+                    use a different channel than the used by the controller and
+                    they may be a simple message: controller 32 (20H) or a
+                    composed message: controller 32 (20H / Bank select LSB)
+                    followed by controller 0 (00H / Bank select MSB) depending
+                    on the standard used by your keyboard.
+                  Other messages or messages sent on different MIDI channels
+                  than the one used by the controller, will be fordwarded
+                  according to the MidiEcho setting (see above).
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="OutGeneralMidiChannel" type="MidiChannelType"
+                        default="1">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">
+                Channel used by the controller to fordward General MIDI messages
+                to your connected MIDI devices.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="OutBassPedalChannel" type="MidiChannelType"
+                        default="1">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">
+                Channel used by the controller to fordward bass pedal messages.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="OutChordChannel" type="MidiChannelType"
+                        default="1">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">
+                Channel used by the controller to fordward chord messages.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="MidiEcho" type="xs:boolean" default="true">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">
+                Whether or not to echo MIDI messages comming from different
+                ports than the one that the controller is using for listening
+                and processing messages. This is useful if you not only want
+                send chords and their bass pedal notes, but also setup your
+                other MIDI devices. Possible values: 
+                * true or 1: other messages will be forwarded without further
+                  post-processing.
+                * false or 0: no messages will be fordwarded at all.
+                It defaults to "true"
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- Type declarations -->
+  <xs:complexType name="CommonAttributes" abstract="true">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Abstract type for the attribute common to all nodes: Controller, Bank,
+        and Pedal.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="BassPedalVelocity" type="NoteVelocityType">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+          Note velocity for bass pedal notes. If not given, then the value of
+          the parent node will be assumed. If there is no parent, then the
+          velocity comming from your foot controller will be assumed.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+
+    <xs:attribute name="ChordVelocity" type="NoteVelocityType">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+          Note velocity for chord notes. If not given, then PedalVelocity will
+          be assumed.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+
+    <xs:attribute name="BassPedalTranspose" type="OctaveTransposeType">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+          Octave transpose for bass pedal notes. If not given, then the value of
+          the parent node will be used. If there is no parent, then 0 (zero / no
+          transposition) will be assumed.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+
+    <xs:attribute name="ChordTranspose" type="OctaveTransposeType">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+          Octave transpose for chord notes. If not given, then the same
+          transposition of the pedal notes will be used. So, if you want to
+          disable transposition, you have to set this to 0 (zero).
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:simpleType name="NoteVelocityType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Type for Note velocities. It can be either a number between 0 and 127,
+        or one of the following symbols:
+        s:    silence,                        numeric value: 0
+        pppp: minimum value,                  numeric value: 10
+        ppp:  pianississimo, very very soft,  numeric value: 23
+        pp:   pianissimo,    very soft,       numeric value: 36
+        p:    piano,         soft,            numeric value: 49
+        mp:   mezzo-piano,   moderately soft, numeric value: 62
+        mf:   mezzo-forte,   moderately loud, numeric value: 75
+        f:    forte,         loud,            numeric value: 88
+        ff:   fortissimo,    very loud,       numeric value: 101
+        fff:  fortississimo, very very loud,  numeric value: 114
+        ffff: maximum value,                  numeric value: 127
+        
+        Avoid using the minimum value (zero or 's'). This is normally
+        interpreted as a NOTE OFF message. If you really need to send it, then
+        you could either set it to 1 or use another MIDI channel.
+      </xs:documentation>
+      <xs:appinfo>
+        Those letter equivalences aren't unfortunatelly universal, it depends on
+        the MIDI software you are using. Some software will even discard the
+        values for: 'pppp' and 'ffff'. If you want to change this values, then
+        you will have to modify the following attribute definition and also the
+        python code.
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:annotation>
+        <xs:appinfo>
+          This attribute must be either a number between 0 and 127, or one of 
+          the symbols: s, pppp, ppp, pp, p, mp, mf, f, ff, fff, or ffff.
+        </xs:appinfo>
+      </xs:annotation>
+      <xs:pattern
+        value="s|pppp|ppp|pp|p|mp|mf|f|ff|fff|ffff|[0-9]|[1-9][0-9]|1[0-2][0-7]"
+      />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="OctaveTransposeType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Type for octave transpose. It can be a value between -10 and 10. So, if
+        you set 2, then the note will be transposed by two higher octaves,
+        similarly, if you set -2, then the note will be trasposed by two lower
+        octaves. Note that here I won't transpose by using semitones; I don't
+        see any utility in transposing chords that way.
+     
+        Please also be aware that if the resulting note is lower than the
+        minimum possible note (C-2 or 0), then the octave -2 will be assumed.
+
+        Similarly, if the resulting note is bigger than the maximum possible
+        note (G8 or 127), then the following cases will be considered:
+        * If the note is between C and G, then the octave 8 will be assumed.
+        * If the note is between G# and B, then the octave 7 will be assumed.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:integer">
+      <xs:annotation>
+        <xs:appinfo>
+          This attribute must be between -10 and 10.
+        </xs:appinfo>
+      </xs:annotation>
+      <xs:minInclusive value="-10"/>
+      <xs:maxInclusive value="10"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="MidiPortType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Type for MIDI port. It can be either: a port number starting from 1 and
+        it must be less than the number of available ports or a string with the
+        full port name, ie: "loopMIDI Port 1" or part of it. In the last case,
+        you have to use wildcards, ie: "*GS Wavetable*" will match: "Microsoft
+        GS Wavetable Synth 0". You can also match only one character with the
+        question mark: '?'. If not given, then by default the last available
+        port will be used.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:assertion test="not($value castable as xs:integer) or
+                          ($value castable as xs:integer and
+                           number($value) > 0)"
+      >
+        <xs:annotation>
+          <xs:documentation xml:lang="en">
+            This assertion will validate either that the entered value:
+            * is a string (not a number)
+            * or is a number higher than 0 (zero)
+          </xs:documentation>
+        </xs:annotation>
+      </xs:assertion>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="MidiChannelType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Type for MIDI channels. Here you must use values between 1 and 16.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:integer">
+      <xs:annotation>
+        <xs:appinfo>
+          A value between 1 and 16 must be entered.
+        </xs:appinfo>
+      </xs:annotation>
+      <xs:minInclusive value="1"/>
+      <xs:maxInclusive value="16"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="BankType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Type for the Bank definitions.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="CommonAttributes">
+        <xs:sequence>
+          <xs:element name="Pedal" type="PedalType" maxOccurs="128">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">
+                You can define up to 128 Pedals, which is the maximum number of
+                MIDI notes; however take in mind that the number of pedals is in
+                deed the number of switches of your pedal board. See the Pedal
+                complexType definition to see what's inside.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="PedalType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Type for defining Pedals.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="CommonAttributes">
+        <xs:sequence>
+          <xs:element name="Message" type="MessageType" minOccurs="0"
+                      maxOccurs="unbounded">
+            <xs:alternative type="MidiMessageType"  test="@Type='Midi'">
+              <xs:annotation>
+                <xs:documentation xml:lang="en">
+                  Here you can send general MIDI messages, ie: a program change,
+                  a control change, rhythm start/stop, etc.. Please note that
+                  MIDI messages can only content pairs of hexadecimal numbers
+                  separated by one space.
+                </xs:documentation>
+              </xs:annotation>
+            </xs:alternative>
+            <xs:alternative type="SysExMessageType" test="@Type='SysEx'">
+              <xs:annotation>
+                <xs:documentation xml:lang="en">
+                  Here you can send System Exclusive messages (or SysEx), ie: a
+                  select a voice panel on your keyboard, change the
+                  registration, etc.. Please note that SysEx messages must start
+                  with F0 and end with F7 and they can contain only pairs of
+                  hexadecimal numbers separated by one space.
+                </xs:documentation>
+              </xs:annotation>
+            </xs:alternative>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Note" type="NoteType" use="required">
+          <xs:annotation>
+            <xs:documentation xml:lang="en">
+              It must be either a value between 0 (C-2) and 127 (G8) or one of
+              the following symbols: A, A#, B, C, C#, D, D#, E, F, F#, G, and
+              G#. Please note that I don't intend to inlude the
+              use of flat intervals (ie: Gb) because excentially they can be
+              also expressed in terms of the sharp intervals. It is not really
+              necessary and including them would mean to make my code longer and
+              and perhaps more complicate.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Octave" type="OctaveType" default="-2">
+          <xs:annotation>
+            <xs:documentation xml:lang="en">
+              If a note is expressed with a name, ie: C#, then you also need to
+              know its octave, which can go from -2 until 8. The only thing you
+              need to know is that the maximum note is G8, so, giving a note
+              like: A#8 will raise an error. If not given, then -2 will be
+              assumed.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="BassNote" type="NoteType">
+          <xs:annotation>
+            <xs:documentation xml:lang="en">
+              This is the root note for your chord. If not given, then this
+              pedal won't send a bass note; this can be used, for example, if
+              you want to use this pedal to select the next bank, or you can
+              also send another MIDI or a SysEx message.
+              
+              Please note that the reference octave for this note will be the
+              one defined by the Octave attribute. You may transpose it by
+              setting the BassPedalTranspose attribute; if you don't define it
+              here, then the one from the parent element will be assumed.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ChordNotes" type="NoteSequenceType">
+          <xs:annotation>
+            <xs:documentation xml:lang="en">
+              Here you can enter a comma separated sequence of notes defining
+              your chord, ie: C#, F, G#. Please note that the first octave will
+              be located in C#, then the other notes will be transposed
+              accordingly, so, here the order matters. The first octave will be
+              calculated as follows:
+              ChordOctave = Octave + ChordTranspose
+              
+              So, if Octave equals to 3 and ChordTranspose equals to -2, then
+              the chord notes will be: C#1, F1, and G#1; however, if you enter
+              a different inversion, ie: G#, F, and C#, then the resulting notes
+              would be: G#1, F2, and C#3.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="BankSelect" type="BankSelectType">
+          <xs:annotation>
+            <xs:documentation xml:lang="en">
+              Bank number that the controller will select after this pedal has
+              been pressed. You can either enter a number between 1 and 125 or
+              the sign '+' to select then next bank, '-' to select the previous
+              one, or '*' to select the last bank.
+              
+              Note: there is no symbol for selecting the first bank; for doing
+              this just send a '1'.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:simpleType name="NoteType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Type for notes.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:annotation>
+        <xs:appinfo>
+          This type must be either a value between 0 (C-2) and 127 (G8) or one
+          of the following symbols: A, A#, B, C, C#, D, D#, E, F, F#, G, and G#.
+        </xs:appinfo>
+      </xs:annotation>
+      <xs:pattern
+        value="A|A#|B|C|C#|D|D#|E|F|F#|G|G#|[0-9]|[1-9][0-9]|1[0-2][0-7]"
+      />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="OctaveType">
+    <xs:restriction base="xs:integer">
+      <xs:annotation>
+        <xs:appinfo>
+          This attribute must be a value betwen -2 and 8.
+        </xs:appinfo>
+      </xs:annotation>
+      <xs:minInclusive value="-2"/>
+      <xs:maxInclusive value="8"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="NoteSequenceType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Type for a comma separated note list.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:annotation>
+        <xs:documentation>
+          This type is a comma separated list of the following symbols: A, A#,
+          B, C, C#, D, D#, E, F, F#, G, and G#, ie, a valid value would be:
+          "C#,F,G#". Please note that the minimum length of a chord is one note,
+          which corresponds to the fingered mode on a keyboard.
+        </xs:documentation>
+      </xs:annotation>
+      <xs:pattern
+        value="(A|A#|B|C|C#|D|D#|E|F|F#|G|G#)(,(A|A#|B|C|C#|D|D#|E|F|F#|G|G#))*"
+      />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="BankSelectType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Type for Bank Select messages
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:annotation>
+        <xs:documentation>
+          This type is a value between 1 and 125 or the signs '+' (select next
+          bank), '-' (select previous bank), or '*' (select the last bank).
+        </xs:documentation>
+      </xs:annotation>
+      <xs:pattern value="\+|\-|\*|[1-9]|[1-9][0-9]|1[0-2][0-5]"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="MessageType">
+    <xs:annotation>
+      <xs:documentation>
+        This will restrict message types to Midi or SysEx
+      </xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="Type">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:annotation>
+            <xs:documentation>
+              Only 'Midi' or 'SysEx' is allow for the Type attribute.
+            </xs:documentation>
+          </xs:annotation>
+          <xs:enumeration value="Midi"/>
+          <xs:enumeration value="SysEx"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:complexType name="MidiMessageType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Type for defining general MIDI messages.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="MessageType">
+        <xs:attribute name="String">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:annotation>
+                <xs:documentation xml:lang="en">
+                  It can be only pair of hexadecimal numbers separated by one
+                  space. The minimun length would be one pair of hexadecimal
+                  numbers and maximum three pairs (three bytes)
+                </xs:documentation>
+              </xs:annotation>
+              <xs:pattern value="[0-9A-F][0-9A-F]( [0-9A-F][0-9A-F]){0,2}"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="SysExMessageType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Type for defining SysEx messages.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="MessageType">
+        <xs:attribute name="String">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:annotation>
+                <xs:documentation xml:lang="en">
+                  It must contain pairs of hexadecimal numbers separated by one
+                  space, begining with F0 and ending with F7.
+                </xs:documentation>
+              </xs:annotation>
+              <xs:pattern value="F0( (([0-9A-E][0-9A-F])|([F][1-6A-F])))+ F7"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>
