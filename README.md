@@ -14,6 +14,7 @@ This software translates **NOTE ON/OFF** messages comming from a **foot controll
 - [Setting up the software](#setting-up-the-software)
 - [Running the software](#running-the-software)
 - [Troobleshooting](#troobleshooting)
+- [License](#license)
 
 ## Features
 
