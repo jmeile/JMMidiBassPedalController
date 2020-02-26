@@ -9,7 +9,7 @@ This software translates **NOTE ON/OFF** messages comming from a **foot controll
 - [Installation](#installation)
 - [Hardware connections](#hardware-connections)
   - [Connecting a foot controller to a laptop or a Rasberry Pi](#connecting-a-foot-controller-to-a-laptop-or-a-rasberry-pi)
-  - [Connecting a foot and a bass pedal controller with a laptop or a Raspberry Pi](#connecting-a-foot-and-a-bass-pedal-controller-with-a-laptop-or-a-raspberry-pi)
+  - [Connecting a foot and a bass pedal controllers with a laptop or a Raspberry Pi](#connecting-a-foot-and-a-bass-pedal-controllers-with-a-laptop-or-a-raspberry-pi)
 - [Setting up the hardware](#setting-up-the-hardware)
 - [Setting up the software](#setting-up-the-software)
 - [Running the software](#running-the-software)
@@ -164,7 +164,7 @@ Before running the software, it is important that you make the right connections
 ## Connecting a foot controller to a laptop or a Rasberry Pi
 This setup is ideal if only have a foot controller, ie: a **Studiologic MP-117** (bass pedal controller) or a **Behringer FCB1010** (foot controller). Do the following connections:
 
-```
+<!-- Text Version
 +----------+                       +---------+
 |Foot      +---+  TO MIDI OUT  +---+Laptop   |
 |Controller|OUT+<------+-------+USB|Raspberry|
@@ -178,17 +178,18 @@ This setup is ideal if only have a foot controller, ie: a **Studiologic MP-117**
                        +------>+IN |Keyboard|
                                +---+        |
                                    +--------+
-```
+-->
+[![Connecting foot controller only](images/connecting_foot_controller_only_small.jpg)](images/connecting_foot_controller.jpg)
 
 **Explanation:**
 - Connect the USB-TO-MIDI cable to the USB-Port from your Laptop or the Raspberry Pi.
 - Connect the MIDI end labeled with "TO MIDI OUT" to the MIDI OUT port from your foot controller.
 - Connect the MIDI end labeled with "TO MIDI IN" to the MIDI IN port from your keyboard.
 
-## Connecting a foot and a bass pedal controller with a laptop or a Raspberry Pi
+## Connecting a foot and a bass pedal controllers with a laptop or a Raspberry Pi
 If you own a foot controller (ie: a **FCB1010**) and a bass pedal controller (ie: a **Studiologic MP-117**), then you can connect them as follows:
 
-```
+<!-- Text Version
 +----------+              +----------+                       +---------+
 |Pedal     +---+      +---+Foot      +---+  TO MIDI OUT  +---+Laptop   |
 |Controller|OUT+----->+IN |Controller|OUT+<------+-------+USB|Raspberry|
@@ -202,7 +203,8 @@ If you own a foot controller (ie: a **FCB1010**) and a bass pedal controller (ie
                                                  +------>+IN |Keyboard|
                                                          +---+        |
                                                              +--------+
-```
+-->
+[![Connecting bass and foot controllers only](images/connecting_bass_and_foot_controllers_small.jpg)](images/connecting_bass_and_foot_controllers.jpg)
 
 **Explanation:**
 - Connect the **USB-TO-MIDI cable** to the **USB-Port** from your laptop or the Raspberry Pi.
