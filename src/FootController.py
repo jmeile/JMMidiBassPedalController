@@ -18,11 +18,11 @@ There you will see the diferent command-line options supported by the script.
 
 from __future__ import print_function
 from MainArgumentParser import MainArgumentParser
-#from MidiConnector import MidiConnector
+from MidiConnector import MidiConnector
 
 if __name__ == "__main__":
 	parser = MainArgumentParser()
 	parser.add_arguments()
 	args = parser.parse_arguments()
-	#midi = MidiConnector(args)
-	#midi.start()
+	midi = MidiConnector(args)
+	midi.start()
