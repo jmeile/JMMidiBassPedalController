@@ -29,17 +29,17 @@ from pprint import pprint
 
 class ValidateXMLArgumentParser(ArgumentParser):
   """
-  ArgumentParser for the main application
+  ArgumentParser for the helper application
   
   Remarks:
-  - The main application will accept the following command line options:
+  - The helper application will accept the following command line options:
     * --config: XML configuration file to check against the XSD schema.
   """
 
   def __init__(self, description = "Checks the specified XML file against the "
                "XSD schema"):
     """
-    Setups the ArgumentParser of the main program
+    Setups the ArgumentParser of the helper program
     
     Parameters:
     * description: description of what the program is doing
@@ -61,7 +61,8 @@ class ValidateXMLArgumentParser(ArgumentParser):
     self._parser.add_argument("-h", "--help", action = "help",
       default = argparse.SUPPRESS, help = main_help)
 
-    self._parser.add_argument("--config", default = "conf/sample-config.xml",
+    self._parser.add_argument("-c", "--config",
+                              default = "conf/sample-config.xml",
                               help = config_help)
                               
   def parse_arguments(self):
