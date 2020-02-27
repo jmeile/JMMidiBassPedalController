@@ -21,8 +21,8 @@ from MainArgumentParser import MainArgumentParser
 from MidiConnector import MidiConnector
 
 if __name__ == "__main__":
-	parser = MainArgumentParser()
-	parser.add_arguments()
-	args = parser.parse_arguments()
-	midi = MidiConnector(args)
-	midi.start()
+  parser = MainArgumentParser()
+  parser.add_arguments()
+  args = parser.parse_arguments()
+  midi = MidiConnector(args)
+  midi.start()

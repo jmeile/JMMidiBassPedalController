@@ -22,20 +22,29 @@ from rtmidi import MidiIn, MidiOut
 #from MidiProcessor import MidiProcessor
 
 #By default, file logging is enabled
-Logger.init_logging()
-#Disable file logging as follows:
-#Logger.init_logging(file_log_level = logging.NOTSET)
+file_log_level = logging.DEBUG
 
-#Creates a logger for this module. By default, console logging is disabled
-#logger = Logger().setup_logger()
+#Disable file logging as follows:
+#file_log_level = logging.NOTSET
+
+Logger.init_logging(file_log_level = file_log_level)
+
+#By default, only info message will be printed to the console
+console_log_level = logging.INFO
+
 #Enable console debug logging as follows
-#logger = Logger(console_log_level = logging.DEBUG).setup_logger()
-#Show only information message. Same behavious as print
-logger = Logger(
-      console_log_level = logging.INFO,
-      #Here only message will be printed in the console
-      log_format = "%(message)s"
-     ).setup_logger()
+#console_log_level = logging.DEBUG
+
+#By default show only information message. Same behaviour as print
+log_format = "%(message)s"
+
+#You may add a much more verbose output by setting this
+#log_format = "%(asctime)s - %(name)s -> %(funcName)s, line: %(lineno)d\n"
+#              "%(message)s"
+
+#Creates a logger for this module.
+logger = Logger(console_log_level = console_log_level, log_format = log_format
+         ).setup_logger()
 
 @logged(logger)
 class MidiConnector:
