@@ -100,7 +100,7 @@
             xsi:schemaLocation="https://www.technosoft.solutions/xsd 
             MidiBassPedalController.xsd"
             xmlns="https://www.technosoft.solutions/xsd"
-            InPort="1" OutPort="test"
+            InPort="1" OutPort="1"
             InChannel="1"
             OutGeneralMidiChannel="1"
             OutBassPedalChannel="3" OutChordChannel="4"
