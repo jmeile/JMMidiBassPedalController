@@ -15,18 +15,18 @@
          
   * Then you can start by defining the MIDI in and out ports you are going to
     use. You can either use: 
-    - the port number:
+    - the port number (starting from 1):
       InPort="1" OutPort="3"
     - or the port name: 
-      InPort="loopMIDI Port 1" OutPort="*loopMIDI*"
+      InPort="loopMIDI Port" OutPort="*loopMIDI*"
       
-      On the first definition: "InPort", the full port name will be used. On the
-      second definition: "OutPort" only part of the name is given; here you can
-      use wildcards '*' to match part of the name or the question mark '?' to
-      match only one character.
+      On the first definition: "InPort", the full port name: "loopMIDI Port"
+      will be used. On the second definition: "OutPort" only part of the name:
+      "*loopMIDI*" is given; here you can use wildcards '*' to match part of
+      the name or the question mark '?' to match only one character.
     Remarks:
-    - This two definitions are optional. If you don't give them, then the last
-      MIDI port will be used.
+    - This two ports are optional. If you don't give them, then the last 
+      available MIDI port will be used.
     - You can see the port numbers and names by running the python script with
       the "list" command line switch (See the README.md file for more details).
   * Next you need to set the MIDI channels, which can be values starting from 1
@@ -41,7 +41,7 @@
       Here I'm using two diffent channels since sometimes you may only want to
       auto detect the chords, but not playing them. In some MIDI keyboards you
       can set this special use case.
-    Please note that these ports are optional; if not given, then channel '1'
+    Please note that these channels are optional; if not given, then channel '1'
     will be assumed.
   * Then setup the controller to either echo or not other MIDI messages comming
     to it:
