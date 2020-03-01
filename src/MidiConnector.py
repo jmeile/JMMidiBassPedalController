@@ -20,7 +20,7 @@ import sys
 import fnmatch
 from rtmidi import MidiIn, MidiOut
 import xmlschema
-#from MidiProcessor import MidiProcessor
+from MidiProcessor import MidiProcessor
 
 #By default, file logging is enabled
 file_log_level = logging.DEBUG
@@ -97,9 +97,8 @@ class MidiConnector:
         self._parse_ports()
         self._open_ports()
         self._close_ports()
-        """
-        self._open_ports()
-        MidiProcessor(
+        midi_processor = MidiProcessor(
+          self._xml_dict,
           self._midi_in,
           self._midi_out,
           #Unless you want to grap SysEx dumps, you should enable this.
@@ -110,8 +109,9 @@ class MidiConnector:
           #if using another Foot controller that transmits them
           #ignore_timing = False,
           #ignore_active_sense = False,
-        ).read_midi()
-        """
+        )
+        midi_processor.parse_xml()
+        #midi_processor.read_midi()
     self._free_midi()
 
   def _parse_xml_config(self):
@@ -130,6 +130,12 @@ class MidiConnector:
     if not exit:
       try:
         xml_dict = xsd_schema.to_dict(self._args.config)
+        #A last manual validation must be done here: the InitialBank value must
+        #be less or equal than the total number of banks
+        if xml_dict['@InitialBank'] > len(xml_dict['Bank']):
+          raise Exception("InitialBank is higher than the possible number of "
+                          "banks / maximum: " + str(len(xml_dict['Bank'])) + \
+                          ", given value: " + str(xml_dict['@InitialBank']))
       except:
         exit = True
         error = traceback.format_exc()

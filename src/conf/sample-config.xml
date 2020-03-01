@@ -72,7 +72,7 @@
     - If "BassPedalVelocity" is not given, then the note velocity comming from
       your foot controller will be assumed.
     - If "ChordVelocity" is not given, then "BassPedalVelocity" will be assumed.
-  * Finally setup the octave transposition for the bass pedal and chord notes:
+  * Then setup the octave transposition for the bass pedal and chord notes:
     BassPedalTranspose="-2" ChordTranspose="2"
     The "Transpose" values are between -10 and 10. So, if you set 2, then the
     note will be transposed by two higher octaves, similarly, if you set -2,
@@ -94,6 +94,10 @@
     - On the contrary, if "ChordTranspose" is not given, then the same
       transposition of the pedal notes will be used. So, if you want to disable
       transposition, you have to set this to 0 (zero).
+  * Finally set the bank that will be select when running starting the software:
+    InitialBank="2"
+    This is a number between 1 and the number of pedals that you setup here. The
+    maximum posible value would be 124. If not given, then '1' will be assumed.
 -->
 
 <Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -105,11 +109,12 @@
             OutGeneralMidiChannel="1"
             OutBassPedalChannel="3" OutChordChannel="4"
             MidiEcho="true"
-            BassPedalVelocity="70" ChordVelocity="fff"
-            BassPedalTranspose="-2" ChordTranspose="2">
+            BassPedalVelocity="70" ChordVelocity="ffff"
+            BassPedalTranspose="-2" ChordTranspose="2"
+            InitialBank="2">
   <!--
     Next you can define the different Banks for each bass pedal. You need to
-    have at least one and maximum 125. Inside each bank, you can overwrite the 
+    have at least one and maximum 124. Inside each bank, you can overwrite the 
     BassPedalVelocity, ChordVelocity, BassPedalTranspose, and ChordTranspose if
     you want.
   -->
@@ -208,8 +213,9 @@
       instead use the '-' (minus) sign, and because this is the first bank, then
       the last bank will be selected. Please note that if you are in a bank in
       the middle and you want to select the last bank, then you can also use the
-      '*' sign for this; this is usefull if you are continuing changing your
-      configuration, but the last bank always remains the same.
+      'L' sign for this; this is usefull if you are continuing changing your
+      configuration, but the last bank always remains the same. The letter 'Q'
+      will quit the controller software.
     -->
     <Pedal Note="60" ChordNotes="G,C,E" BankSelect="+"/>
     

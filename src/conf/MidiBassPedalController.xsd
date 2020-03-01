@@ -37,10 +37,10 @@
       <xs:complexContent>
         <xs:extension base="CommonAttributes">
           <xs:sequence>
-            <xs:element name="Bank" type="BankType" maxOccurs="125">
+            <xs:element name="Bank" type="BankType" maxOccurs="124">
               <xs:annotation>
                 <xs:documentation xml:lang="en">
-                  You can define up to 125 Banks. Here you will define the
+                  You can define up to 124 Banks. Here you will define the
                   different combinations for your Bass pedal and chord notes.
                   See the Bank complexType definition to see what's inside.
                 </xs:documentation>
@@ -84,22 +84,24 @@
                     MIDI channel that the controller is using for processing
                     messages and they will change Banks for the controller. Here
                     only controller 32 (20H) will be used, so this will give you
-                    the posibility of setting up maximum 125 banks, so, if you
+                    the posibility of setting up maximum 124 banks, so, if you
                     send CC32 + 13 (0DH), then the bank 12 will be selected
                     (please note that the index is zero based, so the first bank
                     would be 0). There will be three special operations:
-                    > Sending a CC32 with a value of 125 (7DH) will go to the
+                    > Sending a CC32 with a value of 124 (7CH) will go to the
                       previous bank.
-                    > Sending a CC32 with a value of 126 (7EH) will go to the
+                    > Sending a CC32 with a value of 125 (7DH) will go to the
                       next bank.
-                    > Sending a CC32 with a value of 127 (7FH) will go to the
+                    > Sending a CC32 with a value of 126 (7EH) will go to the
                       last bank.
-                  - The ones forwarded to your connected MIDI devices: they must   
-                    use a different channel than the used by the controller and
-                    they may be a simple message: controller 32 (20H) or a
-                    composed message: controller 32 (20H / Bank select LSB)
-                    followed by controller 0 (00H / Bank select MSB) depending
-                    on the standard used by your keyboard.
+                    > Sending a CC32 with a value of 127 (7FH) will cause the
+                      controller software to quit.
+                  - The ones forwarded to your connected MIDI devices: they 
+                    must use a different channel than the used by the
+                    controller and they may be a simple message: controller 32
+                    (20H) or a composed message: controller 32 (20H / Bank
+                    select LSB) followed by controller 0 (00H / Bank select
+                    MSB) depending on the standard used by your keyboard.
                   Other messages or messages sent on different MIDI channels
                   than the one used by the controller, will be fordwarded
                   according to the MidiEcho setting (see above).
@@ -143,6 +145,14 @@
                   post-processing.
                 * false or 0: no messages will be fordwarded at all.
                 It defaults to "true"
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="InitialBank" type="BankNumberType"
+                        default="1">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">
+                Bank that will be selected when starting the controller software
               </xs:documentation>
             </xs:annotation>
           </xs:attribute>
@@ -315,6 +325,23 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="BankNumberType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Type for Bank numbers. Here you must use values between 1 and 124.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:integer">
+      <xs:annotation>
+        <xs:appinfo>
+          A value between 1 and 124 must be entered.
+        </xs:appinfo>
+      </xs:annotation>
+      <xs:minInclusive value="1"/>
+      <xs:maxInclusive value="124"/>
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:complexType name="BankType">
     <xs:annotation>
       <xs:documentation xml:lang="en">
@@ -433,7 +460,7 @@
           <xs:annotation>
             <xs:documentation xml:lang="en">
               Bank number that the controller will select after this pedal has
-              been pressed. You can either enter a number between 1 and 125 or
+              been pressed. You can either enter a number between 1 and 124 or
               the sign '+' to select then next bank, '-' to select the previous
               one, or '*' to select the last bank.
               
@@ -507,11 +534,12 @@
     <xs:restriction base="xs:string">
       <xs:annotation>
         <xs:documentation>
-          This type is a value between 1 and 125 or the signs '+' (select next
-          bank), '-' (select previous bank), or '*' (select the last bank).
+          This type is a value between 1 and 124 or the signs '+' (select next
+          bank), '-' (select previous bank), 'L' (select the last bank), or 'Q'
+          (quit the controller software).
         </xs:documentation>
       </xs:annotation>
-      <xs:pattern value="\+|\-|\*|[1-9]|[1-9][0-9]|1[0-2][0-5]"/>
+      <xs:pattern value="\+|\-|L|Q|[1-9]|[1-9][0-9]|1[0-2][0-5]"/>
     </xs:restriction>
   </xs:simpleType>
 
