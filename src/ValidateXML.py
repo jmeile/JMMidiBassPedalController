@@ -5,7 +5,7 @@
 # By: Josef Meile <jmeile@hotmail.com> @ 24.02.2020
 # This project is licensed under the MIT License. Please see the LICENSE.md file
 # on the main folder of this code. An online version can be found here:
-# https://github.com/jmeile/JMMidiBassPedalController/blob/master/LICENSE.md
+# https://github.com/jmeile/JMMidiBassPedalController/blob/master/src/LICENSE.md
 #
 """
 Helper script to check that the XSD schema and the XML config file are valid.
