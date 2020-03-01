@@ -201,9 +201,11 @@
     <xs:attribute name="ChordTranspose" type="OctaveTransposeType">
       <xs:annotation>
         <xs:documentation xml:lang="en">
-          Octave transpose for chord notes. If not given, then the same
-          transposition of the pedal notes will be used. So, if you want to
-          disable transposition, you have to set this to 0 (zero).
+          Octave transpose for chord notes. If not given, then the
+          ChordTranspose comming from the parent node will be given. If it is
+          not defined, then the transposition for the pedal notes will be used.
+          So, if you want to disable transposition, you have to set this to 0
+          (zero).
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
@@ -432,10 +434,12 @@
               you want to use this pedal to select the next bank, or you can
               also send another MIDI or a SysEx message.
               
-              Please note that the reference octave for this note will be the
-              one defined by the Octave attribute. You may transpose it by
-              setting the BassPedalTranspose attribute; if you don't define it
-              here, then the one from the parent element will be assumed.
+              Please note that if you give a note symbol, then the reference
+              octave for this note will be the one defined by the Octave
+              attribute; otherwise, it will be calculated from the note number.
+              You may transpose it by setting the BassPedalTranspose attribute;
+              if you don't define it here, then the one from the parent element
+              will be assumed.
             </xs:documentation>
           </xs:annotation>
         </xs:attribute>
@@ -462,7 +466,8 @@
               Bank number that the controller will select after this pedal has
               been pressed. You can either enter a number between 1 and 124 or
               the sign '+' to select then next bank, '-' to select the previous
-              one, or '*' to select the last bank.
+              one, 'L' to select the last bank, or 'Q' to quit the controller
+              software
               
               Note: there is no symbol for selecting the first bank; for doing
               this just send a '1'.

@@ -19,6 +19,7 @@ from MidiInputHandler import MidiInputHandler
 from Logger import Logger
 import logging
 from autologging import logged
+from pprint import pprint
 
 #By default, file logging is enabled
 file_log_level = logging.DEBUG
@@ -45,6 +46,13 @@ log_format = "%(message)s"
 logger = Logger(console_log_level = console_log_level, log_format = log_format
          ).setup_logger()
 
+#Here we assume -2 as the first octave, so, the first note would be C-2 and the
+#middle C is C3. Other systems assume the first octave to be -1
+FIRST_OCTAVE = -2
+
+#The last octave is calculated in terms of the first one
+LAST_OCTAVE = 10 + FIRST_OCTAVE
+
 #Equivalences of the numeric velocities to a dynamic level
 NOTE_VELOCITIES = {
   's'   :   0,  #silence
@@ -58,6 +66,22 @@ NOTE_VELOCITIES = {
   'ff'  : 101,  #fortissimo,    very loud
   'fff' : 114,  #fortississimo, very very loud
   'ffff': 127   #maximum value
+}
+
+#First MIDI octave starting from C-2
+MIDI_NOTES = {
+  'C' :   0,
+  'C#':   1,
+  'D' :   2,
+  'D#':   3,
+  'E' :   4,
+  'F' :   5,
+  'F#':   6,
+  'G' :   7,
+  'G#':   8,
+  'A' :   9,
+  'A#':  10,
+  'B' :  11
 }
 
 @logged(logger)
@@ -85,7 +109,8 @@ class MidiProcessor(MidiInputHandler):
 
   def parse_xml(self):
     """Parses the xml dict"""
-    self._current_bank = self._xml_dict['@InitialBank']
+    pprint(self._xml_dict)
+    self._current_bank = self._xml_dict['@InitialBank'] - 1
     self._current_velocity = 0
     self._xml_dict["@BassPedalVelocity"] = self._parse_velocity_transpose(
                                              "BassPedalVelocity",
@@ -101,15 +126,20 @@ class MidiProcessor(MidiInputHandler):
                                               
     self._xml_dict["@ChordTranspose"] = self._parse_velocity_transpose(
                                           "ChordTranspose", self._xml_dict)
-    if self._xml_dict["@ChordTranspose"] == None:
-      self._xml_dict["@ChordTranspose"] = 0
 
+    #Internally midi channels begin with zero
+    self._xml_dict['@InChannel'] -= 1
+    self._xml_dict['@OutGeneralMidiChannel'] -= 1
+    self._xml_dict['@OutBassPedalChannel'] -= 1
+    self._xml_dict['@OutChordChannel'] -= 1
     self._parse_banks()
+    pprint(self._xml_dict)
   
   def _parse_banks(self):
     """
     Parses the banks from the xml_dict
     """
+    bank_index = 0
     for bank in self._xml_dict['Bank']:
       bank["@BassPedalVelocity"] = self._parse_velocity_transpose(
                                      "BassPedalVelocity", bank, self._xml_dict)
@@ -122,13 +152,16 @@ class MidiProcessor(MidiInputHandler):
       bank["@ChordTranspose"] = self._parse_velocity_transpose("ChordTranspose",
                                                                bank,
                                                                self._xml_dict)
-      self._parse_pedals(bank)
+      self._parse_pedals(bank, bank_index)
+      bank_index += 1
   
-  def _parse_pedals(self, parent_bank):
+  def _parse_pedals(self, parent_bank, bank_index):
     """
      Parses the pedals from the current bank
      Parameters:
      * parent_bank: bank on which this pedal is contained
+     * bank_index: index of the bank inside the controller node (begins with
+       zero)
     """
     for pedal in parent_bank['Pedal']:
       pedal["@BassPedalVelocity"] = self._parse_velocity_transpose(
@@ -140,6 +173,80 @@ class MidiProcessor(MidiInputHandler):
                                        "BassPedalTranspose", pedal, parent_bank)
       pedal["@ChordTranspose"] = self._parse_velocity_transpose(
                                    "ChordTranspose", pedal, parent_bank)
+
+      self._parse_notes(pedal)
+      bank_select = pedal.get("@BankSelect")
+      num_banks = len(self._xml_dict["Bank"])
+      if bank_select != None:
+        if bank_select.isdigit():
+          bank_select = int(bank_select) - 1
+        elif bank_select == '+':
+          bank_select = bank_index + 1
+        elif bank_select == '-':
+          bank_select = bank_index - 1
+        elif bank_select == 'L':
+          bank_select = num_banks - 1
+          
+        if isinstance(bank_select, int):
+          if bank_select >= num_banks:
+            bank_select = 0
+          elif bank_select < 0:
+            bank_select = num_banks - 1
+      pedal["@BankSelect"] = bank_select
+
+  def _parse_notes(self, pedal):
+    """
+    Parses the set notes in the xml_dict. It will transpose them according to
+    the given parameters.
+    """
+    note = pedal.get('@Note')
+    if not note.isdigit():
+      #The formula to calculate the MIDI note number is:
+      #Note = (12 * (octave - FIRST_OCTAVE)) + MIDI_NOTES[note]
+      octave = pedal.get('@Octave')
+      #Get the base note
+      base_note = MIDI_NOTES[note]
+      note = (12 * (octave - FIRST_OCTAVE)) + base_note
+    else:
+      note = int(note)
+      #This is different, a MIDI NOTE number was given, so we need to calculate
+      #its octave as follows:
+      #int(note / 12)+FIRST_OCTAVE
+      pedal['@Octave'] = int(note / 12) + FIRST_OCTAVE
+    
+    pedal['@Note'] = note
+    
+    note = pedal.get("@BassNote")
+    if note is not None:
+      if not note.isdigit():
+        base_note = MIDI_NOTES[note]
+        bass_octave = pedal["@Octave"]
+      else:
+        note = int(note)
+        #Here we need to calculate the octave of the entered note
+        bass_octave = int(note / 12) + FIRST_OCTAVE
+        pedal["@Octave"] = bass_octave
+        
+        #Then we get the base note
+        base_note = note - (12 * (bass_octave - FIRST_OCTAVE))
+      
+      #Now we need to see if there is a transposition factor and increase the
+      #octave accordingly
+      new_octave = pedal["@BassPedalTranspose"] + bass_octave
+      if new_octave < FIRST_OCTAVE:
+        new_octave = FIRST_OCTAVE
+      elif new_octave > LAST_OCTAVE:
+        new_octave = LAST_OCTAVE
+        if base_note >= 8:
+          #This is the case when you have a note higher or equal than G#, but
+          #you want to put transpose it to the last octave, which is imposible,
+          #so, it will be transposed to the previous octave
+          new_octave -= 1
+      
+      pedal["@BassOctave"] = new_octave
+      note = base_note + (12 * (new_octave - FIRST_OCTAVE))
+      
+    pedal["@BassNote"] = note
 
   def _parse_velocity_transpose(self, attribute_name, current_node,
                                 parent_node = None):
