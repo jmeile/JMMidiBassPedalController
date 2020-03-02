@@ -202,8 +202,10 @@ class MidiProcessor(MidiInputHandler):
     chord_notes = pedal.get("@ChordNotes")
     if chord_notes != None:
       chord_note_list = chord_notes.split(',')
-      #If BassOctave is None, then the octave from the pedal note will be taken
-      octave = pedal.get("@BassOctave", pedal.get("@Octave"))
+      octave = pedal.get("@BassOctave")
+      if octave == None:
+        octave = pedal.get("@Octave")
+
       chord_transpose = pedal.get("@ChordTranspose")
       if chord_transpose == None:
         bass_note = pedal.get("@BassNote")
@@ -221,24 +223,49 @@ class MidiProcessor(MidiInputHandler):
         if (note_index != 0) and (base_note < previous_note):
           octave += 1
 
-        if octave < FIRST_OCTAVE:
-          octave = FIRST_OCTAVE
-        elif octave > LAST_OCTAVE:
-          octave = LAST_OCTAVE
-          if base_note >= 8:
-            #This is the case when you have a note higher or equal than G#, but
-            #you want to put transpose it to the last octave, which is imposible,
-            #so, it will be transposed to the previous octave
-            octave -= 1
-            
+        note, octave = self._parse_note(chord_note, octave)           
         if note_index == 0:
           pedal["@ChordOctave"] = octave
         
-        chord_note_list[note_index] = base_note + (12 * (octave - FIRST_OCTAVE))
+        #chord_note_list[note_index] = base_note + (12 * (octave - FIRST_OCTAVE))
+        chord_note_list[note_index] = note
         note_index += 1
       chord_notes = chord_note_list
     
     pedal["@ChordNotes"] = chord_notes
+
+  def _parse_note(self, note, octave = None, transpose = 0):
+    """
+    Given a note string converts it to a MIDI NOTE according to the entered
+    parameters.
+    Parameters:
+    * note: note string to convert
+    * octave: if given, the octave of the entered note. This is only necessary
+      if the entered note isn't a number, but a note symbol, ie: "C#"
+    * transpose: number of octaves to transpose the note.
+    Returns
+    * The recalculated note and its octave
+    """
+    if not note.isdigit():
+      #Get the base note
+      base_note = MIDI_NOTES[note]
+    else:
+      note = int(note)
+      #This is different, a MIDI NOTE number was given, so we need to calculate
+      #its octave as follows:
+      octave = int(note / 12) + FIRST_OCTAVE
+      base_note = note - (12 * (octave - FIRST_OCTAVE))
+
+    octave += transpose
+    if octave < FIRST_OCTAVE:
+      octave = FIRST_OCTAVE
+    elif octave > LAST_OCTAVE:
+      octave = LAST_OCTAVE
+    if (base_note >= 8) and (octave == LAST_OCTAVE):
+      octave -= 1
+
+    note = (12 * (octave - FIRST_OCTAVE)) + base_note     
+    return note, octave
 
   def _parse_notes(self, pedal):
     """
@@ -246,49 +273,15 @@ class MidiProcessor(MidiInputHandler):
     the given parameters.
     """
     note = pedal.get('@Note')
-    if not note.isdigit():
-      octave = pedal.get('@Octave')
-      #Get the base note
-      base_note = MIDI_NOTES[note]
-      note = (12 * (octave - FIRST_OCTAVE)) + base_note
-    else:
-      note = int(note)
-      #This is different, a MIDI NOTE number was given, so we need to calculate
-      #its octave as follows:
-      #int(note / 12)+FIRST_OCTAVE
-      pedal['@Octave'] = int(note / 12) + FIRST_OCTAVE
-    
-    pedal['@Note'] = note
-    
+    octave = pedal.get('@Octave')
+    pedal['@Note'], pedal['@Octave'] = self._parse_note(note, octave)
+      
     note = pedal.get("@BassNote")
     if note is not None:
-      if not note.isdigit():
-        base_note = MIDI_NOTES[note]
-        bass_octave = pedal["@Octave"]
-      else:
-        note = int(note)
-        #Here we need to calculate the octave of the entered note
-        bass_octave = int(note / 12) + FIRST_OCTAVE
-        
-        #Then we get the base note
-        base_note = note - (12 * (bass_octave - FIRST_OCTAVE))
-      
-      #Now we need to see if there is a transposition factor and increase the
-      #octave accordingly
-      new_octave = pedal["@BassPedalTranspose"] + bass_octave
-      if new_octave < FIRST_OCTAVE:
-        new_octave = FIRST_OCTAVE
-      elif new_octave > LAST_OCTAVE:
-        new_octave = LAST_OCTAVE
-        if base_note >= 8:
-          #This is the case when you have a note higher or equal than G#, but
-          #you want to put transpose it to the last octave, which is imposible,
-          #so, it will be transposed to the previous octave
-          new_octave -= 1
-      
-      pedal["@BassOctave"] = new_octave
-      note = base_note + (12 * (new_octave - FIRST_OCTAVE))
-      
+      note, octave = self._parse_note(note, pedal['@Octave'],
+                                      pedal["@BassPedalTranspose"])
+      pedal["@BassOctave"] = octave
+
     pedal["@BassNote"] = note
 
   def _parse_velocity_transpose(self, attribute_name, current_node,
