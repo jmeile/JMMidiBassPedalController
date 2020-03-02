@@ -175,6 +175,7 @@ class MidiProcessor(MidiInputHandler):
                                    "ChordTranspose", pedal, parent_bank)
 
       self._parse_notes(pedal)
+      self._parse_chords(pedal)
       bank_select = pedal.get("@BankSelect")
       num_banks = len(self._xml_dict["Bank"])
       if bank_select != None:
@@ -194,6 +195,51 @@ class MidiProcessor(MidiInputHandler):
             bank_select = num_banks - 1
       pedal["@BankSelect"] = bank_select
 
+  def _parse_chords(self, pedal):
+    """
+    Parses the given chord notes an converts them to MIDI notes
+    """
+    chord_notes = pedal.get("@ChordNotes")
+    if chord_notes != None:
+      chord_note_list = chord_notes.split(',')
+      #If BassOctave is None, then the octave from the pedal note will be taken
+      octave = pedal.get("@BassOctave", pedal.get("@Octave"))
+      chord_transpose = pedal.get("@ChordTranspose")
+      if chord_transpose == None:
+        bass_note = pedal.get("@BassNote")
+        if bass_note != None:
+          chord_transpose = pedal.get("@BassPedalTranspose")
+        else:
+          chord_transpose = 0
+
+      octave += chord_transpose
+      base_note = None
+      note_index = 0
+      for chord_note in chord_note_list:
+        previous_note = base_note
+        base_note = MIDI_NOTES[chord_note]
+        if (note_index != 0) and (base_note < previous_note):
+          octave += 1
+
+        if octave < FIRST_OCTAVE:
+          octave = FIRST_OCTAVE
+        elif octave > LAST_OCTAVE:
+          octave = LAST_OCTAVE
+          if base_note >= 8:
+            #This is the case when you have a note higher or equal than G#, but
+            #you want to put transpose it to the last octave, which is imposible,
+            #so, it will be transposed to the previous octave
+            octave -= 1
+            
+        if note_index == 0:
+          pedal["@ChordOctave"] = octave
+        
+        chord_note_list[note_index] = base_note + (12 * (octave - FIRST_OCTAVE))
+        note_index += 1
+      chord_notes = chord_note_list
+    
+    pedal["@ChordNotes"] = chord_notes
+
   def _parse_notes(self, pedal):
     """
     Parses the set notes in the xml_dict. It will transpose them according to
@@ -201,8 +247,6 @@ class MidiProcessor(MidiInputHandler):
     """
     note = pedal.get('@Note')
     if not note.isdigit():
-      #The formula to calculate the MIDI note number is:
-      #Note = (12 * (octave - FIRST_OCTAVE)) + MIDI_NOTES[note]
       octave = pedal.get('@Octave')
       #Get the base note
       base_note = MIDI_NOTES[note]
@@ -225,7 +269,6 @@ class MidiProcessor(MidiInputHandler):
         note = int(note)
         #Here we need to calculate the octave of the entered note
         bass_octave = int(note / 12) + FIRST_OCTAVE
-        pedal["@Octave"] = bass_octave
         
         #Then we get the base note
         base_note = note - (12 * (bass_octave - FIRST_OCTAVE))
