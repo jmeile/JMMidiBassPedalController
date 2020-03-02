@@ -43,11 +43,11 @@ From time to time, I use the following terms on my software:
 
 - **Bass pedal controller:** to be honest, I don't know if this term is correct; I think that **pedalboard** may be better, but I want to emphasize that it is a foot controller that looks like those bass pedals from an old organ, for example, the **studiologic MP-117**:
 
-[![studiologic MP-117 pedalboard](images/Studiologic_MP-117_small.jpg)](images/Studiologic_MP-117.jpg)
+[![studiologic MP-117 pedalboard](assets/Studiologic_MP-117_small.jpg)](assets/Studiologic_MP-117.jpg)
 
 Please note that it is not necessary that you use a bass pedal controller, you can also use a foot controller like the **Behringer FCB1010**:
 
-[![Behringer FCB1010 foot controller](images/Behringer_FCB1010_small.jpg)](images/Behringer_FCB1010.jpg)
+[![Behringer FCB1010 foot controller](assets/Behringer_FCB1010_small.jpg)](assets/Behringer_FCB1010.jpg)
 
   However the feeling won't be the same as when you use a real bass pedal; for example the switches may be harder and so difficult to push. Another advantage of the bass pedal controller is that it may also include the force (velocity) that you use to push an specific pedal.
   Finally, you can also use both together, ie: the bass pedal controller for sending your chords and the foot controller to switch between banks and setup other things on your keyboard.
@@ -69,7 +69,7 @@ Please note that it is not necessary that you use a bass pedal controller, you c
 - **MIDI port:** it is the physical connection where you connect your MIDI cables on the keyboard and your foot controllers. Please note that you can also have virtual ports, which are used inside the software to simulate a real port. You can have **IN** (input) and **OUT** (output) ports to receive and send messages comming from or to other connected devices.
 
 - **MIDI to USB cable**: since modern computers don't have **MIDI ports**, this cable allows you to have two ports: **MIDI IN and OUT** connected through an USB port. Right now, I use M-Audio Uno USB cable:
-[![M-Audio Uno USB cable](images/M-Audio_Uno_USB_cable_small.jpg)](images/M-Audio_Uno_USB_cable.jpg)
+[![M-Audio Uno USB cable](assets/M-Audio_Uno_USB_cable_small.jpg)](assets/M-Audio_Uno_USB_cable.jpg)
 
 - **NOTE ON/OFF message:** messages that results when hitting or releasing a note on a keyboard or a foot controller respectively. **NOTE ON** messages are commonly associated with at note velocity. You may also have this on a **NOTE OFF** message, but it is uncommon.
 
@@ -78,7 +78,7 @@ Please note that it is not necessary that you use a bass pedal controller, you c
 - **Note velocity**: it is the pressure you apply to hit a key on your keyboard or bass pedal controller. It is commonly associated to the volume (see MIDI for more details).
 
 - **Raspberry Pi**: think of it as a mini computer (mini controller to be exact), for example, the Raspberry Pi 4:
-[![Raspberry Pi 4](images/Raspberry_pi_4_small.jpg)](images/Raspberry_pi_4.jpg)
+[![Raspberry Pi 4](assets/Raspberry_pi_4_small.jpg)](assets/Raspberry_pi_4.jpg)
 
 They are really small and allow you to excecute some tasks that a computer also can do, but with the advantage that they are really small and usually after you setup them, then you don't need a keyboard or a screen to start it.
 
@@ -179,7 +179,7 @@ This setup is ideal if only have a foot controller, ie: a **Studiologic MP-117**
                                +---+        |
                                    +--------+
 -->
-[![Connecting foot controller only](images/connecting_foot_controller_only_small.jpg)](images/connecting_foot_controller_only.jpg)
+[![Connecting foot controller only](assets/connecting_foot_controller_only_small.jpg)](assets/connecting_foot_controller_only.jpg)
 
 **Explanation:**
 - Connect the USB-TO-MIDI cable to the USB-Port from your Laptop or the Raspberry Pi.
@@ -204,7 +204,7 @@ If you own a foot controller (ie: a **FCB1010**) and a bass pedal controller (ie
                                                          +---+        |
                                                              +--------+
 -->
-[![Connecting bass and foot controllers only](images/connecting_bass_and_foot_controllers_small.jpg)](images/connecting_bass_and_foot_controllers.jpg)
+[![Connecting bass and foot controllers only](assets/connecting_bass_and_foot_controllers_small.jpg)](assets/connecting_bass_and_foot_controllers.jpg)
 
 **Explanation:**
 - Connect the **USB-TO-MIDI cable** to the **USB-Port** from your laptop or the Raspberry Pi.
