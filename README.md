@@ -246,7 +246,7 @@ In order to make this to work, you will have to do the following steps:
 - Open that file and modify it as you wish by filling your parameters, ie: **MIDI IN** port, **MIDI IN and OUT** channels, **NOTE ON** messages, etc..
 
 ## Running the software
-Now you are ready to go. Go to the *src* folder, then type:
+Now you are ready to go. Go to the **src** folder, then type:
 
 `python FootController.py`
 
