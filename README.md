@@ -280,9 +280,11 @@ Then setup your system as follows:
 - Create two virtual ports:
   - On Windows, run loopMIDI and create it through its GUI
   - On Linux/MACOS, run this command:
-    `sudo modprobe snd-virmidi snd_index=1`
+`sudo modprobe snd-virmidi snd_index=1`
 - Run the following command to see what's the name of the virtual ports:
-  `python FootController.py --list`
+`python FootController.py --list`
+
+Then setup the ports as follows:
 - In Port (xml file): Virtual Port 1
 - Out Port (xml file): Virtual Port 2
 - In Port (Bome Send SX / MIOS Studio 2): Virtual Port 2
