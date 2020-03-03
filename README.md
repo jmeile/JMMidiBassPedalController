@@ -158,7 +158,7 @@ All the python dependencies will be installed automatically. Since it is an easy
 - And off course you need a keyboard with the old **MIDI ports**. USB MIDI may also work, but you will have to use two USB ports on your laptop or Raspberry Pi.
 
 # Installation
-The easiest way of installing the software is getting it from [here]((https://github.com/jmeile/JMMidiBassPedalController/archive/master.zip), then decompress the zip file and put it contents whereever you want.
+The easiest way of installing the software is getting it from [here](https://github.com/jmeile/JMMidiBassPedalController/archive/master.zip), then decompress the zip file and put it contents whereever you want.
 
 Alternatively, you can also clone the git repository:
 
