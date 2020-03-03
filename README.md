@@ -247,7 +247,7 @@ In order to make this to work, you will have to do the following steps:
   where:
   - The first part is the port number and the last part the port name.
 
-- After you have done this, open either the file: *sample-config.xml*, an **XML configuration file** with lots of comments documenting what to do, or: *bass-pedal-config.xml*, simple configuration with a **bass pedal controller**, or *foot-bass-pedal-config.xml*, configuration with a **foot and bass pedal controller** and save it as: *config.xml*
+- After you have done this, open either the file: *sample-config.xml*, an **XML configuration file** with lots of comments documenting what to do, or: *bass-pedal-config.xml*, simple configuration with a **bass pedal controller** and save it as: *config.xml*
 
 - Open that file and modify it as you wish by filling your parameters, ie: **MIDI IN** port, **MIDI IN and OUT** channels, **NOTE ON** messages, etc..
 
