@@ -20,6 +20,8 @@ from Logger import Logger
 import logging
 from autologging import logged
 from pprint import pprint
+from rtmidi.midiconstants import (CONTROL_CHANGE, NOTE_OFF, NOTE_ON,
+                                  SYSTEM_EXCLUSIVE, END_OF_EXCLUSIVE)
 
 #By default, file logging is enabled
 file_log_level = logging.DEBUG
@@ -92,7 +94,8 @@ class MidiProcessor(MidiInputHandler):
   """
   
   def __init__(self, xml_dict, midi_in, midi_out, ignore_sysex = True,
-               ignore_timing = True, ignore_active_sense = True):
+               ignore_timing = True, ignore_active_sense = True,
+               default_velocity = 64):
     """
     Calls the MidiInputHandler constructor and initializes the sub class
     attributes
@@ -102,15 +105,18 @@ class MidiProcessor(MidiInputHandler):
     * midi_in: MIDI IN interface to use
     * midi_out: MIDI OUT interface to use
     * ignore_* parameters: see the "_ignore_messages" method
+    * default_velocity: default velocity for NOTE_ON and NOTE_OFF messages
     """
     super().__init__(midi_in, midi_out, ignore_sysex, ignore_timing,
                    ignore_active_sense = True)
     self._xml_dict = xml_dict
+    self._default_velocity = default_velocity
+    self._quit = False
 
   def parse_xml(self):
     """Parses the xml dict"""
-    pprint(self._xml_dict)
     self._current_bank = self._xml_dict['@InitialBank'] - 1
+    self.__log.info("Current Bank: " + str(self._xml_dict['@InitialBank']))
     self._current_velocity = 0
     self._xml_dict["@BassPedalVelocity"] = self._parse_velocity_transpose(
                                              "BassPedalVelocity",
@@ -129,11 +135,10 @@ class MidiProcessor(MidiInputHandler):
 
     #Internally midi channels begin with zero
     self._xml_dict['@InChannel'] -= 1
-    self._xml_dict['@OutGeneralMidiChannel'] -= 1
     self._xml_dict['@OutBassPedalChannel'] -= 1
     self._xml_dict['@OutChordChannel'] -= 1
     self._parse_banks()
-    pprint(self._xml_dict)
+    #pprint(self._xml_dict)
   
   def _parse_banks(self):
     """
@@ -163,6 +168,7 @@ class MidiProcessor(MidiInputHandler):
      * bank_index: index of the bank inside the controller node (begins with
        zero)
     """
+    pedal_list = {}
     for pedal in parent_bank['Pedal']:
       pedal["@BassPedalVelocity"] = self._parse_velocity_transpose(
                                       "BassPedalVelocity", pedal, parent_bank)
@@ -174,13 +180,18 @@ class MidiProcessor(MidiInputHandler):
       pedal["@ChordTranspose"] = self._parse_velocity_transpose(
                                    "ChordTranspose", pedal, parent_bank)
 
-      self._parse_notes(pedal)
+      self._parse_notes(pedal, pedal_list)
       self._parse_chords(pedal)
+      self._parse_messages(pedal)
       bank_select = pedal.get("@BankSelect")
       num_banks = len(self._xml_dict["Bank"])
+      fix_bank = True
       if bank_select != None:
         if bank_select.isdigit():
           bank_select = int(bank_select) - 1
+          #Here it is a configuration error. The user gave a higher bank, which
+          #doesn't exist
+          fix_bank = False
         elif bank_select == '+':
           bank_select = bank_index + 1
         elif bank_select == '-':
@@ -189,11 +200,33 @@ class MidiProcessor(MidiInputHandler):
           bank_select = num_banks - 1
           
         if isinstance(bank_select, int):
-          if bank_select >= num_banks:
+          self.__log.info("BankSelect: " + str(bank_select))
+          if (bank_select >= num_banks) and fix_bank:
             bank_select = 0
           elif bank_select < 0:
             bank_select = num_banks - 1
+          elif bank_select >= num_banks:
+            raise Exception("Bank number: " + str(bank_select + 1) + " On "
+                            "BankSelect is out of range. Maximum: " + \
+                            str(num_banks))
       pedal["@BankSelect"] = bank_select
+    parent_bank["@PedalList"] = pedal_list
+
+  def _parse_messages(self, pedal):
+    """
+    Parses the given pedal messages storing them in a list
+    """
+    messages = pedal.get('Message')
+    if messages != None:
+      message_list = []
+      for full_message in messages:
+        message_string = full_message["@String"]
+        hexadecimal_strings = message_string.split(' ')
+        hexadecimal_message = []
+        for hexadecimal_string in hexadecimal_strings:
+          hexadecimal_message.append(int(hexadecimal_string, 16))
+        message_list.append(hexadecimal_message)
+      pedal["@MessageList"] = message_list
 
   def _parse_chords(self, pedal):
     """
@@ -206,16 +239,25 @@ class MidiProcessor(MidiInputHandler):
       if octave == None:
         octave = pedal.get("@Octave")
 
+      bass_note = pedal.get("@BassNote")
       chord_transpose = pedal.get("@ChordTranspose")
       if chord_transpose == None:
-        bass_note = pedal.get("@BassNote")
         if bass_note != None:
           chord_transpose = pedal.get("@BassPedalTranspose")
         else:
           chord_transpose = 0
+          
+      note_velocity = pedal["@ChordVelocity"]
+      if note_velocity == None:
+        if bass_note != None:
+          note_velocity = pedal["@BassPedalVelocity"]
 
       octave += chord_transpose
       base_note = None
+      note_messages = pedal.get("@NoteMessages")
+      if note_messages == None:
+        note_messages = {NOTE_ON: [], NOTE_OFF: []}
+      midi_channel = self._xml_dict["@OutChordChannel"]
       note_index = 0
       for chord_note in chord_note_list:
         previous_note = base_note
@@ -223,16 +265,39 @@ class MidiProcessor(MidiInputHandler):
         if (note_index != 0) and (base_note < previous_note):
           octave += 1
 
-        note, octave = self._parse_note(chord_note, octave)           
+        note, octave = self._parse_note(chord_note, octave)
+        self._set_note_messages(note_messages, note, midi_channel,
+                                note_velocity)
         if note_index == 0:
           pedal["@ChordOctave"] = octave
         
-        #chord_note_list[note_index] = base_note + (12 * (octave - FIRST_OCTAVE))
         chord_note_list[note_index] = note
         note_index += 1
       chord_notes = chord_note_list
+      pedal["@NoteMessages"] = note_messages
     
     pedal["@ChordNotes"] = chord_notes
+
+  def _set_note_messages(self, note_messages, note, midi_channel,
+                         velocity = None):
+    """
+    Sets the NOTE_ON and NOTE_OFF messages for the specified parameters
+    Parameters:
+    * note_messages: dictionary with two lists: NOTE_ON and NOTE_OFF
+    * note: note that will be used for the messages
+    * midi_channel: MIDI channel that will be set. It is a number between 0 and
+      15
+    * velocity: velocity for the resultant note. If not given, then
+      _default_velocity will be assumed. It must be a number between 0 and 127
+    Returns:
+    * note_messages will be returned with the new note messages
+    """
+    if velocity == None:
+      velocity = self._default_velocity
+
+    for message_type in [NOTE_ON, NOTE_OFF]:
+      header = message_type | midi_channel
+      note_messages[message_type].append([header, note, velocity])
 
   def _parse_note(self, note, octave = None, transpose = 0):
     """
@@ -267,20 +332,31 @@ class MidiProcessor(MidiInputHandler):
     note = (12 * (octave - FIRST_OCTAVE)) + base_note     
     return note, octave
 
-  def _parse_notes(self, pedal):
+  def _parse_notes(self, pedal, pedal_list):
     """
     Parses the set notes in the xml_dict. It will transpose them according to
     the given parameters.
+    Parameters
+    * pedal: pedal for which the notes are going to be calculated
+    * pedal_list: after having calculated notes, pedals will be indexed by pedal
+      note
     """
     note = pedal.get('@Note')
     octave = pedal.get('@Octave')
     pedal['@Note'], pedal['@Octave'] = self._parse_note(note, octave)
+    pedal_list[pedal['@Note']] = pedal
       
     note = pedal.get("@BassNote")
-    if note is not None:
+    if note != None:
       note, octave = self._parse_note(note, pedal['@Octave'],
                                       pedal["@BassPedalTranspose"])
       pedal["@BassOctave"] = octave
+      note_messages = {NOTE_ON: [], NOTE_OFF: []}
+      pedal_channel = self._xml_dict["@OutBassPedalChannel"]
+      pedal_velocity = pedal["@BassPedalVelocity"]
+      self._set_note_messages(note_messages, note, pedal_channel,
+                              pedal_velocity)
+      pedal["@NoteMessages"] = note_messages
 
     pedal["@BassNote"] = note
 
@@ -316,24 +392,142 @@ class MidiProcessor(MidiInputHandler):
       
     return self._parse_velocity_transpose(attribute_name, parent_node)
 
-  def _on_note_on(self, message):
-    self.__log.debug("MIDI message: %r" % message)
+  def _send_midi_message(self, message):
+    """
+    Overrides the _send_midi_message method from MidiInputHandler.
+    """
+    #Do not uncomment this on a productive environment. SysEx messages
+    #can be long, so logging them can slower things
+    #self.__log.debug("MIDI message: %r" % message)
     
-  def _on_note_off(self, message):
-    self.__log.debug("MIDI message: %r" % message)
+    #This may really slower things because it will do some operations in
+    #the message to make it human readable. Use it only for debugging
+    #self.__log.debug("MIDI message: %s" % \
+    #  '[{}]'.format(' '.join(hex(x).lstrip("0x").upper().zfill(2)
+    #  for x in message)))
+    status = message[0] & 0xF0
+    channel = message[0] & 0x0F
+    send_message = False
+    messages = []
+    if (self._xml_dict['@InChannel'] == channel) and \
+       status in [NOTE_ON, NOTE_OFF, CONTROL_CHANGE]:       
+      current_bank = self._xml_dict['Bank'][self._current_bank]
+      if status in [NOTE_ON, NOTE_OFF]:
+        note = message[1]
+        pedal = current_bank["@PedalList"].get(note)
+        if pedal != None:
+          self._current_velocity = message[2]
+          bank_select = pedal.get("@BankSelect")
+          if (bank_select != None) and (status == NOTE_OFF):
+            if bank_select != "Q":
+              self._current_bank = bank_select
+              self.__log.info("Bank changed to: " + str(bank_select + 1))
+            else:
+              self._quit = True
+          messages = pedal.get("@MessageList")
+          if messages == None:
+            messages = []
+          note_messages = self._set_note_velocity(pedal, status)
+          messages = messages + note_messages
+          if message != None:
+            send_message = True
+        elif self._xml_dict["@MidiEcho"]:
+          messages = [message]
+          send_message = True
+      else:
+        controller = message[1]
+        if controller == self._xml_dict["@BankSelectController"]:
+          select_value = message[2]
+          if select_value < 124:
+            if select_value >= len(self._xml_dict["Bank"]):
+              select_value = len(self._xml_dict["Bank"]) - 1
+            self._current_bank = select_value
+            self.__log.info("Bank changed to: " + str(self._current_bank + 1))
+          else:
+            num_banks = len(self._xml_dict["Bank"])
+            if select_value == 124:
+              self._current_bank -= 1
+            elif select_value == 125:
+              self._current_bank += 1
+            elif select_value == 126:
+              self._current_bank = num_banks - 1
+            else:
+              self._quit = True
+            if not self._quit:
+              if self._current_bank < 0:
+                self._current_bank = num_banks - 1
+              elif self._current_bank >= num_banks:
+                self._current_bank = 0
+              self.__log.info("Bank changed to: " + str(self._current_bank + 1))
+        elif self._xml_dict["@MidiEcho"]:
+          messages = [message]
+          send_message = True
+
+    elif self._xml_dict["@MidiEcho"]:
+      messages = [message]
+      send_message = True
+      
+    if send_message:
+      for message in messages:
+        self._midi_out.send_message(message)
+
+  def _set_note_velocity(self, pedal, message_type):
+    """
+    Returns a list of NOTE_ON or NOTE_OFF messages with a modified velocity
+    according to the values of: BassPedalVelocity, ChordVelocity, and
+    _current_velocity
+    Parameters
+    * Pedal: pedal for which the messages will be modified
+    * message_type: it can be either NOTE_ON or NOTE_OFF
+    """
+    note_messages = pedal.get("@NoteMessages")
+    if note_messages == None:
+      return []
     
-  def _on_control_change(self, message):
-    self.__log.debug("MIDI message: %r" % message)
-    
+    note_messages = note_messages[message_type]
+    pedal_velocity = pedal.get("@BassPedalVelocity")
+    chord_velocity = pedal.get("@ChordVelocity")
+    bass_note = pedal.get("@BassNote")
+    message_index = 0
+    if pedal_velocity == None:
+      pedal_velocity = self._current_velocity
+      if bass_note != None:
+        note_messages[message_index][2] = pedal_velocity
+        message_index += 1
+        
+    if chord_velocity == None:
+      if bass_note != None:
+        chord_velocity = pedal_velocity
+      else:
+        chord_velocity = self._current_velocity
+      for i in range(message_index, len(note_messages)):
+        note_messages[message_index][2] = chord_velocity
+    return note_messages
+
+  def _send_system_exclusive(self, message):
+    """
+    Overrides the _send_midi_message method from MidiInputHandler.
+    """
+    if not self._receive_sysex(message) and self._xml_dict["@MidiEcho"]:
+      #This means that the end of the SysEx message (0xF7) was detected,
+      #so, no further bytes will be received. Here the SysEx buffer will
+      #be sent and afterwards cleared
+      self._midi_out.send_message(self._sysex_buffer)
+      #Clears SysEx buffer
+      self._sysex_buffer = []
+      #Resets SysEx count to zero
+      self._sysex_chunk = 0
+
   def read_midi(self):
     """
     Main program loop.
     """
+    self.__log.info("Waiting for MIDI messages")
     try:
-      while True:
+      while True and not self._quit:
         time.sleep(1)
     except KeyboardInterrupt:
-      self.__log.info("Exit...")
+      self.__log.info("Keyboard interrupt detected")
     except:
       error = traceback.format_exc()
       self.__log.info(error)

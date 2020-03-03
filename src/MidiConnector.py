@@ -77,6 +77,7 @@ class MidiConnector:
     * It will either list the available MIDI ports, run in interative or
       silent mode, according to the passed command line options
     """
+    self.__log.info("Starting MIDI")
     self._get_all_ports()
     exit = False
     if len(self._in_ports) == 0:
@@ -96,7 +97,6 @@ class MidiConnector:
         self._parse_xml_config()
         self._parse_ports()
         self._open_ports()
-        self._close_ports()
         midi_processor = MidiProcessor(
           self._xml_dict,
           self._midi_in,
@@ -111,13 +111,16 @@ class MidiConnector:
           #ignore_active_sense = False,
         )
         midi_processor.parse_xml()
-        #midi_processor.read_midi()
+        midi_processor.read_midi()
+        self.__log.info("Exiting")
+        self._close_ports()
     self._free_midi()
 
   def _parse_xml_config(self):
     """
     Parses the specified xml configuration file
     """
+    self.__log.info("Parsing XML config")
     exit = False
     try:
       xsd_schema = xmlschema.XMLSchema11(self._xsd_schema)
@@ -168,7 +171,11 @@ class MidiConnector:
     Opens the entered MIDI ports
     """
     self._open_port(self._midi_in, self._in_port)
+    self.__log.info("MIDI IN Port: '" + self._in_ports[self._in_port] + \
+                    "' was opened")
     self._open_port(self._midi_out, self._out_port)
+    self.__log.info("MIDI OUT Port: '" + self._out_ports[self._out_port] + \
+                    "' was opened")
   
   def _close_port(self, midi_interface):
     """
@@ -187,8 +194,12 @@ class MidiConnector:
     Closes all opened MIDI ports
     """
     self._close_port(self._midi_in)
+    self.__log.info("MIDI IN Port: '" + self._in_ports[self._in_port] + \
+                    "' was closed")
     self._close_port(self._midi_out)
-  
+    self.__log.info("MIDI OUT Port: '" + self._out_ports[self._out_port] + \
+                    "' was closed")
+
   def _parse_port(self, port_list, arg_name):
     """
     Gets the specified port from command line
@@ -256,6 +267,7 @@ class MidiConnector:
     """Frees MIDI resources"""
     del self._midi_in
     del self._midi_out
+    self.__log.info("MIDI was released")
   
   def _get_midi_ports(self, midi_interface):
     """

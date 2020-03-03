@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Configuration file to use with a bass pedal or a foot controller.
+  
+  The following parameters will be used:
+  * MIDI IN and OUT ports: USB Uno MIDI Interface
+  * MIDI IN channel for catching messages: 1
+  * MIDI OUT channel for bass notes: 3
+  * MIDI OUT channel for chords: 2
+  * Other messages not comming through channel 1 will be fordwarded (MIDI ECHO
+    is set to on)
+  * No default velocites for bass and chord notes were set, so, the ones comming
+    from the controller will be assumed
+  * Bass notes won't be transposed
+  * Chord notes will be transposed by one octave after the bass notes
+  * Controller for selecting banks: 32 (20H) on channel 1 (MIDI IN channel)
+  * Initial selected bank: 1
+-->
+
+<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="https://www.technosoft.solutions/xsd 
+            MidiBassPedalController.xsd"
+            xmlns="https://www.technosoft.solutions/xsd"
+            InPort="input_port" OutPort="output_port"
+            InChannel="1"
+            OutBassPedalChannel="3" OutChordChannel="2"
+            MidiEcho="true"
+            BassPedalTranspose="0" ChordTranspose="1"
+            BankSelectController="32" InitialBank="1">
+            
+  <!--
+    On this bank I will define the pedals to send the major chords from C until
+    B. The last notes will be used for FILL INs, ENDING, and switch to the next
+    bank
+  -->
+  <Bank>
+    <!-- Catches the note C-2, then sends bass note C-2 and C major chord -->
+    <Pedal Note="C" Octave="-2" BassNote="C" ChordNotes="G,B,C"/>
+    
+    <!-- Catches the note C#-2, then sends bass note C#-2 and C# major chord -->
+    <Pedal Note="C#" Octave="-2" BassNote="C#" ChordNotes="F,G#,C#"/>
+    
+    <!-- Catches the note D-2, then sends bass note D-2 and D major chord -->
+    <Pedal Note="D" Octave="-2" BassNote="D" ChordNotes="F#,A,D"/>
+    
+    <!-- Catches the note D#-2, then sends bass note D#-2 and D# major chord -->
+    <Pedal Note="D#" Octave="-2" BassNote="D#" ChordNotes="G,A#,D#"/>
+
+    <!-- Catches the note E-2, then sends bass note E-2 and E major chord -->
+    <Pedal Note="E" Octave="-2" BassNote="E" ChordNotes="F#,B,E"/>
+    
+    <!-- Catches the note F-2, then sends bass note F-2 and F major chord -->
+    <Pedal Note="F" Octave="-2" BassNote="F" ChordNotes="F,A,C"/>
+
+    <!-- Catches the note F#-2, then sends bass note F#-2 and F# major chord -->
+    <Pedal Note="F#" Octave="-2" BassNote="F#" ChordNotes="A#,C#,F#"/>
+    
+    <!-- Catches the note G-2, then sends bass note G-2 and G major chord -->
+    <Pedal Note="G" Octave="-2" BassNote="G" ChordNotes="F,A,C"/>
+    
+    <!-- Catches the note G#-2, then sends bass note G#-2 and G# major chord -->
+    <Pedal Note="G#" Octave="-2" BassNote="G#" ChordNotes="G#,C,D#"/>
+    
+    <!-- Catches the note A-2, then sends bass note A-2 and A major chord -->
+    <Pedal Note="A" Octave="-2" BassNote="A" ChordNotes="A,C#,E"/>
+    
+    <!-- Catches the note A#-2, then sends bass note A#-2 and A# major chord -->
+    <Pedal Note="A#" Octave="-2" BassNote="A#" ChordNotes="A#,D,F"/>
+    
+    <!-- Catches the note B-2, then sends bass note B-2 and B major chord -->
+    <Pedal Note="B" Octave="-2" BassNote="B" ChordNotes="B,D#,F#"/>
+    
+    <!-- Catches the note C-1, then the FILL IN AA (ON) SysEx for a Tyros 1 -->
+    <Pedal Note="C" Octave="-1">
+      <Message Type="SysEx" String="F0 43 7E 00 10 7F F7"/>
+    </Pedal>
+    
+    <!-- Catches the note C#-1, then the FILL IN BB (ON) SysEx for a Tyros 1 -->
+    <Pedal Note="C#" Octave="-1">
+      <Message Type="SysEx" String="F0 43 7E 00 11 7F F7"/>
+    </Pedal>
+    
+    <!-- Catches the note D-1, then the ENDING A (ON) SysEx for a Tyros 1 -->
+    <Pedal Note="D" Octave="-1">
+      <Message Type="SysEx" String="F0 43 7E 00 20 7F F7"/>
+    </Pedal>
+    
+    <!-- Catches the note D#-1, then switch to the next bank -->
+    <Pedal Note="D#" Octave="-1" BankSelect="+"/>
+    
+    <!-- Catches the note E, then exits -->
+    <Pedal Note="E" Octave="-1" BankSelect="Q"/>
+  </Bank>
+  
+  <!--
+    On this bank I will define the pedals to send the seventh chords from C
+    until B. The last notes will be used for FILL INs, ENDING, and switch to the
+    previous bank
+  -->
+</Controller>

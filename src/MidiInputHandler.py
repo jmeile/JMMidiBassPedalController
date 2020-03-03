@@ -304,6 +304,8 @@ if __name__ == '__main__':
       self.__log.debug("MIDI message: %s" % \
         '[{}]'.format(' '.join(hex(x).lstrip("0x").upper().zfill(2)
         for x in message)))
+        
+      self.__log.debug("Decimal: %s" % repr(message))
 
       self._midi_out.send_message(message)
   

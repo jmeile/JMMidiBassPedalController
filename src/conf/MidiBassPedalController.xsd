@@ -83,18 +83,19 @@
                   - The ones sent to the controller: those will use the same
                     MIDI channel that the controller is using for processing
                     messages and they will change Banks for the controller. Here
-                    only controller 32 (20H) will be used, so this will give you
-                    the posibility of setting up maximum 124 banks, so, if you
-                    send CC32 + 13 (0DH), then the bank 12 will be selected
-                    (please note that the index is zero based, so the first bank
-                    would be 0). There will be three special operations:
-                    > Sending a CC32 with a value of 124 (7CH) will go to the
+                    the controller set on: BankSelectController will be used, so
+                    this will give you the posibility of setting up maximum 124
+                    banks, so, if you send CC + 13 (0DH), then the bank 12 will
+                    be selected (please note that the index is zero based, so
+                    the first bank would be 0). There will be three special
+                    operations:
+                    > Sending a CC with a value of 124 (7CH) will go to the
                       previous bank.
-                    > Sending a CC32 with a value of 125 (7DH) will go to the
+                    > Sending a CC with a value of 125 (7DH) will go to the
                       next bank.
-                    > Sending a CC32 with a value of 126 (7EH) will go to the
+                    > Sending a CC with a value of 126 (7EH) will go to the
                       last bank.
-                    > Sending a CC32 with a value of 127 (7FH) will cause the
+                    > Sending a CC with a value of 127 (7FH) will cause the
                       controller software to quit.
                   - The ones forwarded to your connected MIDI devices: they 
                     must use a different channel than the used by the
@@ -105,15 +106,6 @@
                   Other messages or messages sent on different MIDI channels
                   than the one used by the controller, will be fordwarded
                   according to the MidiEcho setting (see above).
-              </xs:documentation>
-            </xs:annotation>
-          </xs:attribute>
-          <xs:attribute name="OutGeneralMidiChannel" type="MidiChannelType"
-                        default="1">
-            <xs:annotation>
-              <xs:documentation xml:lang="en">
-                Channel used by the controller to fordward General MIDI messages
-                to your connected MIDI devices.
               </xs:documentation>
             </xs:annotation>
           </xs:attribute>
@@ -145,6 +137,15 @@
                   post-processing.
                 * false or 0: no messages will be fordwarded at all.
                 It defaults to "true"
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="BankSelectController" type="ControllerType"
+                        default="32">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">
+                MIDI controller that will be used for sending BankSelect
+                messages
               </xs:documentation>
             </xs:annotation>
           </xs:attribute>
@@ -324,6 +325,23 @@
       </xs:annotation>
       <xs:minInclusive value="1"/>
       <xs:maxInclusive value="16"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="ControllerType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Type for controller numbers. Here you must use values between 0 and 127.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:integer">
+      <xs:annotation>
+        <xs:appinfo>
+          A value between 0 and 127 must be entered.
+        </xs:appinfo>
+      </xs:annotation>
+      <xs:minInclusive value="0"/>
+      <xs:maxInclusive value="127"/>
     </xs:restriction>
   </xs:simpleType>
 

@@ -33,9 +33,6 @@
     to  16:
     - First the MIDI in channel to which this controller will listen to:
       InChannel="1"
-    - Next the MIDI out port for the general MIDI messages comming from this
-      controller:
-      OutGeneralMidiChannel="1"
     - And finally the MIDI out ports for the bass pedal and chord notes:
       OutBassPedalChannel="3" OutChordChannel="4"
       Here I'm using two diffent channels since sometimes you may only want to
@@ -94,6 +91,10 @@
     - On the contrary, if "ChordTranspose" is not given, then the same
       transposition of the pedal notes will be used. So, if you want to disable
       transposition, you have to set this to 0 (zero).
+  * Next set the MIDI controller that you are going to use for sending
+    BankSelect messages:
+    BankSelectController="32"
+    If not given, it default to controller 32.
   * Finally set the bank that will be select when running starting the software:
     InitialBank="2"
     This is a number between 1 and the number of pedals that you setup here. The
@@ -106,12 +107,11 @@
             xmlns="https://www.technosoft.solutions/xsd"
             InPort="1" OutPort="1"
             InChannel="1"
-            OutGeneralMidiChannel="1"
             OutBassPedalChannel="3" OutChordChannel="4"
             MidiEcho="true"
             BassPedalVelocity="70" ChordVelocity="ffff"
             BassPedalTranspose="-2" ChordTranspose="2"
-            InitialBank="2">
+            BankSelectController="32" InitialBank="2">
   <!--
     Next you can define the different Banks for each bass pedal. You need to
     have at least one and maximum 124. Inside each bank, you can overwrite the 
