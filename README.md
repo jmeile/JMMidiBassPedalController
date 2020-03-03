@@ -263,13 +263,10 @@ If your file is saved on the same folder as *FootController.py*, then this shoul
 `python FootController.py --config "my-config.xml"`
 
 ## Troobleshooting
-If your equipment is not reacting as expected, then activate the **debug mode** as follows:
+If your equipment is not reacting as expected, then you can debug the system as
+follows
 
-`python FootController.py --config "my-config.xml" --verbose`
-
-Then check the **log file**, which should be called: *debug.log* and it should be stored in the same folder of *FootController.py*. Please enable this mode only if you are experiencing problems; it may decrease the performance of your system.
-
-You can also debug your system by watching the **MIDI** messages comming out from your laptop or the **Raspberry Pi**. For doing this use a software for intercepting MIDI messages, ie:
+You can debug your system by watching the **MIDI** messages comming out from your laptop or the **Raspberry Pi**. For doing this use a software for intercepting MIDI messages, ie:
 
 - Under Windows:
   - [Bome Send SX](https://www.bome.com/products/sendsx).
@@ -279,34 +276,39 @@ You can also debug your system by watching the **MIDI** messages comming out fro
 - Under Ubuntu Linux/MACOS:
   - [MIOS Studio 2](http://www.ucapps.de/mios_studio.html).
 
+Then setup your system as follows:
+- Create two virtual ports:
+  - On Windows, run loopMIDI and create it through its GUI
+  - On Linux/MACOS, run this command:
+    `sudo modprobe snd-virmidi snd_index=1`
+- In Port (xml file): Virtual Port 1
+- Out Port (xml file): Virtual Port 2
+- In Port (Bome Send SX / MIOS Studio 2): Virtual Port 2
+- Out Port (Bome Send SX / MIOS Studio 2): Virtual Port 1
+- Then begin to send NOTE IN, NOTE ON, and CC messages, ie:
+  - 80 0F 00 -> Sends a NOTE OFF on channel 1, whith note = 15 (0x0F)
+  - 90 0F 40 -> Sends a NOTE ON on channel 1, whith note = 15 (0x0F), and velocity = 64 (0x40)
+  - B0 20 01 -> Send a CONTROL CHANGE message on channel 1, with
+                controller = 32 (0x20) and value = 01, which will select bank 2.
 
-Then create some virtual **MIDI ports** to route the messages going outside of your laptop or **Raspberry Pi**:
+If you sent notes that are defined on your XML configuration file, then you
+should see the resulting messages on the output of Bome Send SX or MIOS Studio 2.
 
-- Under Windows, just double click on the **loopMIDI** icon from the notification area, then create a new port by clicking entering the port's name and clicking the **'+'** sign. Usually, the app will suggest you: *"loopMIDI Port"*
-
-- Under Linux run the software as follows:
-  
-  `python FootController.py --list`
-  
-  If you see something similar to: *"Midi Through Port-0"*, then you can use that port; otherwise, you can create new ports with the command:
-  
-  `sudo modprobe snd-virmidi snd_index=1`
-
-  Run again:
-  
-  `python FootController.py --list`
-  
-  You will see something similar to:
-  
-  `'VirMIDI 1-0', 'VirMIDI 1-1', 'VirMIDI 1-2', and 'VirMIDI 1-3'`
-  
-  You can use whatever port from those you want.
-  
-Next setup your config file to use one virtual port as output port, then open either "Bome Send SX" (Windows) or "MIOS Studio 2" (Linux/MACOS) and setup that port as the input port.
-
-Finally start hitting your pedals and see the messages comming on the software.
+Other option would be to connect your foot controller to Bome Send SX or MIOS Studio 2. Here you will need the USB-TO-MIDI cable, then setup the system as follows:
+- Connect the USB-TO-MIDI to your laptop or Raspberry Pi USB port.
+- The part labeled with "TO MIDI OUT" connect it to your Foot Controller
+- Then on Bome Send SX or MIOS Studio 2 setup MIDI IN to: "USB Uno MIDI Interface"
+- Start pressing the pedals or switches, then you should see the output either in Bome Send SX or MIOS Studio 2.
 
 Alternativelly you could also use a **sequencer software**, ie: under Windows: [Aria Maestosa](https://ariamaestosa.github.io/ariamaestosa/docs/index.html), [Anvil Studio](https://www.anvilstudio.com), [KaraKEYoke Karaoke](http://karakeyoke.com/software/karakeyoke.html); under Linux: [Aria Maestosa](https://ariamaestosa.github.io/ariamaestosa/docs/index.html), or any other sequencer you know. The idea would be to route the **vitual port inputs** to that software and start looking at the **MIDI** data comming. You have there several views: *staff view* (you will see the notes) or *message list* (you will see the MIDI messages on a human-readable format).
+
+**TODO**: Enable *"--verbose"* mode
+
+Finally you can activate the **debug mode** as follows:
+
+`python FootController.py --config "my-config.xml" --verbose`
+
+Then check the **log file**, which should be called: *debug.log* and it should be stored in the same folder of *FootController.py*. Please enable this mode only if you are experiencing problems; it may decrease the performance of your system.
 
 # License
 This project is licensed under the [MIT License](src/LICENSE.md)
