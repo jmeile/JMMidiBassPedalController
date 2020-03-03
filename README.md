@@ -145,7 +145,7 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
 
 - Alternativelly to all **pip** commands, you can also use the **requirements.txt** file as follows:
 
-`pip install -r requirements.txt`
+  `pip install -r requirements.txt`
 
 All the python dependencies will be installed automatically. Since it is an easy way of doing it, you may not get the latest versions.
   
