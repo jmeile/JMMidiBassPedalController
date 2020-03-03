@@ -77,7 +77,7 @@ Please note that it is not necessary that you use a bass pedal controller, you c
 
 - **Note velocity**: it is the pressure you apply to hit a key on your keyboard or bass pedal controller. It is commonly associated to the volume (see MIDI for more details).
 
-- **Raspberry Pi**: think of it as a mini computer (mini controller to be exact), for example, the Raspberry Pi 4:
+- **Raspberry Pi**: think of it as a mini computer (micro controller to be exact), for example, the Raspberry Pi 4:
 [![Raspberry Pi 4](assets/Raspberry_pi_4_small.jpg)](assets/Raspberry_pi_4.jpg)
 
 They are really small and allow you to excecute some tasks that a computer also can do, but with the advantage that they are really small and usually after you setup them, then you don't need a keyboard or a screen to start it.
