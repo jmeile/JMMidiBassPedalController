@@ -13,7 +13,7 @@ This software translates **NOTE ON/OFF** messages comming from a **foot controll
 - [Setting up the hardware](#setting-up-the-hardware)
 - [Setting up the software](#setting-up-the-software)
 - [Running the software](#running-the-software)
-- [Troobleshooting](#troobleshooting)
+- [Troubleshooting](#troubleshooting)
 - [License](#license)
 
 ## Features
@@ -268,9 +268,8 @@ If your file is saved on the same folder as *FootController.py*, then this shoul
 
 `python FootController.py --config "my-config.xml"`
 
-## Troobleshooting
-If your equipment is not reacting as expected, then you can debug the system as
-follows
+## Troubleshooting
+If your equipment is not reacting as expected, then you can proceed as follows.
 
 You can debug your system by watching the **MIDI** messages comming out from your laptop or the **Raspberry Pi**. For doing this use a software for intercepting MIDI messages, ie:
 
