@@ -316,5 +316,14 @@ Finally you can activate the **debug mode** as follows:
 
 Then check the **log file**, which should be called: *debug.log* and it should be stored in the same folder of *FootController.py*. Please enable this mode only if you are experiencing problems; it may decrease the performance of your system.
 
+I may also help you, but you need to create a new issue [here](https://github.com/jmeile/JMMidiBassPedalController/issues). Please include the following information:
+- Screenshot or text of the error message
+- If there isn't an error message, then explain exactly what's the issue
+- If relevant, also include:
+  - Your XML configuration file
+  - The file: *debug.log*, which is located on the same folder of the main script.
+
+Since this is a hobby, I may not have many time to solve the issue, so, do not expected me to fix it quickly.
+
 # License
 This project is licensed under the [MIT License](src/LICENSE.md)
