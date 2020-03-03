@@ -331,4 +331,4 @@ I may also help you, but you need to create a new issue [here](https://github.co
 Since this is a hobby, I may not have many time to solve the issue, so, do not expected me to fix it quickly.
 
 # License
-This project is licensed under the [MIT License](src/LICENSE.md)
+This project is licensed under the [MIT License](LICENSE.md)

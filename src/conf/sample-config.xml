@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
+  sample-config.xml
+  By: Josef Meile <jmeile@hotmail.com> @ 04.03.2020
+  This project is licensed under the MIT License. Please see the LICENSE.md file
+  on the main folder of this code. An online version can be found here:
+  https://github.com/jmeile/JMMidiBassPedalController/blob/master/LICENSE.md
+
   With this file you will be able to setup every parameter for this Controller.
   Please note that this application will only catch NOTE ON and NOTE OFF
   messages, then it will look in the current selected Bank if there is a Pedal

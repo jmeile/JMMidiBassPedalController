@@ -5,7 +5,7 @@
 # By: Josef Meile <jmeile@hotmail.com> @ 27.02.2020
 # This project is licensed under the MIT License. Please see the LICENSE.md file
 # on the main folder of this code. An online version can be found here:
-# https://github.com/jmeile/JMMidiBassPedalController/blob/master/src/LICENSE.md
+# https://github.com/jmeile/JMMidiBassPedalController/blob/master/LICENSE.md
 #
 """
 Parses the main program command line options. It uses the python library:

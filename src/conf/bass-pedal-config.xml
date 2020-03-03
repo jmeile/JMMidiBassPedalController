@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
+  By: Josef Meile <jmeile@hotmail.com> @ 04.03.2020
+  This project is licensed under the MIT License. Please see the LICENSE.md file
+  on the main folder of this code. An online version can be found here:
+  https://github.com/jmeile/JMMidiBassPedalController/blob/master/LICENSE.md
+
   Configuration file to use with a bass pedal or a foot controller.
   
   The following parameters will be used:
@@ -16,7 +21,6 @@
   * Controller for selecting banks: 32 (20H) on channel 1 (MIDI IN channel)
   * Initial selected bank: 1
 -->
-
 <Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="https://www.technosoft.solutions/xsd 
             MidiBassPedalController.xsd"

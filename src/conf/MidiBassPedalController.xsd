@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  MidiBassPedalController.xml
+  By: Josef Meile <jmeile@hotmail.com> @ 04.03.2020
+  This project is licensed under the MIT License. Please see the LICENSE.md file
+  on the main folder of this code. An online version can be found here:
+  https://github.com/jmeile/JMMidiBassPedalController/blob/master/LICENSE.md
+  
+  This file describes the expected data in the XML configuration file. It will
+  also include some validations.
+-->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
            vc:minVersion="1.1"
