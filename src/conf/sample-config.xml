@@ -101,10 +101,14 @@
     BankSelect messages:
     BankSelectController="32"
     If not given, it default to controller 32.
-  * Finally set the bank that will be select when running starting the software:
+  * Set the bank that will be select when running starting the software:
     InitialBank="2"
     This is a number between 1 and the number of pedals that you setup here. The
     maximum posible value would be 124. If not given, then '1' will be assumed.
+  * And finally decide how you are going to treat NOTE ON messages with a 
+    velocity of zero, for this purpose set MinVelocityNoteOff to true if they
+    are going to be treated as NOTE OFF or set it to false otherwise. If omitted
+    it defaults to true.
 -->
 
 <Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -117,7 +121,8 @@
             MidiEcho="true"
             BassPedalVelocity="70" ChordVelocity="ffff"
             BassPedalTranspose="-2" ChordTranspose="2"
-            BankSelectController="32" InitialBank="2">
+            BankSelectController="32" InitialBank="2"
+            MinVelocityNoteOff="true">
   <!--
     Next you can define the different Banks for each bass pedal. You need to
     have at least one and maximum 124. Inside each bank, you can overwrite the 

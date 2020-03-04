@@ -248,10 +248,6 @@ class MidiProcessor(MidiInputHandler):
           chord_transpose = 0
           
       note_velocity = pedal["@ChordVelocity"]
-      if note_velocity == None:
-        if bass_note != None:
-          note_velocity = pedal["@BassPedalVelocity"]
-
       octave += chord_transpose
       base_note = None
       note_messages = pedal.get("@NoteMessages")
@@ -417,6 +413,9 @@ class MidiProcessor(MidiInputHandler):
         pedal = current_bank["@PedalList"].get(note)
         if pedal != None:
           self._current_velocity = message[2]
+          if (self._current_velocity == 0) and \
+             (self._xml_dict["@MinVelocityNoteOff"]):
+             status = NOTE_OFF
           bank_select = pedal.get("@BankSelect")
           if (bank_select != None) and (status == NOTE_OFF):
             if bank_select != "Q":
@@ -493,15 +492,15 @@ class MidiProcessor(MidiInputHandler):
       pedal_velocity = self._current_velocity
       if bass_note != None:
         note_messages[message_index][2] = pedal_velocity
-        message_index += 1
         
+    if bass_note != None:
+      message_index += 1
+
     if chord_velocity == None:
-      if bass_note != None:
-        chord_velocity = pedal_velocity
-      else:
-        chord_velocity = self._current_velocity
+      chord_velocity = self._current_velocity
       for i in range(message_index, len(note_messages)):
         note_messages[message_index][2] = chord_velocity
+        message_index += 1
     return note_messages
 
   def _send_system_exclusive(self, message):
@@ -523,6 +522,7 @@ class MidiProcessor(MidiInputHandler):
     Main program loop.
     """
     self.__log.info("Waiting for MIDI messages")
+    self.__log.info("Press CTRL+C to finish")
     try:
       while True and not self._quit:
         time.sleep(1)
