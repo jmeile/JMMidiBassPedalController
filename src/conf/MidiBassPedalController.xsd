@@ -234,6 +234,18 @@
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="Octave" type="OctaveType">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+          If a note is expressed with a name, ie: C#, then you also need to know
+          its octave, which can go from -2 until 8. The only thing you need to
+          know is that the maximum note is G8, so, giving a note like: A#8 will
+          raise an error. If not given, then the value of the parent will be
+          assumed. If the parent isn't set, then 0 will be assumed. If you give
+          note numbers instead, then this number will be ignored.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
   </xs:complexType>
 
   <xs:simpleType name="NoteVelocityType">
@@ -454,17 +466,6 @@
               also expressed in terms of the sharp intervals. It is not really
               necessary and including them would mean to make my code longer and
               and perhaps more complicate.
-            </xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="Octave" type="OctaveType" default="-2">
-          <xs:annotation>
-            <xs:documentation xml:lang="en">
-              If a note is expressed with a name, ie: C#, then you also need to
-              know its octave, which can go from -2 until 8. The only thing you
-              need to know is that the maximum note is G8, so, giving a note
-              like: A#8 will raise an error. If not given, then -2 will be
-              assumed.
             </xs:documentation>
           </xs:annotation>
         </xs:attribute>

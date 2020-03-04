@@ -118,20 +118,25 @@ class MidiProcessor(MidiInputHandler):
     self._current_bank = self._xml_dict['@InitialBank'] - 1
     self.__log.info("Current Bank: " + str(self._xml_dict['@InitialBank']))
     self._current_velocity = 0
-    self._xml_dict["@BassPedalVelocity"] = self._parse_velocity_transpose(
-                                             "BassPedalVelocity",
-                                             self._xml_dict)
-    self._xml_dict["@ChordVelocity"] = self._parse_velocity_transpose(
+    self._xml_dict["@BassPedalVelocity"] = self._parse_common_attribute(
+      "BassPedalVelocity", self._xml_dict)
+    self._xml_dict["@ChordVelocity"] = self._parse_common_attribute(
                                          "ChordVelocity", self._xml_dict)
                                           
-    self._xml_dict["@BassPedalTranspose"] = self._parse_velocity_transpose(
+    self._xml_dict["@BassPedalTranspose"] = self._parse_common_attribute(
                                               "BassPedalTranspose",
                                               self._xml_dict)
+
     if self._xml_dict["@BassPedalTranspose"] == None:
       self._xml_dict["@BassPedalTranspose"] = 0
                                               
-    self._xml_dict["@ChordTranspose"] = self._parse_velocity_transpose(
+    self._xml_dict["@ChordTranspose"] = self._parse_common_attribute(
                                           "ChordTranspose", self._xml_dict)
+
+    self._xml_dict["@Octave"] = self._parse_common_attribute("Octave",
+                                                             self._xml_dict)
+    if self._xml_dict["@Octave"] == None:
+      self._xml_dict["@Octave"] = 0
 
     #Internally midi channels begin with zero
     self._xml_dict['@InChannel'] -= 1
@@ -146,17 +151,20 @@ class MidiProcessor(MidiInputHandler):
     """
     bank_index = 0
     for bank in self._xml_dict['Bank']:
-      bank["@BassPedalVelocity"] = self._parse_velocity_transpose(
+      bank["@BassPedalVelocity"] = self._parse_common_attribute(
                                      "BassPedalVelocity", bank, self._xml_dict)
-      bank["@ChordVelocity"] = self._parse_velocity_transpose("ChordVelocity",
+      bank["@ChordVelocity"] = self._parse_common_attribute("ChordVelocity",
                                                               bank,
                                                               self._xml_dict)
-      bank["@BassPedalTranspose"] = self._parse_velocity_transpose(
+      bank["@BassPedalTranspose"] = self._parse_common_attribute(
                                       "BassPedalTranspose", bank,
                                       self._xml_dict)
-      bank["@ChordTranspose"] = self._parse_velocity_transpose("ChordTranspose",
+      bank["@ChordTranspose"] = self._parse_common_attribute("ChordTranspose",
                                                                bank,
                                                                self._xml_dict)
+                                                               
+      bank["@Octave"] = self._parse_common_attribute("Octave", bank,
+                                                     self._xml_dict)
       self._parse_pedals(bank, bank_index)
       bank_index += 1
   
@@ -170,15 +178,18 @@ class MidiProcessor(MidiInputHandler):
     """
     pedal_list = {}
     for pedal in parent_bank['Pedal']:
-      pedal["@BassPedalVelocity"] = self._parse_velocity_transpose(
+      pedal["@BassPedalVelocity"] = self._parse_common_attribute(
                                       "BassPedalVelocity", pedal, parent_bank)
-      pedal["@ChordVelocity"] = self._parse_velocity_transpose("ChordVelocity",
+      pedal["@ChordVelocity"] = self._parse_common_attribute("ChordVelocity",
                                                                pedal,
                                                                parent_bank)
-      pedal["@BassPedalTranspose"] = self._parse_velocity_transpose(
+      pedal["@BassPedalTranspose"] = self._parse_common_attribute(
                                        "BassPedalTranspose", pedal, parent_bank)
-      pedal["@ChordTranspose"] = self._parse_velocity_transpose(
+      pedal["@ChordTranspose"] = self._parse_common_attribute(
                                    "ChordTranspose", pedal, parent_bank)
+                                   
+      pedal["@Octave"] = self._parse_common_attribute("Octave", pedal,
+                                                      parent_bank)
 
       self._parse_notes(pedal, pedal_list)
       self._parse_chords(pedal)
@@ -356,14 +367,15 @@ class MidiProcessor(MidiInputHandler):
 
     pedal["@BassNote"] = note
 
-  def _parse_velocity_transpose(self, attribute_name, current_node,
-                                parent_node = None):
+  def _parse_common_attribute(self, attribute_name, current_node,
+                              parent_node = None):
     """
     Gets the specified attribute_name from the xml_dict and converts it to its
     numeric representation
     Parameters:
     * attribute_name: name of the attribute to retreive. It can be either:
-      BassPedalVelocity, ChordVelocity, BassPedalTranspose, or ChordTranspose
+      BassPedalVelocity, ChordVelocity, BassPedalTranspose, ChordTranspose, or
+      Octave
     * current_node: current note to parse
     * parent_node: reference to the parent node
     Returns:
@@ -386,7 +398,7 @@ class MidiProcessor(MidiInputHandler):
     if parent_node == None:
       return self._xml_dict.get('@' + attribute_name)
       
-    return self._parse_velocity_transpose(attribute_name, parent_node)
+    return self._parse_common_attribute(attribute_name, parent_node)
 
   def _send_midi_message(self, message):
     """

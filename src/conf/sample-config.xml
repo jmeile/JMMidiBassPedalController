@@ -109,6 +109,13 @@
     velocity of zero, for this purpose set MinVelocityNoteOff to true if they
     are going to be treated as NOTE OFF or set it to false otherwise. If omitted
     it defaults to true.
+  * Octave: This parameter only applies if you use a note symbol and it is the
+    octave of that note, wich can be a value between -2 and 8, so, the middle C
+    would be: Note="C" Octave="3" or C3 for short. The only thing you need to
+    know is that the maximum note is G8, so, giving a note like: A#8 will raise
+    an error. Please also be aware that this number will be ignored if you use
+    note numbers. The value of this parameter can be overriden by the child
+    nodes: Bank and Pedal.
 -->
 
 <Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -122,7 +129,8 @@
             BassPedalVelocity="70" ChordVelocity="ffff"
             BassPedalTranspose="-2" ChordTranspose="2"
             BankSelectController="32" InitialBank="2"
-            MinVelocityNoteOff="true">
+            MinVelocityNoteOff="true"
+            Octave="2">
   <!--
     Next you can define the different Banks for each bass pedal. You need to
     have at least one and maximum 124. Inside each bank, you can overwrite the 
@@ -132,11 +140,12 @@
     
   <!--
     The following bank overwrites the BassPedalVelocity, ChordVelocity, 
-    BassPedalTranspose, and ChordTranspose settings comming from the Controller
-    node.
+    BassPedalTranspose, ChordTranspose, and Octave settings comming from the
+    Controller node.
   -->
   <Bank BassPedalVelocity="p" ChordVelocity="40"
-        BassPedalTranspose="-8" ChordTranspose="0">
+        BassPedalTranspose="-8" ChordTranspose="0"
+        Octave="1">
     <!--
       Next you can define the different Pedal actions for each NOTE ON and OFF
       messages that you send. You can define up to 128 Pedals, which is the
@@ -156,13 +165,6 @@
         complicated. Please also be aware that the values of "Note" must be
         unique inside a Bank, so, you can't define two pedals for the MIDI note
         34; only one must be setup.
-        
-      * Octave: This parameter only applies if you use a note symbol and it is
-        the octave of that note, wich can be a value between -2 and 8, so, the
-        middle C would be:
-        Note="C" Octave="3" or C3 for short.
-        The only thing you need to know is that the maximum note is G8, so,
-        giving a note like: A#8 will raise an error.
     -->
         
     <!--
@@ -185,7 +187,7 @@
     -->
     <Pedal BassPedalVelocity="pp" ChordVelocity="f"
            BassPedalTranspose="-3" ChordTranspose="2"
-           Note="C" Octave="1" BassNote="C#" ChordNotes="C#,F,G#"/>
+           Note="C" BassNote="C#" ChordNotes="C#,F,G#"/>
 
     <!--
       The following pedal won't overwrite the values of BassPedalVelocity,
