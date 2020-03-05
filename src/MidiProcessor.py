@@ -19,7 +19,7 @@ from MidiInputHandler import MidiInputHandler
 from Logger import Logger
 import logging
 from autologging import logged
-from pprint import pprint
+from pprint import pprint, pformat
 from rtmidi.midiconstants import (CONTROL_CHANGE, NOTE_OFF, NOTE_ON,
                                   SYSTEM_EXCLUSIVE, END_OF_EXCLUSIVE)
 
@@ -144,6 +144,7 @@ class MidiProcessor(MidiInputHandler):
     self._xml_dict['@OutChordChannel'] -= 1
     self._parse_banks()
     #pprint(self._xml_dict)
+    #self.__log.info(pformat(self._xml_dict))
   
   def _parse_banks(self):
     """
@@ -211,7 +212,6 @@ class MidiProcessor(MidiInputHandler):
           bank_select = num_banks - 1
           
         if isinstance(bank_select, int):
-          self.__log.info("BankSelect: " + str(bank_select))
           if (bank_select >= num_banks) and fix_bank:
             bank_select = 0
           elif bank_select < 0:
@@ -239,6 +239,14 @@ class MidiProcessor(MidiInputHandler):
         message_list.append(hexadecimal_message)
       pedal["@MessageList"] = message_list
 
+  def _calculate_base_note_octave(self, midi_note):
+    """
+    Calculates the base note and octave for a given midi note
+    """
+    octave = int(midi_note / 12) + FIRST_OCTAVE
+    base_note = midi_note - (12 * (octave - FIRST_OCTAVE))
+    return base_note, octave
+
   def _parse_chords(self, pedal):
     """
     Parses the given chord notes an converts them to MIDI notes
@@ -246,10 +254,6 @@ class MidiProcessor(MidiInputHandler):
     chord_notes = pedal.get("@ChordNotes")
     if chord_notes != None:
       chord_note_list = chord_notes.split(',')
-      octave = pedal.get("@BassOctave")
-      if octave == None:
-        octave = pedal.get("@Octave")
-
       bass_note = pedal.get("@BassNote")
       chord_transpose = pedal.get("@ChordTranspose")
       if chord_transpose == None:
@@ -257,9 +261,16 @@ class MidiProcessor(MidiInputHandler):
           chord_transpose = pedal.get("@BassPedalTranspose")
         else:
           chord_transpose = 0
-          
+
+      numeric_list = chord_note_list[0].isdigit()
+      if not numeric_list:
+        #You need to have an octave reference when giving note symbols. If you
+        #give note numbers, then you already know their octaves
+        octave = pedal.get("@BassOctave")
+        if octave == None:
+          octave = pedal.get("@Octave")
+
       note_velocity = pedal["@ChordVelocity"]
-      octave += chord_transpose
       base_note = None
       note_messages = pedal.get("@NoteMessages")
       if note_messages == None:
@@ -268,21 +279,27 @@ class MidiProcessor(MidiInputHandler):
       note_index = 0
       for chord_note in chord_note_list:
         previous_note = base_note
-        base_note = MIDI_NOTES[chord_note]
-        if (note_index != 0) and (base_note < previous_note):
+        if not numeric_list:
+          base_note = MIDI_NOTES[chord_note]
+        else:
+          base_note, octave = self._calculate_base_note_octave(int(chord_note))
+        if (note_index != 0) and (base_note < previous_note) and \
+           (not numeric_list):
           octave += 1
 
-        note, octave = self._parse_note(chord_note, octave)
+        note, chord_octave = self._parse_note(chord_note, octave,
+                                              chord_transpose)
+        self.__log.info("transposed octave: " + str(octave))
+
         self._set_note_messages(note_messages, note, midi_channel,
                                 note_velocity)
         if note_index == 0:
-          pedal["@ChordOctave"] = octave
+          pedal["@ChordOctave"] = chord_octave
         
         chord_note_list[note_index] = note
         note_index += 1
       chord_notes = chord_note_list
-      pedal["@NoteMessages"] = note_messages
-    
+      pedal["@NoteMessages"] = note_messages    
     pedal["@ChordNotes"] = chord_notes
 
   def _set_note_messages(self, note_messages, note, midi_channel,

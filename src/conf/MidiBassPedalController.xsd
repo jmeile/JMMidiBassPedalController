@@ -568,7 +568,7 @@
         </xs:documentation>
       </xs:annotation>
       <xs:pattern
-        value="(A|A#|B|C|C#|D|D#|E|F|F#|G|G#)(,(A|A#|B|C|C#|D|D#|E|F|F#|G|G#))*"
+        value="((A|A#|B|C|C#|D|D#|E|F|F#|G|G#)(,(A|A#|B|C|C#|D|D#|E|F|F#|G|G#))*)|(([0-9]|[1-9][0-9]|1[0-2][0-7])(,([0-9]|[1-9][0-9]|1[0-2][0-7]))*)"
       />
     </xs:restriction>
   </xs:simpleType>

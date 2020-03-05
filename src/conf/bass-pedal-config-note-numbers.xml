@@ -5,22 +5,9 @@
   on the main folder of this code. An online version can be found here:
   https://github.com/jmeile/JMMidiBassPedalController/blob/master/LICENSE.md
 
-  Configuration file to use with a bass pedal or a foot controller.
-  
-  The following parameters will be used:
-  * MIDI IN and OUT ports: USB Uno MIDI Interface
-  * MIDI IN channel for catching messages: 1
-  * MIDI OUT channel for bass notes: 3
-  * MIDI OUT channel for chords: 2
-  * Other messages not comming through channel 1 will be fordwarded (MIDI ECHO
-    is set to on)
-  * No default velocites for bass and chord notes were set, so, the ones comming
-    from the controller will be assumed
-  * Bass notes won't be transposed
-  * Chord notes will be transposed by one octave after the bass notes
-  * Controller for selecting banks: 32 (20H) on channel 1 (MIDI IN channel)
-  * Initial selected bank: 1
-  * Octave: 1. This is what my bass pedal controller uses by default
+  This is the same configuration as bass-pedal-config.xml, but instead of note
+  symbols, note numbers (in decimal) will be used. The Octave parameter isn't
+  neccessary.
 -->
 <Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="https://www.technosoft.solutions/xsd 
@@ -31,8 +18,7 @@
             OutBassPedalChannel="3" OutChordChannel="2"
             MidiEcho="true"
             BassPedalTranspose="0" ChordTranspose="1"
-            BankSelectController="32" InitialBank="1"
-            Octave="1">
+            BankSelectController="32" InitialBank="1">
   <!--
     On this bank I will define the pedals to send the major chords from C until
     B. The last notes will be used for FILL INs, ENDING, and switch to the next
@@ -40,61 +26,61 @@
   -->
   <Bank>
     <!-- Catches the note C1, then sends bass note C1 and C major chord -->
-    <Pedal Note="C" BassNote="C" ChordNotes="G,B,C"/>
+    <Pedal Note="36" BassNote="36" ChordNotes="43,47,48"/>
     
     <!-- Catches the note C#1, then sends bass note C#1 and C# major chord -->
-    <Pedal Note="C#" BassNote="C#" ChordNotes="F,G#,C#"/>
+    <Pedal Note="37" BassNote="37" ChordNotes="41,44,49"/>
     
     <!-- Catches the note D1, then sends bass note D1 and D major chord -->
-    <Pedal Note="D" BassNote="D" ChordNotes="F#,A,D"/>
+    <Pedal Note="38" BassNote="38" ChordNotes="42,45,50"/>
     
     <!-- Catches the note D#1, then sends bass note D#1 and D# major chord -->
-    <Pedal Note="D#" BassNote="D#" ChordNotes="G,A#,D#"/>
+    <Pedal Note="39" BassNote="39" ChordNotes="43,46,51"/>
 
     <!-- Catches the note E1, then sends bass note E1 and E major chord -->
-    <Pedal Note="E" BassNote="E" ChordNotes="F#,B,E"/>
+    <Pedal Note="40" BassNote="40" ChordNotes="42,47,51"/>
     
-    <!-- Catches the note F1, then sends bass note F1 and F major chord -->
-    <Pedal Note="F" BassNote="F" ChordNotes="F,A,C"/>
+    <!-- Catches the note F1, then sends bass F,A,C note F1 and F major chord -->
+    <Pedal Note="41" BassNote="41" ChordNotes="41,45,48"/>
 
     <!-- Catches the note F#1, then sends bass note F#1 and F# major chord -->
-    <Pedal Note="F#" BassNote="F#" ChordNotes="A#,C#,F#"/>
+    <Pedal Note="42" BassNote="42" ChordNotes="46,49,54"/>
     
     <!-- Catches the note G1, then sends bass note G1 and G major chord -->
-    <Pedal Note="G" BassNote="G" ChordNotes="G,B,D"/>
+    <Pedal Note="43" BassNote="43" ChordNotes="43,47,50"/>
     
     <!-- Catches the note G#1, then sends bass note G#1 and G# major chord -->
-    <Pedal Note="G#" BassNote="G#" ChordNotes="G#,C,D#"/>
+    <Pedal Note="44" BassNote="44" ChordNotes="44,48,51"/>
     
     <!-- Catches the note A1, then sends bass note A1 and A major chord -->
-    <Pedal Note="A" BassNote="A" ChordNotes="A,C#,E"/>
+    <Pedal Note="45" BassNote="45" ChordNotes="45,49,52"/>
     
     <!-- Catches the note A#1, then sends bass note A#1 and A# major chord -->
-    <Pedal Note="A#" BassNote="A#" ChordNotes="A#,D,F"/>
+    <Pedal Note="46" BassNote="46" ChordNotes="46,50,53"/>
     
-    <!-- Catches the note B1, then sends bass note B1 and B major chord -->
-    <Pedal Note="B" BassNote="B" ChordNotes="B,D#,F#"/>
+    <!-- Catches the note B1, then sends bass note B1 and 47 major chord -->
+    <Pedal Note="47" BassNote="47" ChordNotes="47,51,54"/>
     
     <!-- Catches the note C2, then the FILL IN AA (ON) SysEx for a Tyros 1 -->
-    <Pedal Note="C" Octave="2">
+    <Pedal Note="48">
       <Message Type="SysEx" String="F0 43 7E 00 10 7F F7"/>
     </Pedal>
     
     <!-- Catches the note C#2, then the FILL IN BB (ON) SysEx for a Tyros 1 -->
-    <Pedal Note="C#" Octave="2">
+    <Pedal Note="49">
       <Message Type="SysEx" String="F0 43 7E 00 11 7F F7"/>
     </Pedal>
     
     <!-- Catches the note D2, then the ENDING A (ON) SysEx for a Tyros 1 -->
-    <Pedal Note="D" Octave="2">
+    <Pedal Note="50">
       <Message Type="SysEx" String="F0 43 7E 00 20 7F F7"/>
     </Pedal>
     
     <!-- Catches the note D#2, then switch to the next bank -->
-    <Pedal Note="D#" Octave="2" BankSelect="+"/>
+    <Pedal Note="51" BankSelect="+"/>
     
     <!-- Catches the note E2, then exits -->
-    <Pedal Note="E" Octave="2" BankSelect="Q"/>
+    <Pedal Note="52" BankSelect="Q"/>
   </Bank>
   
   <!--
@@ -104,62 +90,62 @@
   -->
   <Bank>
     <!-- Catches the note C1, then sends bass note C1 and C7 chord -->
-    <Pedal Note="C" BassNote="C" ChordNotes="G,A#,C,E"/>
+    <Pedal Note="36" BassNote="36" ChordNotes="43,46,48,52"/>
     
     <!-- Catches the note C#1, then sends bass note C#1 and C#7 chord -->
-    <Pedal Note="C#" BassNote="C#" ChordNotes="F,G#,B,C#"/>
+    <Pedal Note="37" BassNote="37" ChordNotes="41,44,47,49"/>
     
     <!-- Catches the note D1, then sends bass note D1 and D7 chord -->
-    <Pedal Note="D" BassNote="D" ChordNotes="F#,A,C,D"/>
+    <Pedal Note="38" BassNote="38" ChordNotes="42,45,48,50"/>
     
     <!-- Catches the note D#1, then sends bass note D#1 and D#7 chord -->
-    <Pedal Note="D#" BassNote="D#" ChordNotes="G,A#,C#,D#"/>
+    <Pedal Note="39" BassNote="39" ChordNotes="43,46,49,51"/>
 
     <!-- Catches the note E1, then sends bass note E1 and E7 chord -->
-    <Pedal Note="E" BassNote="E" ChordNotes="G#,B,D,E"/>
+    <Pedal Note="40" BassNote="40" ChordNotes="44,47,50,52"/>
     
     <!-- Catches the note F1, then sends bass note F1 and F7 chord -->
-    <Pedal Note="F" BassNote="F" ChordNotes="A,C,D#,F"/>
+    <Pedal Note="41" BassNote="41" ChordNotes="45,48,51,53"/>
 
     <!-- Catches the note F#1, then sends bass note F#1 and F#7 chord -->
-    <Pedal Note="F#" BassNote="F#" ChordNotes="A#,C#,E,F#"/>
+    <Pedal Note="42" BassNote="42" ChordNotes="46,49,52,54"/>
     
     <!-- Catches the note G1, then sends bass note G1 and G7 chord -->
-    <Pedal Note="G" BassNote="G" ChordNotes="G,B,D,F"/>
+    <Pedal Note="43" BassNote="43" ChordNotes="43,47,50,53"/>
     
     <!-- Catches the note G#1, then sends bass note G#1 and G# chord -->
-    <Pedal Note="G#" BassNote="G#" ChordNotes="G#,C,D#,F#"/>
+    <Pedal Note="44" BassNote="44" ChordNotes="44,48,51,54"/>
     
     <!-- Catches the note A1, then sends bass note A1 and A7 chord -->
-    <Pedal Note="A" BassNote="A" ChordNotes="A,C#,E,G"/>
+    <Pedal Note="45" BassNote="45" ChordNotes="45,49,52,55"/>
     
     <!-- Catches the note A#1, then sends bass note A#1 and A#7 chord -->
-    <Pedal Note="A#" BassNote="A#" ChordNotes="A#,D,F,G#"/>
+    <Pedal Note="46" BassNote="46" ChordNotes="46,50,53,56"/>
     
     <!-- Catches the note B1, then sends bass note B1 and B7 chord -->
-    <Pedal Note="B" BassNote="B" ChordNotes="B,D#,F#,A"/>
+    <Pedal Note="47" BassNote="47" ChordNotes="47,51,54,57"/>
     
     <!-- Catches the note C2, then the FILL IN AA (ON) SysEx for a Tyros 1 -->
-    <Pedal Note="C" Octave="2">
+    <Pedal Note="48">
       <Message Type="SysEx" String="F0 43 7E 00 10 7F F7"/>
     </Pedal>
     
     <!-- Catches the note C#2, then the FILL IN BB (ON) SysEx for a Tyros 1 -->
-    <Pedal Note="C#" Octave="2">
+    <Pedal Note="49">
       <Message Type="SysEx" String="F0 43 7E 00 11 7F F7"/>
     </Pedal>
     
     <!-- Catches the note D2, then the FILL IN CC (ON) SysEx for a Tyros 1 -->
-    <Pedal Note="D" Octave="2">
+    <Pedal Note="50">
       <Message Type="SysEx" String="F0 43 7E 00 12 7F F7"/>
     </Pedal>
     
     <!-- Catches the note D#2, then the FILL IN DD (ON) SysEx for a Tyros 1 -->
-    <Pedal Note="D#" Octave="2">
+    <Pedal Note="51">
       <Message Type="SysEx" String="F0 43 7E 00 13 7F F7"/>
     </Pedal>
     
     <!-- Catches the note D#2, then switch to the previous bank -->
-    <Pedal Note="E" Octave="2" BankSelect="-"/>
+    <Pedal Note="52" BankSelect="-"/>
   </Bank>
 </Controller>
