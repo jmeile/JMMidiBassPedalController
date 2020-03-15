@@ -16,6 +16,9 @@ from __future__ import print_function
 import traceback
 import time
 from MidiInputHandler import MidiInputHandler
+from MidiUtilities import calculate_base_note_octave, parse_note, \
+                          NOTE_SYMBOL_TO_MIDI, NOTE_VELOCITIES, FIRST_OCTAVE, \
+                          LAST_OCTAVE
 from Logger import Logger
 import logging
 from autologging import logged
@@ -48,44 +51,6 @@ log_format = "%(message)s"
 logger = Logger(console_log_level = console_log_level, log_format = log_format
          ).setup_logger()
 
-#Here we assume -2 as the first octave, so, the first note would be C-2 and the
-#middle C is C3. Other systems assume the first octave to be -1
-FIRST_OCTAVE = -2
-
-#The last octave is calculated in terms of the first one
-LAST_OCTAVE = 10 + FIRST_OCTAVE
-
-#Equivalences of the numeric velocities to a dynamic level
-NOTE_VELOCITIES = {
-  's'   :   0,  #silence
-  'pppp':  10,  #minimum value
-  'ppp' :  23,  #pianississimo, very very soft
-  'pp'  :  36,  #pianissimo,    very soft
-  'p'   :  49,  #piano,         soft
-  'mp'  :  62,  #mezzo-piano,   moderately soft
-  'mf'  :  75,  #mezzo-forte,   moderately loud
-  'f'   :  88,  #forte,         loud
-  'ff'  : 101,  #fortissimo,    very loud
-  'fff' : 114,  #fortississimo, very very loud
-  'ffff': 127   #maximum value
-}
-
-#First MIDI octave starting from C-2
-MIDI_NOTES = {
-  'C' :   0,
-  'C#':   1,
-  'D' :   2,
-  'D#':   3,
-  'E' :   4,
-  'F' :   5,
-  'F#':   6,
-  'G' :   7,
-  'G#':   8,
-  'A' :   9,
-  'A#':  10,
-  'B' :  11
-}
-
 @logged(logger)
 class MidiProcessor(MidiInputHandler):
   """
@@ -116,6 +81,7 @@ class MidiProcessor(MidiInputHandler):
   def parse_xml(self):
     """Parses the xml dict"""
     self._current_bank = self._xml_dict['@InitialBank'] - 1
+    self._previous_pedal = None
     self.__log.info("Current Bank: " + str(self._xml_dict['@InitialBank']))
     self._current_velocity = 0
     self._xml_dict["@BassPedalVelocity"] = self._parse_common_attribute(
@@ -239,14 +205,6 @@ class MidiProcessor(MidiInputHandler):
         message_list.append(hexadecimal_message)
       pedal["@MessageList"] = message_list
 
-  def _calculate_base_note_octave(self, midi_note):
-    """
-    Calculates the base note and octave for a given midi note
-    """
-    octave = int(midi_note / 12) + FIRST_OCTAVE
-    base_note = midi_note - (12 * (octave - FIRST_OCTAVE))
-    return base_note, octave
-
   def _parse_chords(self, pedal):
     """
     Parses the given chord notes an converts them to MIDI notes
@@ -280,16 +238,14 @@ class MidiProcessor(MidiInputHandler):
       for chord_note in chord_note_list:
         previous_note = base_note
         if not numeric_list:
-          base_note = MIDI_NOTES[chord_note]
+          base_note = NOTE_SYMBOL_TO_MIDI[chord_note]
         else:
-          base_note, octave = self._calculate_base_note_octave(int(chord_note))
+          base_note, octave = calculate_base_note_octave(int(chord_note))
         if (note_index != 0) and (base_note < previous_note) and \
            (not numeric_list):
           octave += 1
 
-        note, chord_octave = self._parse_note(chord_note, octave,
-                                              chord_transpose)
-        self.__log.info("transposed octave: " + str(octave))
+        note, chord_octave = parse_note(chord_note, octave, chord_transpose)
 
         self._set_note_messages(note_messages, note, midi_channel,
                                 note_velocity)
@@ -323,39 +279,6 @@ class MidiProcessor(MidiInputHandler):
       header = message_type | midi_channel
       note_messages[message_type].append([header, note, velocity])
 
-  def _parse_note(self, note, octave = None, transpose = 0):
-    """
-    Given a note string converts it to a MIDI NOTE according to the entered
-    parameters.
-    Parameters:
-    * note: note string to convert
-    * octave: if given, the octave of the entered note. This is only necessary
-      if the entered note isn't a number, but a note symbol, ie: "C#"
-    * transpose: number of octaves to transpose the note.
-    Returns
-    * The recalculated note and its octave
-    """
-    if not note.isdigit():
-      #Get the base note
-      base_note = MIDI_NOTES[note]
-    else:
-      note = int(note)
-      #This is different, a MIDI NOTE number was given, so we need to calculate
-      #its octave as follows:
-      octave = int(note / 12) + FIRST_OCTAVE
-      base_note = note - (12 * (octave - FIRST_OCTAVE))
-
-    octave += transpose
-    if octave < FIRST_OCTAVE:
-      octave = FIRST_OCTAVE
-    elif octave > LAST_OCTAVE:
-      octave = LAST_OCTAVE
-    if (base_note >= 8) and (octave == LAST_OCTAVE):
-      octave -= 1
-
-    note = (12 * (octave - FIRST_OCTAVE)) + base_note     
-    return note, octave
-
   def _parse_notes(self, pedal, pedal_list):
     """
     Parses the set notes in the xml_dict. It will transpose them according to
@@ -367,13 +290,13 @@ class MidiProcessor(MidiInputHandler):
     """
     note = pedal.get('@Note')
     octave = pedal.get('@Octave')
-    pedal['@Note'], pedal['@Octave'] = self._parse_note(note, octave)
+    pedal['@Note'], pedal['@Octave'] = parse_note(note, octave)
     pedal_list[pedal['@Note']] = pedal
       
     note = pedal.get("@BassNote")
     if note != None:
-      note, octave = self._parse_note(note, pedal['@Octave'],
-                                      pedal["@BassPedalTranspose"])
+      note, octave = parse_note(note, pedal['@Octave'],
+                                pedal["@BassPedalTranspose"])
       pedal["@BassOctave"] = octave
       note_messages = {NOTE_ON: [], NOTE_OFF: []}
       pedal_channel = self._xml_dict["@OutBassPedalChannel"]
@@ -421,50 +344,71 @@ class MidiProcessor(MidiInputHandler):
     """
     Overrides the _send_midi_message method from MidiInputHandler.
     """
-    #Do not uncomment this on a productive environment. SysEx messages
-    #can be long, so logging them can slower things
-    #self.__log.debug("MIDI message: %r" % message)
-    
-    #This may really slower things because it will do some operations in
-    #the message to make it human readable. Use it only for debugging
-    #self.__log.debug("MIDI message: %s" % \
-    #  '[{}]'.format(' '.join(hex(x).lstrip("0x").upper().zfill(2)
-    #  for x in message)))
     status = message[0] & 0xF0
     channel = message[0] & 0x0F
-    send_message = False
     messages = []
     if (self._xml_dict['@InChannel'] == channel) and \
-       status in [NOTE_ON, NOTE_OFF, CONTROL_CHANGE]:       
+       status in [NOTE_ON, NOTE_OFF, CONTROL_CHANGE]:
       current_bank = self._xml_dict['Bank'][self._current_bank]
       if status in [NOTE_ON, NOTE_OFF]:
         note = message[1]
-        pedal = current_bank["@PedalList"].get(note)
-        if pedal != None:
+        current_pedal = current_bank["@PedalList"].get(note)
+        if current_pedal != None:
           self._current_velocity = message[2]
           if (self._current_velocity == 0) and \
              (self._xml_dict["@MinVelocityNoteOff"]):
+             #NOTE_ON with a zero velocity will be interpreted as NOTE_OFF
              status = NOTE_OFF
-          bank_select = pedal.get("@BankSelect")
-          if (bank_select != None) and (status == NOTE_OFF):
-            if bank_select != "Q":
-              self._current_bank = bank_select
-              self.__log.info("Bank changed to: " + str(bank_select + 1))
+
+          #First the NOTE ON AND OFF messages will be done
+          note_messages = self._set_note_velocity(current_pedal, status)
+          messages += note_messages
+          if (self._xml_dict["@PedalMonophony"]) and \
+             (self._previous_pedal != None):
+            #Only one pedal at the time is allowed and a pedal was already
+            #pushed or released
+            if (status == NOTE_ON):
+              #This means that a previous pedal was pushed, so the NOTE OFF
+              #messages for that pedal will be sent first
+              note_messages = self._set_note_velocity(self._previous_pedal,
+                                                      NOTE_OFF)
+              messages = note_messages + messages
+              self._previous_pedal = current_pedal
+            elif current_pedal != self._previous_pedal:
+              #This means that the released pedal is not the same as the one
+              #that was pushed before, so, nothing will be done
+              messages = []
             else:
-              self._quit = True
-          messages = pedal.get("@MessageList")
-          if messages == None:
-            messages = []
-          note_messages = self._set_note_velocity(pedal, status)
-          messages = messages + note_messages
-          if message != None:
-            send_message = True
+              #We reset the previous pedal to None
+              self._previous_pedal = None
+          elif (self._previous_pedal == None) and (status == NOTE_ON):
+            self._previous_pedal = current_pedal
+
+          if status == NOTE_OFF:
+            #The BANK SELECT, MIDI, and SysEx messages will be processed only on
+            #NOTE OFF
+            midi_and_sysex = current_pedal.get("@MessageList")
+            if midi_and_sysex != None:
+              #First the MIDI and SysEx messages will be sent
+              messages += midi_and_sysex
+            
+            bank_select = current_pedal.get("@BankSelect")
+            if bank_select != None:
+              #Now the BANK SELECT message will be processed
+              if bank_select != "Q":
+                self._current_bank = bank_select
+                self.__log.info("Bank changed to: " + str(bank_select + 1))
+              else:
+                self._quit = True
         elif self._xml_dict["@MidiEcho"]:
+          #This is an unregistered note, so fordward it whatever it is
           messages = [message]
-          send_message = True
       else:
+        #Here it is a CONTROL CHANGE message.
         controller = message[1]
         if controller == self._xml_dict["@BankSelectController"]:
+          #If it is the BankSelectController, then the respective BANK SELECT
+          #message will be excecuted
           select_value = message[2]
           if select_value < 124:
             if select_value >= len(self._xml_dict["Bank"]):
@@ -488,14 +432,20 @@ class MidiProcessor(MidiInputHandler):
                 self._current_bank = 0
               self.__log.info("Bank changed to: " + str(self._current_bank + 1))
         elif self._xml_dict["@MidiEcho"]:
+          #This is another CONTROL CHANGE message, so it will be fordwarded
           messages = [message]
-          send_message = True
-
     elif self._xml_dict["@MidiEcho"]:
+      #Fordward the message whatever it is
       messages = [message]
-      send_message = True
-      
-    if send_message:
+
+    if self._quit and (self._previous_pedal != None):
+      #Before quitting, the NOTE OFF for the previous pedal need to be
+      #sent
+      note_messages = self._set_note_velocity(self._previous_pedal,
+                                              NOTE_OFF)
+      messages += note_messages
+
+    if messages != []:
       for message in messages:
         self._midi_out.send_message(message)
 

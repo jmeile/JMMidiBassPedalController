@@ -105,10 +105,10 @@
     InitialBank="2"
     This is a number between 1 and the number of pedals that you setup here. The
     maximum posible value would be 124. If not given, then '1' will be assumed.
-  * And finally decide how you are going to treat NOTE ON messages with a 
-    velocity of zero, for this purpose set MinVelocityNoteOff to true if they
-    are going to be treated as NOTE OFF or set it to false otherwise. If omitted
-    it defaults to true.
+  * Decide how you are going to treat NOTE ON messages with a  velocity of zero,
+    for this purpose set MinVelocityNoteOff to true if they are going to be
+    treated as NOTE OFF or set it to false otherwise. If omitted it defaults to
+    true.
   * Octave: This parameter only applies if you use a note symbol and it is the
     octave of that note, wich can be a value between -2 and 8, so, the middle C
     would be: Note="C" Octave="3" or C3 for short. The only thing you need to
@@ -116,6 +116,10 @@
     an error. Please also be aware that this number will be ignored if you use
     note numbers. The value of this parameter can be overriden by the child
     nodes: Bank and Pedal.
+    * PedalMonophony: Whether or not to enable monophony for pedals. If true,
+      only one set of notes will be played at one time; pushing one pedal
+      without having released the previous one, will cause to send MIDI NOTE OFF
+      messages for the first pedal. It defaults to "false".
 -->
 
 <Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -130,7 +134,8 @@
             BassPedalTranspose="-2" ChordTranspose="2"
             BankSelectController="32" InitialBank="2"
             MinVelocityNoteOff="true"
-            Octave="2">
+            Octave="2"
+            PedalMonophony="false">
   <!--
     Next you can define the different Banks for each bass pedal. You need to
     have at least one and maximum 124. Inside each bank, you can overwrite the 

@@ -18,7 +18,9 @@
             OutBassPedalChannel="3" OutChordChannel="2"
             MidiEcho="true"
             BassPedalTranspose="0" ChordTranspose="1"
-            BankSelectController="32" InitialBank="1">
+            BankSelectController="32" InitialBank="1"
+            Octave="1"
+            PedalMonophony="true">
   <!--
     On this bank I will define the pedals to send the major chords from C until
     B. The last notes will be used for FILL INs, ENDING, and switch to the next

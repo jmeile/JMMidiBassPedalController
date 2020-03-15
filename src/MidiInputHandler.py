@@ -10,11 +10,9 @@
 """Wraps MidiIn to add convenience methods for catching common MIDI events."""
 
 from __future__ import print_function
-import traceback
 from Logger import Logger
 import logging
 from autologging import logged
-import time
 from rtmidi.midiconstants import (CHANNEL_PRESSURE, CONTROL_CHANGE,
                   MIDI_TIME_CODE, NOTE_OFF, NOTE_ON,
                   PITCH_BEND, POLY_PRESSURE, PROGRAM_CHANGE,
@@ -93,13 +91,17 @@ class MidiInputHandler:
   """
   _callback_preffix = '_on_'
   
-  def __init__(self, midi_in, midi_out, ignore_sysex = True,
-         ignore_timing = True, ignore_active_sense = True):
+  def __init__(self, midi_in, midi_out, console_echo = False,
+               ignore_sysex = True, ignore_timing = True,
+               ignore_active_sense = True):
     """
     Initializes the class attributes
     Parameters:
     * midi_in: MIDI IN interface to use
-    * midi_out: MIDI OUT interface to use
+    * midi_out: MIDI OUT interface to use. If None, then the messages will be
+      printed into the console
+    * console_echo: if used together with midi_out, then the message will be
+      first printed into the console, then it will be sent
     * ignore_* parameters: see the "_ignore_messages" method
     """
     self.__log.debug(("*" * 80) + "\nIf you are seeing this message on the"
@@ -111,6 +113,7 @@ class MidiInputHandler:
       "purposes\n" + ("*" * 80) + "\n")
     self._midi_in = midi_in
     self._midi_out = midi_out
+    self._console_echo = console_echo
     self._sysex_buffer = []
     self._sysex_chunk = 0
 
@@ -176,12 +179,17 @@ class MidiInputHandler:
     
     #This may really slower things because it will do some operations in
     #the message to make it human readable. Use it only for debugging
-    self.__log.debug("MIDI message: %s" % \
+    message_string = "MIDI message: %s" % \
       '[{}]'.format(' '.join(hex(x).lstrip("0x").upper().zfill(2)
-      for x in message)))
+      for x in message))
+    self.__log.debug(message_string)
 
-    self._midi_out.send_message(message)
-  
+    if (self._midi_out == None) or (self._console_echo):
+      self.__log.info(message_string)
+    
+    if self._midi_out != None:
+      self._midi_out.send_message(message)
+
   def _receive_sysex(self, message):
     """
     Appends the entered message to the SysEx buffer.
@@ -247,7 +255,12 @@ class MidiInputHandler:
       #This means that the end of the SysEx message (0xF7) was detected,
       #so, no further bytes will be received. Here the SysEx buffer will
       #be sent and afterwards cleared
-      self._midi_out.send_message(self._sysex_buffer)
+      if (self._midi_out == None) or (self._console_echo):
+        self.__log.info(repr(self._sysex_buffer))
+        
+      if self._midi_out != None:
+        self._midi_out.send_message(self._sysex_buffer)
+
       #Clears SysEx buffer
       self._sysex_buffer = []
       #Resets SysEx count to zero
@@ -271,86 +284,3 @@ class MidiInputHandler:
     """
     self._midi_in.ignore_types(sysex = ignore_sysex,
       timing = ignore_timing, active_sense = ignore_active_sense)
-  
-if __name__ == '__main__':
-  #Note: this section serves for demostrative purposes. In a real use case,
-  #      you should define your own class
-  
-  from rtmidi.midiutil import open_midioutput, open_midiinput
-  
-  @logged(logger)
-  class MyMidiInputHandler(MidiInputHandler):
-    """
-    Subclass from MidiInputHandler. Here you should only refefine the methods
-    you want to modify, ie: _on_note_on. Never overwrite __init__ or
-    __call__. If you want to overwrite __init__, then make sure that you
-    also call the superclass method
-    """
-    def _on_note_on(self, message):
-      """
-      Callback method for NOTE ON messages
-      """     
-      self.__log.debug(("*" * 80) + "\nCallback got called - This is "
-        "just an example and should be replaced by yours.\nAt best "
-        "import the MidiInputHandler in your python module\n" + \
-        ("*" * 80) + "\n")
-        
-      #Do not uncomment this on a productive environment. SysEx messages
-      #can be long, so logging them can slower things
-      #self.__log.debug("MIDI message: %r" % message)
-      
-      #This may really slower things because it will do some operations in
-      #the message to make it human readable. Use it only for debugging
-      self.__log.debug("MIDI message: %s" % \
-        '[{}]'.format(' '.join(hex(x).lstrip("0x").upper().zfill(2)
-        for x in message)))
-        
-      self.__log.debug("Decimal: %s" % repr(message))
-
-      self._midi_out.send_message(message)
-  
-  print("")
-  midi_in = None
-  midi_out = None
-
-  try:
-    #Open a MIDI IN and OUT ports. Let's say you have two ports: Port01 and
-    #Port02. For testing, first start this script and set the following:
-    #* Input port: Port01
-    #* Output port: Port02
-    #Then start an application that sends and receives MIDI messages, ie: Bome
-    #SendSX, there set the ports as follows:
-    #* Input port: Port02
-    #* Output port: Port01
-    #Finally start sending MIDI messages from your MIDI application. You should
-    #see the same messages in the MIDI IN and OUT. In the console there should
-    #be some debug messages
-    midi_in, out_port = open_midiinput(interactive = True)
-    midi_out, out_port = open_midioutput(interactive = True)
-      
-    #Instead of using the Superclass MidiInputHandler, we use it's subclass:
-    #MyMidiInputHandler
-    midi_in_wrapper = MyMidiInputHandler(midi_in, midi_out, 
-      ignore_sysex = False, ignore_timing = False,
-      ignore_active_sense = False)
-    
-    print("Entering main loop. Press Control-C to exit.")
-
-    # Just wait for keyboard interrupt,
-    # everything else is handled via the input callback.
-    while True:
-      time.sleep(1)
-  except KeyboardInterrupt:
-    print('')
-  except:
-    error = traceback.format_exc()
-    print(error)
-  finally:
-    print("Exit.")
-    if midi_in is not None:
-      midi_in.close_port()
-    
-    if midi_out is not None:
-      midi_out.close_port()
-    del midi_in
-    del midi_out
