@@ -27,7 +27,7 @@
             xsi:schemaLocation="https://www.technosoft.solutions/xsd 
             MidiBassPedalController.xsd"
             xmlns="https://www.technosoft.solutions/xsd"
-            InPort="USB Uno MIDI Interface" OutPort="output_port"
+            InPort="USB Uno MIDI Interface" OutPort="USB Uno MIDI Interface"
             InChannel="1"
             OutBassPedalChannel="3" OutChordChannel="2"
             MidiEcho="true"
@@ -42,7 +42,7 @@
   -->
   <Bank>
     <!-- Catches the note C1, then sends bass note C1 and C major chord -->
-    <Pedal Note="C" BassNote="C" ChordNotes="G,B,C"/>
+    <Pedal Note="C" BassNote="C" ChordNotes="G,C,E"/>
     
     <!-- Catches the note C#1, then sends bass note C#1 and C# major chord -->
     <Pedal Note="C#" BassNote="C#" ChordNotes="F,G#,C#"/>
@@ -156,12 +156,10 @@
       <Message Type="SysEx" String="F0 43 7E 00 12 7F F7"/>
     </Pedal>
     
-    <!-- Catches the note D#2, then the FILL IN DD (ON) SysEx for a Tyros 1 -->
-    <Pedal Note="D#" Octave="2">
-      <Message Type="SysEx" String="F0 43 7E 00 13 7F F7"/>
-    </Pedal>
+    <!-- Catches the note D#2, then switch to the next bank -->
+    <Pedal Note="D#" Octave="2" BankSelect="+"/>
     
-    <!-- Catches the note D#2, then switch to the previous bank -->
-    <Pedal Note="E" Octave="2" BankSelect="-"/>
+    <!-- Catches the note E2, then exits -->
+    <Pedal Note="E" Octave="2" BankSelect="Q"/>
   </Bank>
 </Controller>
