@@ -14,6 +14,11 @@ This software translates **NOTE ON/OFF** messages comming from a **foot controll
 - [Setting up the software](#setting-up-the-software)
 - [Running the software](#running-the-software)
 - [Troubleshooting](#troubleshooting)
+  - [Using the ManualTester script](#using-the-manualtester-script)
+  - [Using the ManualTester script](#use-a-software-for-intercepting-midi-messages)
+  - [Use a software for intercepting MIDI messages](#use-a-software-for-intercepting-midi-messages)
+  - [Using a sequencer software](#using-a-sequencer-software)
+  - [Activating the verbose mode](#activating-the-verbose-mode)
 - [License](#license)
 
 ## Features
@@ -284,7 +289,7 @@ For seeing the available MIDI ports, you can run:
 
   `python FootController.py --list`
 
-# Using the ManualTester script
+### Using the ManualTester script
 
 - First create two virtual ports.
 - Then setup the ports as follows:
@@ -301,7 +306,7 @@ For seeing the available MIDI ports, you can run:
   - Default velocity for NOTE ON messages: here you can use whatever you want
   - Start sending NOTE ON/OFF, BANK SELECT, CONTROL CHANGE, raw MIDI, or SysEx messages.
 
-# Use a software for intercepting MIDI messages
+### Use a software for intercepting MIDI messages
 
 You can debug your system by watching the **MIDI** messages comming out from your laptop or the **Raspberry Pi**. For doing this, you can use the following software:
 
@@ -334,11 +339,11 @@ Other option would be to connect your foot controller to Bome Send SX or MIOS St
 - Then on Bome Send SX or MIOS Studio 2 setup MIDI IN to: "USB Uno MIDI Interface"
 - Start pressing the pedals or switches, then you should see the output either in Bome Send SX or MIOS Studio 2.
 
-# Using a sequencer software
+### Using a sequencer software
 
 Alternativelly you could also use a **sequencer software**, ie: under Windows: [Aria Maestosa](https://ariamaestosa.github.io/ariamaestosa/docs/index.html), [Anvil Studio](https://www.anvilstudio.com), [KaraKEYoke Karaoke](http://karakeyoke.com/software/karakeyoke.html); under Linux: [Aria Maestosa](https://ariamaestosa.github.io/ariamaestosa/docs/index.html), or any other sequencer you know. The idea would be to route the **USB Uno MIDI Interface** to that software and start looking at the **MIDI** data comming. You have there several views: *staff view* (you will see the notes) or *message list* (you will see the MIDI messages on a human-readable format).
 
-# Activating the verbose mode
+### Activating the verbose mode
 
 **TODO**: Enable *"--verbose"* mode
 
