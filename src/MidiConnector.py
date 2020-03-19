@@ -76,7 +76,11 @@ class MidiConnector:
     Remarks:
     * It will either list the available MIDI ports, run in interative or
       silent mode, according to the passed command line options
+    Returns:
+    * Whether or not to restart the software. If restarting, the whole MIDI
+      configuration will be reloaded
     """
+    restart = False
     self.__log.info("Starting MIDI")
     self._get_all_ports()
     exit = False
@@ -111,10 +115,11 @@ class MidiConnector:
           #ignore_active_sense = False,
         )
         midi_processor.parse_xml()
-        midi_processor.read_midi()
+        restart = midi_processor.read_midi()
         self.__log.info("Exiting")
         self._close_ports()
     self._free_midi()
+    return restart
 
   def _parse_xml_config(self):
     """

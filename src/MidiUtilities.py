@@ -8,7 +8,10 @@
 # https://github.com/jmeile/JMMidiBassPedalController/blob/master/LICENSE.md
 #
 """Module with some utility functions and constants."""
+
 from bisect import bisect
+import os
+import platform
 
 #Equivalences of the numeric velocities to a dynamic level. You may change them,
 #but keep in mind that 's' and 'ffff' must remain the same.
@@ -73,8 +76,8 @@ Where:
 The messages: F4, F5, F9, and FD are undefined (reserved for future use)
 """
 MIDI_REGEX = "(F(6|8|[A-C]|[E-F]))|((((F2|([8-9A-CE][0-9A-F])) " + \
-             "(([0-6][0-9A-F])|([7][0-9A-E])))|((F(1|3))|((C|D)[0-9A-F]))) " + \
-             "(([0-6][0-9A-F])|([7][0-9A-E])))"
+             "([0-7][0-9A-F]))|((F(1|3))|((C|D)[0-9A-F]))) " + \
+             "([0-7][0-9A-F]))"
 
 def is_valid_midi_message(midi_message):
   """
@@ -188,3 +191,37 @@ def parse_note(note, octave = None, transpose = 0):
 
   note = (12 * (octave - FIRST_OCTAVE)) + base_note     
   return note, octave
+
+def get_shutdown_command():
+  """
+  Gets the shutdown command according to the plattform
+  """
+  shutdown_command = ''
+  operating_system = platform.system()
+  if operating_system == "Windows":
+    shutdown_command = 'shutdown /s /f /t 0 /d p:0:0 /c'
+  elif operating_system == "Linux":
+    shutdown_command = 'shutdown now'
+  elif operating_system == "Darwin":
+    shutdown_command = 'shutdown now'
+  else:
+    raise Exception("Unsupported operating system")
+  shutdown_command += ' "MidiBassPedal restart"'
+  return shutdown_command
+  
+def get_reboot_command():
+  """
+  Gets the reboot command according to the plattform
+  """
+  reboot_command = ''
+  operating_system = platform.system()
+  if operating_system == "Windows":
+    reboot_command = 'shutdown /r /f /t 0 /d p:0:0 /c'
+  elif operating_system == "Linux":
+    reboot_command = 'shutdown -r now'
+  elif operating_system == "Darwin":
+    reboot_command = 'shutdown -r now'
+  else:
+    raise Exception("Unsupported operating system")
+
+  reboot_command += ' "MidiBassPedal restart"'

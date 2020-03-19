@@ -73,10 +73,11 @@ class MidiProcessor(MidiInputHandler):
     * default_velocity: default velocity for NOTE_ON and NOTE_OFF messages
     """
     super().__init__(midi_in, midi_out, ignore_sysex, ignore_timing,
-                   ignore_active_sense = True)
+                     ignore_active_sense = True)
     self._xml_dict = xml_dict
     self._default_velocity = default_velocity
     self._quit = False
+    self._status = None
 
   def parse_xml(self):
     """Parses the xml dict"""
@@ -170,11 +171,11 @@ class MidiProcessor(MidiInputHandler):
           #Here it is a configuration error. The user gave a higher bank, which
           #doesn't exist
           fix_bank = False
-        elif bank_select == '+':
+        elif bank_select == "Next":
           bank_select = bank_index + 1
-        elif bank_select == '-':
+        elif bank_select == "Previous":
           bank_select = bank_index - 1
-        elif bank_select == 'L':
+        elif bank_select == "Last":
           bank_select = num_banks - 1
           
         if isinstance(bank_select, int):
@@ -395,11 +396,12 @@ class MidiProcessor(MidiInputHandler):
             bank_select = current_pedal.get("@BankSelect")
             if bank_select != None:
               #Now the BANK SELECT message will be processed
-              if bank_select != "Q":
+              if bank_select not in ["Quit", "Restart", "Reboot", "Shutdown"]:
                 self._current_bank = bank_select
                 self.__log.info("Bank changed to: " + str(bank_select + 1))
               else:
                 self._quit = True
+                self._status = bank_select
         elif self._xml_dict["@MidiEcho"]:
           #This is an unregistered note, so fordward it whatever it is
           messages = [message]
@@ -505,8 +507,10 @@ class MidiProcessor(MidiInputHandler):
     try:
       while True and not self._quit:
         time.sleep(1)
+      return self._status
     except KeyboardInterrupt:
       self.__log.info("Keyboard interrupt detected")
     except:
       error = traceback.format_exc()
       self.__log.info(error)
+    return False

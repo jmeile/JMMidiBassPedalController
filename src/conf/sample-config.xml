@@ -228,14 +228,14 @@
       assume 0, since is the one defined on the Bank node.
       
       Finally, the next bank will be selected. Please note that if here you
-      instead use the '-' (minus) sign, and because this is the first bank, then
-      the last bank will be selected. Please note that if you are in a bank in
-      the middle and you want to select the last bank, then you can also use the
-      'L' sign for this; this is usefull if you are continuing changing your
-      configuration, but the last bank always remains the same. The letter 'Q'
-      will quit the controller software.
+      instead use 'Previous', and because this is the first bank, then the last
+      bank will be selected. Please note that if you are in a bank in the middle
+      and you want to select the last bank, then you can also use 'Last' for
+      this; this is usefull if you are continuing changing your configuration,
+      but the last bank always remains the same. The value 'Quit' will quit the
+      controller software.
     -->
-    <Pedal Note="60" ChordNotes="G,C,E" BankSelect="+"/>
+    <Pedal Note="60" ChordNotes="G,C,E" BankSelect="Next"/>
     
     <!--
       If you wish, you can also setup pedals that only send general MIDI or

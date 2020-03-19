@@ -17,12 +17,29 @@ There you will see the diferent command-line options supported by the script.
 """
 
 from __future__ import print_function
+import os
 from MainArgumentParser import MainArgumentParser
 from MidiConnector import MidiConnector
+from MidiUtilities import get_reboot_command, get_shutdown_command
 
 if __name__ == "__main__":
   parser = MainArgumentParser()
   parser.add_arguments()
   args = parser.parse_arguments()
   midi = MidiConnector(args)
-  midi.start()
+  status = None
+  while status == None:
+    status = midi.start()
+    command = None
+    if status == "Restart":
+      #Here nothing need to be done. The loop will restart MIDI
+      pass
+    elif status == "Reboot":
+      command = get_reboot_command()
+    elif status == "Shutdown":
+      command = get_shutdown_command()
+    else:
+      break
+      
+    if command != None:
+      os.system(command)

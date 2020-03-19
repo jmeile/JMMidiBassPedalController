@@ -79,10 +79,10 @@
     </Pedal>
     
     <!-- Catches the note D#2, then switch to the next bank -->
-    <Pedal Note="51" BankSelect="+"/>
+    <Pedal Note="51" BankSelect="Next"/>
     
     <!-- Catches the note E2, then exits -->
-    <Pedal Note="52" BankSelect="Q"/>
+    <Pedal Note="52" BankSelect="Quit"/>
   </Bank>
   
   <!--
@@ -143,9 +143,9 @@
     </Pedal>
     
     <!-- Catches the note D#2, then switch to the next bank -->
-    <Pedal Note="51" BankSelect="+"/>
+    <Pedal Note="51" BankSelect="Next"/>
     
     <!-- Catches the note E2, then exits -->
-    <Pedal Note="52" BankSelect="Q"/>
+    <Pedal Note="52" BankSelect="Quit"/>
   </Bank>
 </Controller>

@@ -519,9 +519,12 @@
             <xs:documentation xml:lang="en">
               Bank number that the controller will select after this pedal has
               been pressed. You can either enter a number between 1 and 124 or
-              the sign '+' to select then next bank, '-' to select the previous
-              one, 'L' to select the last bank, or 'Q' to quit the controller
-              software
+              'Next' (select next bank), 'Previous' (select previous bank),
+              'Last' (select the last bank), 'Quit' (quit the controller
+              software), 'Restart' (restart the controller; here the whole xml
+              config file will be reloaded), 'Reboot' (reboots the computer or
+              microcontroller running the software), or 'Shutdown' (shutdowns
+              the system).
               
               Note: there is no symbol for selecting the first bank; for doing
               this just send a '1'.
@@ -593,12 +596,15 @@
     <xs:restriction base="xs:string">
       <xs:annotation>
         <xs:documentation>
-          This type is a value between 1 and 124 or the signs '+' (select next
-          bank), '-' (select previous bank), 'L' (select the last bank), or 'Q'
-          (quit the controller software).
+          This type is a value between 1 and 124 or 'Next' (select next bank),
+          'Previous' (select previous bank), 'Last' (select the last bank),
+          'Quit' (quit the controller software), 'Restart' (restart the
+          controller; here the whole xml config file will be reloaded), 'Reboot'
+          (reboots the computer or microcontroller running the software), or
+          'Shutdown' (shutdowns the system).
         </xs:documentation>
       </xs:annotation>
-      <xs:pattern value="\+|\-|L|Q|[1-9]|[1-9][0-9]|1[0-2][0-5]"/>
+      <xs:pattern value="Next|Previous|Last|Quit|Restart|Reboot|Shutdown|[1-9]|[1-9][0-9]|1[0-2][0-5]"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -669,7 +675,7 @@
                   future use)
                 </xs:documentation>
               </xs:annotation>
-              <xs:pattern value="(F(6|8|[A-C]|[E-F]))|((((F2|([8-9A-CE][0-9A-F])) (([0-6][0-9A-F])|([7][0-9A-E])))|((F(1|3))|((C|D)[0-9A-F]))) (([0-6][0-9A-F])|([7][0-9A-E])))"/>
+              <xs:pattern value="(F(6|8|[A-C]|[E-F]))|((((F2|([8-9A-CE][0-9A-F])) ([0-7][0-9A-F]))|((F(1|3))|((C|D)[0-9A-F]))) ([0-7][0-9A-F]))"/>
             </xs:restriction>
           </xs:simpleType>
         </xs:attribute>
