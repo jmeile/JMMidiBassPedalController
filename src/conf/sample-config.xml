@@ -126,7 +126,7 @@
             xsi:schemaLocation="https://www.technosoft.solutions/xsd 
             MidiBassPedalController.xsd"
             xmlns="https://www.technosoft.solutions/xsd"
-            InPort="1" OutPort="1"
+            InPort="InPort" OutPort="OutPort"
             InChannel="1"
             OutBassPedalChannel="3" OutChordChannel="4"
             MidiEcho="true"
@@ -136,9 +136,32 @@
             MinVelocityNoteOff="true"
             Octave="2"
             PedalMonophony="false">
+
+  <!--
+    The following next two nodes: Start and Stop are optional and they are used
+    for sending MIDI or SysEx messages while the controller is starting or
+    stopping respectively. You can send one or more messages at once and they
+    will be excecuted sequentially in the order you define.
+  -->
+
+  <Start>
+    <!-- Turns on the INTRO./ENDING switch -->
+    <Message Type="SysEx" String="F0 43 70 70 40 4B 7F F7"/>
+    
+    <!-- Start the rythm -->
+    <Message Type="Midi" String="FA"/>
+  </Start>
+
+  <Stop>
+    <!--
+      Sends a rhythm stop
+    -->
+    <Message Type="Midi" String="FC"/>
+  </Stop>
+
   <!--
     Next you can define the different Banks for each bass pedal. You need to
-    have at least one and maximum 124. Inside each bank, you can overwrite the 
+    have at least one and maximum 121. Inside each bank, you can overwrite the 
     BassPedalVelocity, ChordVelocity, BassPedalTranspose, and ChordTranspose if
     you want.
   -->
@@ -242,17 +265,17 @@
       system exclusive messages. You only need to setup the note to which listen
       to, then define the messages inside the pedal. You can set as many
       messages as you want, either: MIDI, SysEx, or both; they will be
-      sequentially excecuted
+      sequentially excecuted. Please note that you can define when to trigger
+      the messages by using the attribute: "Trigger", which can be: "NoteOn" or
+      "NoteOff"; it defaults to "NoteOn".
     -->
     <Pedal Note="61">
-      <!-- Sends a rhythm start -->
-      <Message Type="Midi" String="FA"/>
-
       <!--
         On a Yamaha Electone HS-8 organ, this command will turn on the upper
-        combination voice.
+        combination voice, when pressing this note. Please note that since
+        "Trigger" defaults to "NoteOn", you can omit it if wanted.
       -->
-      <Message Type="SysEx" String="F0 43 70 72 41 30 01 F7"/>
+      <Message Type="SysEx" Trigger="NoteOn" String="F0 43 70 72 41 30 01 F7"/>
 
       <!-- Sends a program change on channel 1, program = 1A -->
       <Message Type="Midi" String="C0 1A"/>
@@ -262,9 +285,9 @@
       
       <!--
         Again a Yamaha Electone message, which will set the lower orchestral
-        voice to 1
+        voice to 1 when triggering a NOTE OFF message.
       -->
-      <Message Type="SysEx" String="F0 43 70 72 41 03 03 F7"/>
+      <Message Type="SysEx" Trigger="NoteOff" String="F0 43 70 72 41 03 03 F7"/>
     </Pedal>
   </Bank>
   

@@ -12,6 +12,7 @@
 from bisect import bisect
 import os
 import platform
+from rtmidi.midiconstants import NOTE_ON, NOTE_OFF
 
 #Equivalences of the numeric velocities to a dynamic level. You may change them,
 #but keep in mind that 's' and 'ffff' must remain the same.
@@ -27,6 +28,20 @@ NOTE_VELOCITIES = {
   'ff'  : 101,  #fortissimo,    very loud
   'fff' : 114,  #fortississimo, very very loud
   'ffff': 127   #maximum value
+}
+
+#Special BankSelect commands
+BANK_SELECT_FUNCTIONS = {
+  124: 'Quit',
+  125: 'Restart',
+  126: 'Reboot',
+  127: 'Shutdown'
+}
+
+#String equivalences to the note trigger actions
+NOTE_TRIGGERS = {
+  NOTE_ON: 'NoteOn',
+  NOTE_OFF: 'NoteOff'
 }
 
 """

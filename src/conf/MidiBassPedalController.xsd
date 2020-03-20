@@ -47,10 +47,12 @@
       <xs:complexContent>
         <xs:extension base="CommonAttributes">
           <xs:sequence>
-            <xs:element name="Bank" type="BankType" maxOccurs="124">
+            <xs:element name="Start" type="StartStopNodeType" minOccurs="0"/>
+            <xs:element name="Stop" type="StartStopNodeType" minOccurs="0"/>
+            <xs:element name="Bank" type="BankType" maxOccurs="121">
               <xs:annotation>
                 <xs:documentation xml:lang="en">
-                  You can define up to 124 Banks. Here you will define the
+                  You can define up to 121 Banks. Here you will define the
                   different combinations for your Bass pedal and chord notes.
                   See the Bank complexType definition to see what's inside.
                 </xs:documentation>
@@ -94,19 +96,26 @@
                     MIDI channel that the controller is using for processing
                     messages and they will change Banks for the controller. Here
                     the controller set on: BankSelectController will be used, so
-                    this will give you the posibility of setting up maximum 124
+                    this will give you the posibility of setting up maximum 121
                     banks, so, if you send CC + 13 (0DH), then the bank 12 will
                     be selected (please note that the index is zero based, so
                     the first bank would be 0). There will be three special
                     operations:
-                    > Sending a CC with a value of 124 (7CH) will go to the
+                    > Sending a CC with a value of 121 (79H) will go to the
                       previous bank.
-                    > Sending a CC with a value of 125 (7DH) will go to the
+                    > Sending a CC with a value of 122 (7AH) will go to the
                       next bank.
-                    > Sending a CC with a value of 126 (7EH) will go to the
+                    > Sending a CC with a value of 123 (7BH) will go to the
                       last bank.
-                    > Sending a CC with a value of 127 (7FH) will cause the
+                    > Sending a CC with a value of 124 (7CH) will cause the
                       controller software to quit.
+                    > Sending a CC with a value of 125 (7DH) will cause the
+                      controller software to restart and reread the xml
+                      configuration file.
+                    > Sending a CC with a value of 126 (7EH) will cause the
+                      computer running the controller software to reboot.
+                    > Sending a CC with a value of 127 (7FH) will cause the
+                      computer running the controller software to shutdown.
                   - The ones forwarded to your connected MIDI devices: they 
                     must use a different channel than the used by the
                     controller and they may be a simple message: controller 32
@@ -395,17 +404,17 @@
   <xs:simpleType name="BankNumberType">
     <xs:annotation>
       <xs:documentation xml:lang="en">
-        Type for Bank numbers. Here you must use values between 1 and 124.
+        Type for Bank numbers. Here you must use values between 1 and 121.
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:integer">
       <xs:annotation>
         <xs:appinfo>
-          A value between 1 and 124 must be entered.
+          A value between 1 and 121 must be entered.
         </xs:appinfo>
       </xs:annotation>
       <xs:minInclusive value="1"/>
-      <xs:maxInclusive value="124"/>
+      <xs:maxInclusive value="121"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -433,6 +442,17 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="StartStopNodeType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Type for start and stop nodes.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:group ref="MessageGroup"/>
+    </xs:sequence>
+  </xs:complexType>
+
   <xs:complexType name="PedalType">
     <xs:annotation>
       <xs:documentation xml:lang="en">
@@ -442,30 +462,7 @@
     <xs:complexContent>
       <xs:extension base="CommonAttributes">
         <xs:sequence>
-          <xs:element name="Message" type="MessageType" minOccurs="0"
-                      maxOccurs="unbounded">
-            <xs:alternative type="MidiMessageType"  test="@Type='Midi'">
-              <xs:annotation>
-                <xs:documentation xml:lang="en">
-                  Here you can send general MIDI messages, ie: a program change,
-                  a control change, rhythm start/stop, etc.. Please note that
-                  MIDI messages can only content pairs of hexadecimal numbers
-                  separated by one space.
-                </xs:documentation>
-              </xs:annotation>
-            </xs:alternative>
-            <xs:alternative type="SysExMessageType" test="@Type='SysEx'">
-              <xs:annotation>
-                <xs:documentation xml:lang="en">
-                  Here you can send System Exclusive messages (or SysEx), ie: a
-                  select a voice panel on your keyboard, change the
-                  registration, etc.. Please note that SysEx messages must start
-                  with F0 and end with F7 and they can contain only pairs of
-                  hexadecimal numbers separated by one space.
-                </xs:documentation>
-              </xs:annotation>
-            </xs:alternative>
-          </xs:element>
+          <xs:group ref="MessageGroup"/>
         </xs:sequence>
         <xs:attribute name="Note" type="NoteType" use="required">
           <xs:annotation>
@@ -518,7 +515,7 @@
           <xs:annotation>
             <xs:documentation xml:lang="en">
               Bank number that the controller will select after this pedal has
-              been pressed. You can either enter a number between 1 and 124 or
+              been pressed. You can either enter a number between 1 and 121 or
               'Next' (select next bank), 'Previous' (select previous bank),
               'Last' (select the last bank), 'Quit' (quit the controller
               software), 'Restart' (restart the controller; here the whole xml
@@ -596,7 +593,7 @@
     <xs:restriction base="xs:string">
       <xs:annotation>
         <xs:documentation>
-          This type is a value between 1 and 124 or 'Next' (select next bank),
+          This type is a value between 1 and 121 or 'Next' (select next bank),
           'Previous' (select previous bank), 'Last' (select the last bank),
           'Quit' (quit the controller software), 'Restart' (restart the
           controller; here the whole xml config file will be reloaded), 'Reboot'
@@ -604,9 +601,44 @@
           'Shutdown' (shutdowns the system).
         </xs:documentation>
       </xs:annotation>
-      <xs:pattern value="Next|Previous|Last|Quit|Restart|Reboot|Shutdown|[1-9]|[1-9][0-9]|1[0-2][0-5]"/>
+      <xs:pattern value="Next|Previous|Last|Quit|Restart|Reboot|Shutdown|[1-9]|[1-9][0-9]|1[0-1][0-9]|12[0-1]"/>
     </xs:restriction>
   </xs:simpleType>
+
+  <xs:group name="MessageGroup">
+    <xs:annotation>
+      <xs:documentation>
+        Groups the different kind of messages and allows to use them in several
+        nodes: Start, Stop, and Pedal.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Message" type="MessageType" minOccurs="0"
+                  maxOccurs="unbounded">
+        <xs:alternative type="MidiMessageType" test="@Type='Midi'">
+          <xs:annotation>
+            <xs:documentation xml:lang="en">
+              Here you can send general MIDI messages, ie: a program change,
+              a control change, rhythm start/stop, etc.. Please note that
+              MIDI messages can only content pairs of hexadecimal numbers
+              separated by one space.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:alternative>
+        <xs:alternative type="SysExMessageType" test="@Type='SysEx'">
+          <xs:annotation>
+            <xs:documentation xml:lang="en">
+              Here you can send System Exclusive messages (or SysEx), ie: a
+              select a voice panel on your keyboard, change the
+              registration, etc.. Please note that SysEx messages must start
+              with F0 and end with F7 and they can contain only pairs of
+              hexadecimal numbers separated by one space.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:alternative>
+      </xs:element>          
+    </xs:sequence>
+  </xs:group>
 
   <xs:complexType name="MessageType">
     <xs:annotation>
@@ -626,6 +658,17 @@
           <xs:enumeration value="SysEx"/>
         </xs:restriction>
       </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="Trigger" type="MessageTriggerType" default="NoteOn">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+          When to trigger an specific message. Possible values: NoteOn and
+          NoteOff will trigger the message during a NOTE ON or NOTE OFF message
+          respectively. Inside the Start and Stop nodes, where you don't have
+          NOTE ON or OFF messages, this attribute won't do anything. It defaults
+          to NoteOn.
+        </xs:documentation>
+      </xs:annotation>
     </xs:attribute>
   </xs:complexType>
 
@@ -708,4 +751,23 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  
+  <xs:simpleType name="MessageTriggerType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        When to trigger an specific message. Possible values: NoteOn and
+        NoteOff will trigger the message during a NOTE ON or NOTE OFF message
+        respectively. Inside the Start and Stop nodes, where you don't have
+        NOTE ON or OFF messages, this attribute won't do anything.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:annotation>
+        <xs:appinfo>
+          This attribute must be either NoteOn or NoteOff.
+        </xs:appinfo>
+      </xs:annotation>
+      <xs:pattern value="NoteOn|NoteOff"/>
+    </xs:restriction>
+  </xs:simpleType>
 </xs:schema>

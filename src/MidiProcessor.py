@@ -18,7 +18,7 @@ import time
 from MidiInputHandler import MidiInputHandler
 from MidiUtilities import calculate_base_note_octave, parse_note, \
                           NOTE_SYMBOL_TO_MIDI, NOTE_VELOCITIES, FIRST_OCTAVE, \
-                          LAST_OCTAVE
+                          LAST_OCTAVE, BANK_SELECT_FUNCTIONS, NOTE_TRIGGERS
 from Logger import Logger
 import logging
 from autologging import logged
@@ -110,8 +110,20 @@ class MidiProcessor(MidiInputHandler):
     self._xml_dict['@OutBassPedalChannel'] -= 1
     self._xml_dict['@OutChordChannel'] -= 1
     self._parse_banks()
+    self._parse_start_stop("Start")
+    self._parse_start_stop("Stop")
     #pprint(self._xml_dict)
     #self.__log.info(pformat(self._xml_dict))
+  
+  def _parse_start_stop(self, node_name):
+    """
+    Parses the specified node
+    Parameters:
+    * node_name: node to parse; it can be either: "Start" or "Stop"
+    """
+    node = self._xml_dict.get(node_name)
+    if node != None:
+      self._parse_messages(node, False)
   
   def _parse_banks(self):
     """
@@ -190,21 +202,33 @@ class MidiProcessor(MidiInputHandler):
       pedal["@BankSelect"] = bank_select
     parent_bank["@PedalList"] = pedal_list
 
-  def _parse_messages(self, pedal):
+  def _parse_messages(self, xml_node, filter_by_trigger = True):
     """
-    Parses the given pedal messages storing them in a list
+    Parses the messages for the specified xml_node, which can be either a pedal,
+    the start, or stop node.
+    Parameters:
+    * xml_node: xml values to parse
+    * filter_by_trigger: either to group the messages by trigger or not. It
+      defaults to True.
     """
-    messages = pedal.get('Message')
+    messages = xml_node.get('Message')
     if messages != None:
-      message_list = []
+      if filter_by_trigger:
+        message_list = {'NoteOn': [], 'NoteOff': []}
+      else:
+        message_list = []
       for full_message in messages:
+        trigger = full_message["@Trigger"]
         message_string = full_message["@String"]
         hexadecimal_strings = message_string.split(' ')
         hexadecimal_message = []
         for hexadecimal_string in hexadecimal_strings:
           hexadecimal_message.append(int(hexadecimal_string, 16))
-        message_list.append(hexadecimal_message)
-      pedal["@MessageList"] = message_list
+        if filter_by_trigger:
+          message_list[trigger].append(hexadecimal_message)
+        else:
+          message_list.append(hexadecimal_message)
+      xml_node["@MessageList"] = message_list
 
   def _parse_chords(self, pedal):
     """
@@ -385,14 +409,14 @@ class MidiProcessor(MidiInputHandler):
           elif (self._previous_pedal == None) and (status == NOTE_ON):
             self._previous_pedal = current_pedal
 
+
+          midi_and_sysex = current_pedal.get("@MessageList")
+          if midi_and_sysex != None:
+            #First the MIDI and SysEx messages will be sent
+            messages += midi_and_sysex[NOTE_TRIGGERS[status]]
+
           if status == NOTE_OFF:
-            #The BANK SELECT, MIDI, and SysEx messages will be processed only on
-            #NOTE OFF
-            midi_and_sysex = current_pedal.get("@MessageList")
-            if midi_and_sysex != None:
-              #First the MIDI and SysEx messages will be sent
-              messages += midi_and_sysex
-            
+            #The BANK SELECT messages will be processed only on NOTE OFF
             bank_select = current_pedal.get("@BankSelect")
             if bank_select != None:
               #Now the BANK SELECT message will be processed
@@ -412,21 +436,22 @@ class MidiProcessor(MidiInputHandler):
           #If it is the BankSelectController, then the respective BANK SELECT
           #message will be excecuted
           select_value = message[2]
-          if select_value < 124:
+          if select_value < 121:
             if select_value >= len(self._xml_dict["Bank"]):
               select_value = len(self._xml_dict["Bank"]) - 1
             self._current_bank = select_value
             self.__log.info("Bank changed to: " + str(self._current_bank + 1))
           else:
             num_banks = len(self._xml_dict["Bank"])
-            if select_value == 124:
+            if select_value == 121:
               self._current_bank -= 1
-            elif select_value == 125:
+            elif select_value == 122:
               self._current_bank += 1
-            elif select_value == 126:
+            elif select_value == 123:
               self._current_bank = num_banks - 1
             else:
               self._quit = True
+              self._status = BANK_SELECT_FUNCTIONS[select_value]
             if not self._quit:
               if self._current_bank < 0:
                 self._current_bank = num_banks - 1
@@ -498,6 +523,24 @@ class MidiProcessor(MidiInputHandler):
       #Resets SysEx count to zero
       self._sysex_chunk = 0
 
+  def _process_start_stop_messages(self, node_name):
+    """
+    Sends the messages from the specified node
+    Parameters:
+    * node_name: name of the node to process; it can be either: "Start" or
+      "Stop"
+    """
+    node = self._xml_dict.get(node_name)
+    if node != None:
+      message_list = node["@MessageList"]
+      if message_list != None:
+        xml_messages = node["Message"]
+        for i in range(0, len(message_list)):
+          if xml_messages[i]['@Type'] == "Midi":
+            self._send_midi_message(message_list[i])
+          else:
+            self._send_system_exclusive(message_list[i])
+
   def read_midi(self):
     """
     Main program loop.
@@ -505,11 +548,14 @@ class MidiProcessor(MidiInputHandler):
     self.__log.info("Waiting for MIDI messages")
     self.__log.info("Press CTRL+C to finish")
     try:
+      self._process_start_stop_messages("Start")
       while True and not self._quit:
         time.sleep(1)
+      self._process_start_stop_messages("Stop")
       return self._status
     except KeyboardInterrupt:
       self.__log.info("Keyboard interrupt detected")
+      self._process_start_stop_messages("Stop")
     except:
       error = traceback.format_exc()
       self.__log.info(error)
