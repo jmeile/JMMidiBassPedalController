@@ -345,8 +345,6 @@ Alternativelly you could also use a **sequencer software**, ie: under Windows: [
 
 ### Activating the verbose mode
 
-**TODO**: Enable *"--verbose"* mode
-
 Finally you can activate the **debug mode** as follows:
 
 `python FootController.py --config "my-config.xml" --verbose`

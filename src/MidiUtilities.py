@@ -10,8 +10,7 @@
 """Module with some utility functions and constants."""
 
 from bisect import bisect
-import os
-import platform
+import re
 from rtmidi.midiconstants import NOTE_ON, NOTE_OFF
 
 #Equivalences of the numeric velocities to a dynamic level. You may change them,
@@ -59,7 +58,8 @@ def is_valid_sysex(sysex_message):
   * True if it maches or false if it doesn't
   """
   result = re.fullmatch(SYSEX_REGEX, sysex_message, flags = re.IGNORECASE)
-  return (result == None)
+  is_valid = (result != None)
+  return is_valid
 
 """
 Since MIDI messages don't have always the same length, the pattern looks kind of
@@ -103,7 +103,8 @@ def is_valid_midi_message(midi_message):
   * True if it maches or false if it doesn't
   """
   result = re.fullmatch(MIDI_REGEX, midi_message, flags = re.IGNORECASE)
-  return (result == None), midi_message
+  is_valid = (result != None)
+  return is_valid
 
 def create_lookup_table():
   """Creates a lookup table to approximate a value to a velocity symbol"""
@@ -206,37 +207,3 @@ def parse_note(note, octave = None, transpose = 0):
 
   note = (12 * (octave - FIRST_OCTAVE)) + base_note     
   return note, octave
-
-def get_shutdown_command():
-  """
-  Gets the shutdown command according to the plattform
-  """
-  shutdown_command = ''
-  operating_system = platform.system()
-  if operating_system == "Windows":
-    shutdown_command = 'shutdown /s /f /t 0 /d p:0:0 /c'
-  elif operating_system == "Linux":
-    shutdown_command = 'shutdown now'
-  elif operating_system == "Darwin":
-    shutdown_command = 'shutdown now'
-  else:
-    raise Exception("Unsupported operating system")
-  shutdown_command += ' "MidiBassPedal restart"'
-  return shutdown_command
-  
-def get_reboot_command():
-  """
-  Gets the reboot command according to the plattform
-  """
-  reboot_command = ''
-  operating_system = platform.system()
-  if operating_system == "Windows":
-    reboot_command = 'shutdown /r /f /t 0 /d p:0:0 /c'
-  elif operating_system == "Linux":
-    reboot_command = 'shutdown -r now'
-  elif operating_system == "Darwin":
-    reboot_command = 'shutdown -r now'
-  else:
-    raise Exception("Unsupported operating system")
-
-  reboot_command += ' "MidiBassPedal restart"'

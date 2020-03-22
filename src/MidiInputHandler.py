@@ -10,7 +10,7 @@
 """Wraps MidiIn to add convenience methods for catching common MIDI events."""
 
 from __future__ import print_function
-from Logger import Logger
+from CustomLogger import CustomLogger, PrettyFormat
 import logging
 from autologging import logged
 from rtmidi.midiconstants import (CHANNEL_PRESSURE, CONTROL_CHANGE,
@@ -22,31 +22,13 @@ from rtmidi.midiconstants import (CHANNEL_PRESSURE, CONTROL_CHANGE,
                   SYSTEM_RESET, SYSTEM_EXCLUSIVE,
                   END_OF_EXCLUSIVE)
 
-#By default, file logging is enabled
-file_log_level = logging.DEBUG
-
-#Disable file logging as follows:
-#file_log_level = logging.NOTSET
-
-Logger.init_logging(file_log_level = file_log_level)
-
-#By default, only info message will be printed to the console
-console_log_level = logging.INFO
-
-#Enable console debug logging as follows
-#console_log_level = logging.DEBUG
-
-#By default show only information message. Same behaviour as print
-log_format = "%(message)s"
-
-#You may add a much more verbose output by setting this
-#log_format = "%(asctime)s - %(name)s -> %(funcName)s, line: %(lineno)d\n"
-#              "%(message)s"
-
 #Creates a logger for this module.
-logger = Logger(console_log_level = console_log_level, log_format = log_format
-         ).setup_logger()
+logger = logging.getLogger(CustomLogger.get_module_name())
 
+#Setups the logger with default settings
+logger.setup()
+
+#Register the logger with this class
 @logged(logger)
 class MidiInputHandler:
   """
@@ -104,13 +86,7 @@ class MidiInputHandler:
       first printed into the console, then it will be sent
     * ignore_* parameters: see the "_ignore_messages" method
     """
-    self.__log.debug(("*" * 80) + "\nIf you are seeing this message on the"
-      " console, consider disabling it by setting\nconsole_log_level to "
-      "logging.NOTSET on the Logger(...) call. You may also want\nto "
-      "disable the log file by setting file_log_level to logging.NOTSET "
-      "on the\nLogger.init_logging(...) call. Console logging may "
-      "slower the excecution of\nyour script; use it only for debugging "
-      "purposes\n" + ("*" * 80) + "\n")
+    self.__log.debug("Initializing MidiInputHandler")
     self._midi_in = midi_in
     self._midi_out = midi_out
     self._console_echo = console_echo
@@ -124,6 +100,7 @@ class MidiInputHandler:
     
     #Creates the built-in callbacks, which will only echo the MIDI message
     base_callback = getattr(self, '_send_midi_message')
+    self.__log.debug("Setting callbacks")
     for midi_message in self._midi_messages.values():
       callback = base_callback
       if midi_message == 'system_exclusive':
@@ -134,8 +111,12 @@ class MidiInputHandler:
         #This means that the callback hasn't defined by a subclass, so
         #it will define here at the superclass
         setattr(self, message_callback_name, callback)
+    self.__log.debug("Callbacks were set")
+    self.__log.debug("MidiInputHandler was initialized:\n%s", 
+                     PrettyFormat(self.__dict__))
 
   def __call__(self, event, data = None):
+    self.__log.debug("Executing callback with: %s", PrettyFormat(event))
     message, deltatime = event
     status = message[0]
     if message[0] != SYSTEM_EXCLUSIVE:
@@ -155,10 +136,11 @@ class MidiInputHandler:
       else:
         self.__log.debug("Catched unhandled MIDI message")
     else:
-      self.__log.debug("Catched message: %s" % midi_message)
+      self.__log.debug("Catched message: %s", midi_message)
       callback_name = self._callback_preffix + midi_message
     callback = getattr(self, callback_name)
     callback(message)
+    self.__log.debug("Callback was excecuted")
 
   def _send_midi_message(self, message):
     """
@@ -173,10 +155,7 @@ class MidiInputHandler:
       you want by creating a: "_on_*" handler on the subclass (here I'm
       assuming _callback_preffix equal to "_on_")
     """
-    #Do not uncomment this on a productive environment. SysEx messages
-    #can be long, so logging them can slower things
-    #self.__log.debug("MIDI message: %r" % message)
-    
+    self.__log.debug("Sending MIDI message: %s", message)
     #This may really slower things because it will do some operations in
     #the message to make it human readable. Use it only for debugging
     message_string = "MIDI message: %s" % \
@@ -189,6 +168,7 @@ class MidiInputHandler:
     
     if self._midi_out != None:
       self._midi_out.send_message(message)
+    self.__log.debug("MIDI message was sent")
 
   def _receive_sysex(self, message):
     """
@@ -203,31 +183,27 @@ class MidiInputHandler:
       of a SysEx message was started. This must be done inside the
       _on_system_exclusive handler. Do not override this on the subclass
     """
+    self.__log.debug("Receiving SysEx message: %s", message)
     self._sysex_chunk += 1
     if len(self._sysex_buffer) == 0:
       self.__log.debug("Beginning SysEx reception. Chunk number: %d, "
-        "bytes: %d" % (self._sysex_chunk, len(message)))
+        "bytes: %d", self._sysex_chunk, len(message))
       #gets the first part of the system_exclusive message
       self._sysex_buffer = message
     else:
       self.__log.debug("Reading next SysEx fragment. Chunk number: %s, "
-        "bytes: %d" % (self._sysex_chunk, len(message)))
+        "bytes: %d", self._sysex_chunk, len(message))
       #appends the next part of the system_exclusive message
       self._sysex_buffer.extend(message)
 
     if self._sysex_buffer[-1] == END_OF_EXCLUSIVE:
       #End receiving SysEx
       self.__log.debug("SysEx reception was completed. Total chunks: %s, "
-        "total bytes: %d" % (self._sysex_chunk, 
-                   len(self._sysex_buffer)))
-      
-      #Do not uncomment this on a productive environment. SysEx messages
-      #can be long, so logging them can slower things
-      #self.__log.debug("SysEx message: %r" % self._sysex_buffer)
-      
+        "total bytes: %d", self._sysex_chunk, len(self._sysex_buffer))
+            
       #This may really slower things because it will do some operations in
       #the message to make it human readable. Use it only for debugging 
-      self.__log.debug("MIDI message: %s" % \
+      self.__log.debug("MIDI message: %s",
         '[{}]'.format(' '.join(hex(x).lstrip("0x").upper().zfill(2)
         for x in self._sysex_buffer)))
       return False
@@ -252,11 +228,12 @@ class MidiInputHandler:
       processing. You must also clear the SysEx buffer afterwards
     """
     if not self._receive_sysex(message):
+      self.__log.debug("Sending SysEx message: %s", message)
       #This means that the end of the SysEx message (0xF7) was detected,
       #so, no further bytes will be received. Here the SysEx buffer will
       #be sent and afterwards cleared
       if (self._midi_out == None) or (self._console_echo):
-        self.__log.info(repr(self._sysex_buffer))
+        self.__log.info(PrettyFormat(self._sysex_buffer))
         
       if self._midi_out != None:
         self._midi_out.send_message(self._sysex_buffer)
@@ -265,6 +242,7 @@ class MidiInputHandler:
       self._sysex_buffer = []
       #Resets SysEx count to zero
       self._sysex_chunk = 0
+      self.__log.debug("SysEx message was sent")
 
   def _ignore_messages(self, ignore_sysex = True, ignore_timing = True,
               ignore_active_sense = True):
@@ -282,5 +260,8 @@ class MidiInputHandler:
       and active sensing messages, so, you need to set the parameters to
       False
     """
+    self.__log.debug("ignore_sysex: %s, ignore_timing: %s, "
+                     "ignore_active_sense: %s", ignore_sysex, ignore_timing,
+                     ignore_active_sense)
     self._midi_in.ignore_types(sysex = ignore_sysex,
       timing = ignore_timing, active_sense = ignore_active_sense)

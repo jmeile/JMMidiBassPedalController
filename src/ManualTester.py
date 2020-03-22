@@ -10,12 +10,13 @@
 """Manually tests the pedal configuration by sending MIDI messages."""
 
 from __future__ import print_function
-from Logger import Logger
+import traceback
+from CustomLogger import CustomLogger, PrettyFormat
 import logging
 from autologging import logged
 import time
-import binascii
-from rtmidi.midiconstants import CONTROL_CHANGE, NOTE_OFF, NOTE_ON
+from rtmidi.midiconstants import CONTROL_CHANGE, NOTE_OFF, NOTE_ON, \
+                                 SYSTEM_EXCLUSIVE
 from rtmidi.midiutil import open_midioutput, open_midiinput
 from MidiUtilities import get_velocity_symbol, calculate_base_note_octave, \
                           parse_note, is_valid_midi_message, is_valid_sysex, \
@@ -23,32 +24,21 @@ from MidiUtilities import get_velocity_symbol, calculate_base_note_octave, \
                           FIRST_OCTAVE, LAST_OCTAVE
 from MidiInputHandler import MidiInputHandler
 
-
 #By default, file logging is enabled
 file_log_level = logging.DEBUG
-
+  
 #Disable file logging as follows:
 #file_log_level = logging.NOTSET
-
-Logger.init_logging(file_log_level = file_log_level)
-
-#By default, only info message will be printed to the console
-console_log_level = logging.INFO
-
-#Enable console debug logging as follows
-#console_log_level = logging.DEBUG
-
-#By default show only information message. Same behaviour as print
-log_format = "%(message)s"
-
-#You may add a much more verbose output by setting this
-#log_format = "%(asctime)s - %(name)s -> %(funcName)s, line: %(lineno)d\n"
-#              "%(message)s"
+  
+CustomLogger.init_logging(file_log_level = file_log_level)
 
 #Creates a logger for this module.
-logger = Logger(console_log_level = console_log_level, log_format = log_format
-         ).setup_logger()
+logger = logging.getLogger(CustomLogger.get_module_name())
 
+#Setups the logger with the standard settings
+logger.setup()
+
+#Register the logger with this class
 @logged(logger)
 class MyMidiInputHandler(MidiInputHandler):
   """
@@ -84,56 +74,69 @@ class MyMidiInputHandler(MidiInputHandler):
     Overrides the default _send_midi_message. We don't need to send the message
     it will be only printed.
     """
-    message_string = "MIDI message: %s" % \
-      '[{}]'.format(' '.join(hex(x).lstrip("0x").upper().zfill(2)
-      for x in message))
-    self.__log.info(message_string)
+    self._print_message(message, "Answer")
     self._got_answer = True
   
-  def _handle_note(self, message_type, message):
+  def _handle_note(self, message):
     """
     Handles NOTE ON and OFF messages
     Parameters:
-    * message_type: message type. Either "NOTE ON" or "NOTE OFF"
     * message: full MIDI message
     """
+    self._print_message(message, "Answer")
+    self._got_answer = True
+
+  def _print_message(self, message, operation):
+    """
+    Given a raw MIDI message, it transforms it to a human readable
+    representation
+    Parameters:
+    * message: Raw MIDI message to transform
+    * operation: it is either: "Answer" or "Sending"
+    """
+    status = message[0] & 0xF0
+    if status == 0xF0:
+      status = message[0]
+
+    message_type = self._midi_messages[status]
     channel = message[0] & 0x0F
-    note = message[1]
-    base_note, octave = calculate_base_note_octave(note)
-    note_symbol = NOTE_MIDI_TO_SYMBOL[base_note] + str(octave)
-    velocity = message[2]
-    velocity_symbol = get_velocity_symbol(velocity)
     message_string = \
         '[{}]'.format(' '.join(hex(x).lstrip("0x").upper().zfill(2)
         for x in message))
-    
-    self.__log.info("Answer: %s at channel: %d - Note: %d(%s), Velocity: "
-                    "%d(%s), Raw MIDI: %s" % \
-                     (message_type, channel + 1, note, note_symbol, \
-                      velocity, velocity_symbol, message_string)
-    )
-    self._got_answer = True
+    if status in [NOTE_ON, NOTE_OFF]:
+      note = message[1]
+      base_note, octave = calculate_base_note_octave(note)
+      note_symbol = NOTE_MIDI_TO_SYMBOL[base_note] + str(octave)
+      velocity = message[2]
+      velocity_symbol = get_velocity_symbol(velocity)
+      self.__log.info("%s: %s at channel: %d - Note: %d(%s), Velocity: "
+                      "%d(%s), Raw MIDI: %s", operation, message_type,
+                      channel + 1, note, note_symbol, velocity, velocity_symbol,
+                      message_string)
+    elif status != SYSTEM_EXCLUSIVE:
+      self.__log.info("%s: %s at channel: %d, Raw MIDI: %s", operation,
+                      message_type, channel + 1, message_string)
+    else:
+      self.__log.info("%s: %s, Raw message: %s", operation, message_type,
+                      message_string)
 
   def _on_note_on(self, message):
     """
     Callback method for NOTE ON messages
     """
-    self._handle_note("NOTE ON", message)
+    self._handle_note(message)
     
   def _on_note_off(self, message):
     """
     Callback method for NOTE OFF messages
     """
-    self._handle_note("NOTE OFF", message)
+    self._handle_note(message)
     
   def _on_control_change(self, message):
     """
     Callback method for CONTROL CHANGE messages
     """
-    channel = message[0] & 0x0F
-    self.__log.info("Answer: CONTROL CHANGE at channel: %d - Controller: %d, "
-                    "Value: %d" % (message[1], channel, message[2])
-    )
+    self._print_message(message, "Answer")
     self._got_answer = True
 
   def _on_system_exclusive(self, message):
@@ -145,11 +148,8 @@ class MyMidiInputHandler(MidiInputHandler):
       #so, no further bytes will be received. Here the SysEx buffer will
       #be sent and afterwards cleared
       
-      message_string = "SysEx message: %s" % \
-        '[{}]'.format(' '.join(hex(x).lstrip("0x").upper().zfill(2)
-        for x in message))
-      self.__log.info("Answer: %s" % message_string)
-      
+      self._print_message(message, "Answer")
+
       #Clears SysEx buffer
       self._sysex_buffer = []
       #Resets SysEx count to zero
@@ -178,8 +178,9 @@ class MyMidiInputHandler(MidiInputHandler):
     message = [status]
     validated = False
     while not validated:
-      note = input("\nNote to send [C:x, C#:x, D:x, D#:x,..., or 0-127], "
-                   "where x is the octave (Control-C to exit): ")
+      note_symbol = input("\nNote to send [C:x, C#:x, D:x, D#:x,..., or 0-127],"
+                          " where x is the octave (Control-C to exit): ")
+      note = note_symbol
       if not note.isdigit():
         note = note.upper()
         note_parts = note.split(":")
@@ -202,10 +203,11 @@ class MyMidiInputHandler(MidiInputHandler):
           validated = True
 
       if not validated:
-        print("\nWrong value. Posible values: [C:x, C#:x, D:x, D#:x,..., or "
-              "0-127], where x is the octave")
+        self.__log.info("\nWrong value. Posible values: [C:x, C#:x, D:x, D#:x, "
+                        "..., or 0-127], where x is the octave")
     print('')
     message += [note, self._note_velocity]
+    self._print_message(message, "Sending")
     self._midi_out.send_message(message)
     return True, message
 
@@ -240,7 +242,8 @@ class MyMidiInputHandler(MidiInputHandler):
           validated = False
         
         if not validated:
-          print("\nWrong value. Please enter numbers between 0 and 127")
+          self.__log.info("\nWrong value. Please enter numbers between 0 and "
+                          "127")
 
     validated = False
     while not validated:
@@ -257,8 +260,9 @@ class MyMidiInputHandler(MidiInputHandler):
         validated = False
       
       if not validated:
-        print("\nWrong value. Please enter numbers between 0 and 127")
+        self.__log.info("\nWrong value. Please enter numbers between 0 and 127")
     message += [controller, value]
+    self._print_message(message, "Sending")
     self._midi_out.send_message(message)
     
     if controller == self._bank_controller:
@@ -275,15 +279,19 @@ class MyMidiInputHandler(MidiInputHandler):
     while not validated:
       value = input("\nRaw MIDI (ie: 91 3E 40) or SysEx (ie: F0 ... F7) "
                     "(Control-C to exit): ")
-        
+
       if (is_valid_midi_message(value)) or (is_valid_sysex(value)):
-        value = list(binascii.unhexlify(hex_string))
+        message_parts = value.split(' ')
+        message = []
+        for part in message_parts:
+          message.append(int(part, 16))
         validated = True
       
       if not validated:
-        print("\nWrong value. Please enter valid hexadecimal strings")
+        self.__log.info("\nWrong value. Please enter valid hexadecimal strings")
     
-    self._midi_out.send_message(value)
+    self._print_message(message, "Sending")
+    self._midi_out.send_message(message)
     return True
 
   def read_user_input(self):
@@ -292,14 +300,14 @@ class MyMidiInputHandler(MidiInputHandler):
     options = ['1', '2', '3', '4', '5']
     while user_option not in options:
       print('')
-      print('[1] Send a NOTE ON message')
-      print('[2] Send a NOTE OFF message')
-      print('[3] Send a BANK SELECT message')
-      print('[4] Send a CONTROL CHANGE message')
-      print('[5] Send a raw MIDI or SysEx message')
+      self.__log.info('[1] Send a NOTE ON message')
+      self.__log.info('[2] Send a NOTE OFF message')
+      self.__log.info('[3] Send a BANK SELECT message')
+      self.__log.info('[4] Send a CONTROL CHANGE message')
+      self.__log.info('[5] Send a raw MIDI or SysEx message')
       user_option = input("Enter your option (Control-C to exit): ")
       if user_option not in options:
-        print("\nWrong option. Only %s are allowed" % repr(options))
+        self.__log.info("\nWrong option. Only %s are allowed" % repr(options))
     
     wait_answer = False
     if user_option in ['1', '2']:
@@ -319,12 +327,13 @@ class MyMidiInputHandler(MidiInputHandler):
         if (self._got_answer) or (counter == 2):
           if user_option == '1':
             while user_choice not in ['1', '2']:
-              user_choice = input("Send a NOTE OFF (1=yes, 2=no)? ")
+              user_choice = input("Send a NOTE OFF? (1=yes, 2=no)? ")
               if user_choice not in ['1', '2']:
-                print("Wrong option. Please enter 1 or 2")
+                self.__log.info("Wrong option. Please enter 1 or 2")
 
             if user_choice == '1':
               message[0] = NOTE_OFF | self._midi_in_channel
+              self._print_message(message, "Sending")
               self._midi_out.send_message(message)
               time.sleep(1)
             break
@@ -366,7 +375,7 @@ if __name__ == '__main__':
         validated = False
       
       if not validated:
-        print("\nWrong value. Please enter numbers between 1 and 16")
+        logger.info("\nWrong value. Please enter numbers between 1 and 16")
 
     midi_channel -= 1
     validated = False
@@ -385,7 +394,7 @@ if __name__ == '__main__':
         validated = False
       
       if not validated:
-        print("\nWrong value. Please enter numbers between 0 and 127")
+        logger.info("\nWrong value. Please enter numbers between 0 and 127")
     
     validated = False
     while not validated:
@@ -403,26 +412,26 @@ if __name__ == '__main__':
         validated = False
       
       if not validated:
-        print("\nWrong value. Please enter numbers between 0 and 127")
+        logger.info("\nWrong value. Please enter numbers between 0 and 127")
     
     #Instead of using the Superclass MidiInputHandler, we use it's subclass:
     #MyMidiInputHandler
     midi_in_wrapper = MyMidiInputHandler(midi_in, midi_out, midi_channel,
                                          controller, velocity)
     
-    print("Entering main loop. Press Control-C to exit.")
+    logger.info("Entering main loop. Press Control-C to exit.")
 
     # Just wait for keyboard interrupt,
     # everything else is handled via the input callback.
     while True:
       midi_in_wrapper.read_user_input()
   except KeyboardInterrupt:
-    print('KeyboardInterrupt detected')
+    logger.info('KeyboardInterrupt detected')
   except:
     error = traceback.format_exc()
-    print(error)
+    logger.info(error)
   finally:
-    print("Exit.")
+    logger.info("Exit.")
     if midi_in is not None:
       midi_in.close_port()
     

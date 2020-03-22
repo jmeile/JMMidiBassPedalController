@@ -13,40 +13,22 @@ Connects to the MIDI ports
 
 from __future__ import print_function
 import traceback
-from Logger import Logger
-import logging
-from autologging import logged
 import sys
 import fnmatch
 from rtmidi import MidiIn, MidiOut
-import xmlschema
 from MidiProcessor import MidiProcessor
-
-#By default, file logging is enabled
-file_log_level = logging.DEBUG
-
-#Disable file logging as follows:
-#file_log_level = logging.NOTSET
-
-Logger.init_logging(file_log_level = file_log_level)
-
-#By default, only info message will be printed to the console
-console_log_level = logging.INFO
-
-#Enable console debug logging as follows
-#console_log_level = logging.DEBUG
-
-#By default show only information message. Same behaviour as print
-log_format = "%(message)s"
-
-#You may add a much more verbose output by setting this
-#log_format = "%(asctime)s - %(name)s -> %(funcName)s, line: %(lineno)d\n"
-#              "%(message)s"
+from CustomLogger import CustomLogger, PrettyFormat
+import logging
+from autologging import logged
+import xmlschema
 
 #Creates a logger for this module.
-logger = Logger(console_log_level = console_log_level, log_format = log_format
-         ).setup_logger()
+logger = logging.getLogger(CustomLogger.get_module_name())
 
+#Setups the logger with default settings
+logger.setup()
+
+#Register the logger with this class
 @logged(logger)
 class MidiConnector:
   """
@@ -60,6 +42,7 @@ class MidiConnector:
     * args: command-line arguments
     * xsd_schema: path to the xsd schema
     """
+    self.__log.debug("Initializing MidiConnector")
     self._args = args
     self._xsd_schema = xsd_schema
     self._midi_in = None
@@ -69,6 +52,8 @@ class MidiConnector:
     self._out_ports = []
     self._out_port = 0
     self._xml_dict = {}
+    self.__log.debug("MidiConnector was initialized:\n%s", 
+                     PrettyFormat(self.__dict__))
 
   def start(self):
     """
@@ -79,13 +64,13 @@ class MidiConnector:
     Returns:
     * A status string; either: "Quit", "Restart", "Reboot", or "Shutdown"
     """
+    self.__log.info("Starting MidiConnector")
     status = None
-    self.__log.info("Starting MIDI")
     self._get_all_ports()
     exit = False
     if len(self._in_ports) == 0:
       self.__log.info("No MIDI IN ports were found. Please connect your MIDI "
-          "device and run the script again")
+                      "device and run the script again")
       exit = True
 
     if len(self._out_ports) == 0:
@@ -95,6 +80,7 @@ class MidiConnector:
       
     if not exit:
       if self._args.list:
+        self.__log.debug("--list switch was passed")
         self._list_ports()
       else:
         self._parse_xml_config()
@@ -104,20 +90,16 @@ class MidiConnector:
           self._xml_dict,
           self._midi_in,
           self._midi_out,
-          #Unless you want to grap SysEx dumps, you should enable this.
-          #This is the only utility of the FCB1010 SysEx messages.
-          #ignore_sysex = False,
-          #The next two message won't be transmitted by the FCB1010, So,
-          #don't enable it; they won't do anything. You should use them
-          #if using another Foot controller that transmits them
-          #ignore_timing = False,
-          #ignore_active_sense = False,
+          ignore_sysex = False,
+          ignore_timing = False,
+          ignore_active_sense = False,
         )
         midi_processor.parse_xml()
         status = midi_processor.read_midi()
         self.__log.info("Exiting")
         self._close_ports()
     self._free_midi()
+    self.__log.debug("MidiConnector has been ended")
     return status
 
   def _parse_xml_config(self):
@@ -126,15 +108,17 @@ class MidiConnector:
     """
     self.__log.info("Parsing XML config")
     exit = False
+    self.__log.debug("Calling XMLSchema11 api")
     try:
       xsd_schema = xmlschema.XMLSchema11(self._xsd_schema)
     except:
       exit = True
       error = traceback.format_exc()
-      self.__log.info("Error while parsing xsd file:\n" + self._xsd_schema + \
-                      "\n\n" + error)
-      
+      self.__log.info("Error while parsing xsd file:\n%s\n\n%s", 
+                      self._xsd_schema, error)
+
     if not exit:
+      self.__log.debug("Converting XML schema to dict")
       try:
         xml_dict = xsd_schema.to_dict(self._args.config)
         #A last manual validation must be done here: the InitialBank value must
@@ -146,10 +130,11 @@ class MidiConnector:
       except:
         exit = True
         error = traceback.format_exc()
-        self.__log.info("Error while parsing xml file:\n" + \
-                        self._args.config + "\n\n" + error)
-    
+        self.__log.info("Error while parsing xml file:\n%s\n\n%s", 
+                        self._args.config, error)
+    self.__log.debug("Got: \n%s", PrettyFormat(xml_dict))
     if exit:
+      self.__log.debug("Unexpected error occured, aborting...")
       self._free_midi()
       sys.exit()
       
@@ -162,6 +147,7 @@ class MidiConnector:
     * midi_interface: MIDI interface that will be opened
     * midi_port: MIDI port used to open the MIDI interface
     """
+    self.__log.debug("Opening MIDI port: %s", str(midi_port))
     try:
       midi_interface.open_port(midi_port)
     except:
@@ -175,18 +161,19 @@ class MidiConnector:
     Opens the entered MIDI ports
     """
     self._open_port(self._midi_in, self._in_port)
-    self.__log.info("MIDI IN Port: '" + self._in_ports[self._in_port] + \
-                    "' was opened")
+    self.__log.info("MIDI IN Port: '%s' was opened",
+                    self._in_ports[self._in_port])
     self._open_port(self._midi_out, self._out_port)
-    self.__log.info("MIDI OUT Port: '" + self._out_ports[self._out_port] + \
-                    "' was opened")
-  
+    self.__log.info("MIDI OUT Port: '%s' was opened",
+                    self._out_ports[self._out_port])
+
   def _close_port(self, midi_interface):
     """
     Closes the specified MIDI interface
     Parameters:
     * midi_interface: MIDI interface that will be closed
     """
+    self.__log.debug("Closing MIDI port")
     try:
       midi_interface.close_port()
     except:
@@ -198,11 +185,11 @@ class MidiConnector:
     Closes all opened MIDI ports
     """
     self._close_port(self._midi_in)
-    self.__log.info("MIDI IN Port: '" + self._in_ports[self._in_port] + \
-                    "' was closed")
+    self.__log.info("MIDI IN Port: '%s' was closed",
+                    self._in_ports[self._in_port])
     self._close_port(self._midi_out)
-    self.__log.info("MIDI OUT Port: '" + self._out_ports[self._out_port] + \
-                    "' was closed")
+    self.__log.info("MIDI OUT Port: '%s' was closed",
+                    self._out_ports[self._out_port])
 
   def _parse_port(self, port_list, arg_name):
     """
@@ -211,11 +198,14 @@ class MidiConnector:
     * port_list: List of available MIDI ports
     * arg_name: name of the argument to get. It can be: InPort or OutPort
     """
+    self.__log.debug("Getting: %s from:\n%s", arg_name, PrettyFormat(port_list))
     num_ports = len(port_list)
     port_value = self._xml_dict.get('@'+arg_name, num_ports)
+    self.__log.debug("Port value: %s", port_value)
     if (type(port_value) == str) and port_value.isdigit():
       port_value = int(port_value)
     elif type(port_value) == str:
+      self.__log.debug("Searching port")
       #On this case, a string with part of the name was given, so, it
       #will be searched in the available ports
       port_index = 0
@@ -227,16 +217,19 @@ class MidiConnector:
           break
         port_index += 1
       if not port_found:
-        self.__log.info("The " + arg_name + ": " + port_value + " wasn't found.")
+        self.__log.info("The %s: %s wasn't found.", arg_name, port_value)
         self._free_midi()
+        self.__log.debug("Port wasn't found, exiting")
         sys.exit()
       port_value = port_index + 1
+      self.__log.debug("Port was found, index: %d", port_value)
     
     #Internally, port numbers start from 0 because they are in an array
     port_value -= 1
     if port_value >= num_ports:
       self.__log.info("Invalid port number was supplied")
       self._free_midi()
+      self.__log.debug("Exiting after getting invalid port")
       sys.exit()
       
     return port_value
@@ -245,11 +238,14 @@ class MidiConnector:
     """
     Gets the passed ports to the command line
     """
+    self.__log.debug("Parsing ports")
     self._in_port = self._parse_port(self._in_ports, 'InPort')
     self._out_port = self._parse_port(self._out_ports, 'OutPort')
+    self.__log.debug("Ports were parsed")
   
   def _open_midi(self):
     """Starts MIDI without opening a port"""
+    self.__log.info("Opening MIDI interfaces")
     try:
       self._midi_out = MidiOut()
       self._midi_in = MidiIn()
@@ -265,10 +261,12 @@ class MidiConnector:
       del self._midi_out
       del self._midi_in
       return False
+    self.__log.debug("MIDI interfaces were opened")
     return True
   
   def _free_midi(self):
     """Frees MIDI resources"""
+    self.__log.debug("Releasing MIDI")
     del self._midi_in
     del self._midi_out
     self.__log.info("MIDI was released")
@@ -280,7 +278,9 @@ class MidiConnector:
     * midi_interface: interface used for listing the ports. It can be
       either _midi_in or _midi_out.
     """
+    self.__log.debug("Getting available MIDI ports")
     ports = midi_interface.get_ports()
+    self.__log.debug("Got:\n%s", PrettyFormat(ports))
     port_index = 0
     for port in ports:
       port_index_str = str(port_index)
@@ -294,6 +294,7 @@ class MidiConnector:
       
       ports[port_index] = port
       port_index += 1
+    self.__log.debug("Fixed port indexes:\n%s", PrettyFormat(ports))
     return ports
 
   def _get_all_ports(self):
@@ -303,8 +304,12 @@ class MidiConnector:
     in_ports = []
     out_ports = []
     if self._open_midi():
+      self.__log.debug("Getting all MIDI IN ports")
       in_ports = self._get_midi_ports(self._midi_in)
+      self.__log.debug("Got:\n%s", PrettyFormat(in_ports))
+      self.__log.debug("Getting all MIDI OUT ports")
       out_ports = self._get_midi_ports(self._midi_out)
+      self.__log.debug("Got:\n%s", PrettyFormat(out_ports))
     self._in_ports = in_ports
     self._out_ports = out_ports
   
@@ -313,9 +318,11 @@ class MidiConnector:
     Gets the port list as follows:
       <port_index>: <port_name>
     """
+    self.__log.debug("Getting formatted port list")
     port_list_tuples = []
     for port_index, port_name in enumerate(port_list):
       port_list_tuples.append(str(port_index + 1) + ": " + port_name)
+    self.__log.debug("Got: %s", PrettyFormat(port_list_tuples))
     return '\n\r'.join(port_list_tuples)
   
   def _list_ports(self):

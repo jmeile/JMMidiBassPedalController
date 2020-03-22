@@ -19,38 +19,19 @@ from MidiInputHandler import MidiInputHandler
 from MidiUtilities import calculate_base_note_octave, parse_note, \
                           NOTE_SYMBOL_TO_MIDI, NOTE_VELOCITIES, FIRST_OCTAVE, \
                           LAST_OCTAVE, BANK_SELECT_FUNCTIONS, NOTE_TRIGGERS
-from Logger import Logger
+from CustomLogger import CustomLogger, PrettyFormat
 import logging
 from autologging import logged
-from pprint import pprint, pformat
 from rtmidi.midiconstants import (CONTROL_CHANGE, NOTE_OFF, NOTE_ON,
                                   SYSTEM_EXCLUSIVE, END_OF_EXCLUSIVE)
 
-#By default, file logging is enabled
-file_log_level = logging.DEBUG
-
-#Disable file logging as follows:
-#file_log_level = logging.NOTSET
-
-Logger.init_logging(file_log_level = file_log_level)
-
-#By default, only info message will be printed to the console
-console_log_level = logging.INFO
-
-#Enable console debug logging as follows
-#console_log_level = logging.DEBUG
-
-#By default show only information message. Same behaviour as print
-log_format = "%(message)s"
-
-#You may add a much more verbose output by setting this
-#log_format = "%(asctime)s - %(name)s -> %(funcName)s, line: %(lineno)d\n"
-#              "%(message)s"
-
 #Creates a logger for this module.
-logger = Logger(console_log_level = console_log_level, log_format = log_format
-         ).setup_logger()
+logger = logging.getLogger(CustomLogger.get_module_name())
 
+#Setups the logger with default settings
+logger.setup()
+
+#Register the logger with this class
 @logged(logger)
 class MidiProcessor(MidiInputHandler):
   """
@@ -72,18 +53,22 @@ class MidiProcessor(MidiInputHandler):
     * ignore_* parameters: see the "_ignore_messages" method
     * default_velocity: default velocity for NOTE_ON and NOTE_OFF messages
     """
+    self.__log.debug("Initializing MidiProcessor")
     super().__init__(midi_in, midi_out, ignore_sysex, ignore_timing,
-                     ignore_active_sense = True)
+                     ignore_active_sense)
     self._xml_dict = xml_dict
     self._default_velocity = default_velocity
     self._quit = False
     self._status = None
+    self.__log.debug("MidiProcessor Initialized:\n%s",
+                     PrettyFormat(self.__dict__))
 
   def parse_xml(self):
     """Parses the xml dict"""
+    self.__log.debug("Parsing xml file")
     self._current_bank = self._xml_dict['@InitialBank'] - 1
     self._previous_pedal = None
-    self.__log.info("Current Bank: " + str(self._xml_dict['@InitialBank']))
+    self.__log.info("Current Bank: %s", self._xml_dict['@InitialBank'])
     self._current_velocity = 0
     self._xml_dict["@BassPedalVelocity"] = self._parse_common_attribute(
       "BassPedalVelocity", self._xml_dict)
@@ -112,8 +97,7 @@ class MidiProcessor(MidiInputHandler):
     self._parse_banks()
     self._parse_start_stop("Start")
     self._parse_start_stop("Stop")
-    #pprint(self._xml_dict)
-    #self.__log.info(pformat(self._xml_dict))
+    self.__log.debug("Got:\n%s", PrettyFormat(self._xml_dict))
   
   def _parse_start_stop(self, node_name):
     """
@@ -121,16 +105,20 @@ class MidiProcessor(MidiInputHandler):
     Parameters:
     * node_name: node to parse; it can be either: "Start" or "Stop"
     """
+    self.__log.debug("Parsing XML node: '%s'", node_name)
     node = self._xml_dict.get(node_name)
     if node != None:
       self._parse_messages(node, False)
+    self.__log.debug("Node was parsed")
   
   def _parse_banks(self):
     """
     Parses the banks from the xml_dict
     """
+    self.__log.debug("Parsing banks")
     bank_index = 0
     for bank in self._xml_dict['Bank']:
+      self.__log.debug("Parsing bank: %s", bank_index + 1)
       bank["@BassPedalVelocity"] = self._parse_common_attribute(
                                      "BassPedalVelocity", bank, self._xml_dict)
       bank["@ChordVelocity"] = self._parse_common_attribute("ChordVelocity",
@@ -146,7 +134,9 @@ class MidiProcessor(MidiInputHandler):
       bank["@Octave"] = self._parse_common_attribute("Octave", bank,
                                                      self._xml_dict)
       self._parse_pedals(bank, bank_index)
+      self.__log.debug("Bank were parsed")
       bank_index += 1
+    self.__log.debug("Banks were parsed")
   
   def _parse_pedals(self, parent_bank, bank_index):
     """
@@ -156,8 +146,11 @@ class MidiProcessor(MidiInputHandler):
      * bank_index: index of the bank inside the controller node (begins with
        zero)
     """
+    self.__log.debug("Parsing pedals")
     pedal_list = {}
+    pedal_index = 0
     for pedal in parent_bank['Pedal']:
+      self.__log.debug("Parsing pedal: %d", pedal_index + 1)
       pedal["@BassPedalVelocity"] = self._parse_common_attribute(
                                       "BassPedalVelocity", pedal, parent_bank)
       pedal["@ChordVelocity"] = self._parse_common_attribute("ChordVelocity",
@@ -200,7 +193,10 @@ class MidiProcessor(MidiInputHandler):
                             "BankSelect is out of range. Maximum: " + \
                             str(num_banks))
       pedal["@BankSelect"] = bank_select
+      pedal_index += 1
+      self.__log.debug("Pedal was parsed")
     parent_bank["@PedalList"] = pedal_list
+    self.__log.debug("Pedals were parsed")
 
   def _parse_messages(self, xml_node, filter_by_trigger = True):
     """
@@ -211,6 +207,8 @@ class MidiProcessor(MidiInputHandler):
     * filter_by_trigger: either to group the messages by trigger or not. It
       defaults to True.
     """
+    self.__log.debug("Parsing node messages and filtering by trigger: %s",
+                     filter_by_trigger)
     messages = xml_node.get('Message')
     if messages != None:
       if filter_by_trigger:
@@ -229,11 +227,13 @@ class MidiProcessor(MidiInputHandler):
         else:
           message_list.append(hexadecimal_message)
       xml_node["@MessageList"] = message_list
+    self.__log.debug("Messages were parsed")
 
   def _parse_chords(self, pedal):
     """
     Parses the given chord notes an converts them to MIDI notes
     """
+    self.__log.debug("Parsing chords")
     chord_notes = pedal.get("@ChordNotes")
     if chord_notes != None:
       chord_note_list = chord_notes.split(',')
@@ -282,6 +282,7 @@ class MidiProcessor(MidiInputHandler):
       chord_notes = chord_note_list
       pedal["@NoteMessages"] = note_messages    
     pedal["@ChordNotes"] = chord_notes
+    self.__log.debug("Chords were parsed")
 
   def _set_note_messages(self, note_messages, note, midi_channel,
                          velocity = None):
@@ -297,12 +298,14 @@ class MidiProcessor(MidiInputHandler):
     Returns:
     * note_messages will be returned with the new note messages
     """
+    self.__log.debug("Setting note messages")
     if velocity == None:
       velocity = self._default_velocity
 
     for message_type in [NOTE_ON, NOTE_OFF]:
       header = message_type | midi_channel
       note_messages[message_type].append([header, note, velocity])
+    self.__log.debug("Note messages were set")
 
   def _parse_notes(self, pedal, pedal_list):
     """
@@ -313,6 +316,7 @@ class MidiProcessor(MidiInputHandler):
     * pedal_list: after having calculated notes, pedals will be indexed by pedal
       note
     """
+    self.__log.debug("Parsing notes")
     note = pedal.get('@Note')
     octave = pedal.get('@Octave')
     pedal['@Note'], pedal['@Octave'] = parse_note(note, octave)
@@ -331,6 +335,7 @@ class MidiProcessor(MidiInputHandler):
       pedal["@NoteMessages"] = note_messages
 
     pedal["@BassNote"] = note
+    self.__log.debug("Note were set")
 
   def _parse_common_attribute(self, attribute_name, current_node,
                               parent_node = None):
@@ -349,6 +354,7 @@ class MidiProcessor(MidiInputHandler):
       there is no parent node, then the attribute_name from xml_dict will be
       returned.
     """
+    self.__log.debug("Parsing common XML attributes")
     attribute_value = current_node.get('@' + attribute_name)
     if attribute_value != None:
       if not isinstance(attribute_value, int):
@@ -362,13 +368,14 @@ class MidiProcessor(MidiInputHandler):
 
     if parent_node == None:
       return self._xml_dict.get('@' + attribute_name)
-      
+    self.__log.debug("Common XML attributes were parsed")
     return self._parse_common_attribute(attribute_name, parent_node)
 
   def _send_midi_message(self, message):
     """
     Overrides the _send_midi_message method from MidiInputHandler.
     """
+    self.__log.debug("Sending MIDI message: %s", message)
     status = message[0] & 0xF0
     channel = message[0] & 0x0F
     messages = []
@@ -422,7 +429,7 @@ class MidiProcessor(MidiInputHandler):
               #Now the BANK SELECT message will be processed
               if bank_select not in ["Quit", "Restart", "Reboot", "Shutdown"]:
                 self._current_bank = bank_select
-                self.__log.info("Bank changed to: " + str(bank_select + 1))
+                self.__log.info("Bank changed to: %d", bank_select + 1)
               else:
                 self._quit = True
                 self._status = bank_select
@@ -440,7 +447,7 @@ class MidiProcessor(MidiInputHandler):
             if select_value >= len(self._xml_dict["Bank"]):
               select_value = len(self._xml_dict["Bank"]) - 1
             self._current_bank = select_value
-            self.__log.info("Bank changed to: " + str(self._current_bank + 1))
+            self.__log.info("Bank changed to: %d", self._current_bank + 1)
           else:
             num_banks = len(self._xml_dict["Bank"])
             if select_value == 121:
@@ -457,7 +464,7 @@ class MidiProcessor(MidiInputHandler):
                 self._current_bank = num_banks - 1
               elif self._current_bank >= num_banks:
                 self._current_bank = 0
-              self.__log.info("Bank changed to: " + str(self._current_bank + 1))
+              self.__log.info("Bank changed to: %d", self._current_bank + 1)
         elif self._xml_dict["@MidiEcho"]:
           #This is another CONTROL CHANGE message, so it will be fordwarded
           messages = [message]
@@ -475,6 +482,7 @@ class MidiProcessor(MidiInputHandler):
     if messages != []:
       for message in messages:
         self._midi_out.send_message(message)
+    self.__log.debug("MIDI message was sent")
 
   def _set_note_velocity(self, pedal, message_type):
     """
@@ -485,6 +493,7 @@ class MidiProcessor(MidiInputHandler):
     * Pedal: pedal for which the messages will be modified
     * message_type: it can be either NOTE_ON or NOTE_OFF
     """
+    self.__log.debug("Sending note velocity for message: %s", message_type)
     note_messages = pedal.get("@NoteMessages")
     if note_messages == None:
       return []
@@ -507,12 +516,14 @@ class MidiProcessor(MidiInputHandler):
       for i in range(message_index, len(note_messages)):
         note_messages[message_index][2] = chord_velocity
         message_index += 1
+    self.__log.debug("Note velocity was set")
     return note_messages
 
   def _send_system_exclusive(self, message):
     """
     Overrides the _send_midi_message method from MidiInputHandler.
     """
+    self.__log.debug("Sending SysEx message: %s", message)
     if not self._receive_sysex(message) and self._xml_dict["@MidiEcho"]:
       #This means that the end of the SysEx message (0xF7) was detected,
       #so, no further bytes will be received. Here the SysEx buffer will
@@ -522,6 +533,7 @@ class MidiProcessor(MidiInputHandler):
       self._sysex_buffer = []
       #Resets SysEx count to zero
       self._sysex_chunk = 0
+    self.__log.debug("SysEx was sent")
 
   def _process_start_stop_messages(self, node_name):
     """
@@ -530,6 +542,7 @@ class MidiProcessor(MidiInputHandler):
     * node_name: name of the node to process; it can be either: "Start" or
       "Stop"
     """
+    self.__log.debug("Processing messages for node: %s", node_name)
     node = self._xml_dict.get(node_name)
     if node != None:
       message_list = node["@MessageList"]
@@ -540,6 +553,7 @@ class MidiProcessor(MidiInputHandler):
             self._send_midi_message(message_list[i])
           else:
             self._send_system_exclusive(message_list[i])
+    self.__log.debug("Messages were processed")
 
   def read_midi(self):
     """
