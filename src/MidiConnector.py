@@ -284,14 +284,6 @@ class MidiConnector:
     port_index = 0
     for port in ports:
       port_index_str = str(port_index)
-      
-      #This line drops the port number from the end and adds it at the
-      #beginning. I think this:
-      # "1: Bome MIDI Translator 1"
-      #is much clearer than this:
-      # "Bome MIDI Translator 1 1"
-      port = port[:-(len(port_index_str) + 1)]
-      
       ports[port_index] = port
       port_index += 1
     self.__log.debug("Fixed port indexes:\n%s", PrettyFormat(ports))

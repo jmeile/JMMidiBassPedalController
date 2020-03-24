@@ -347,7 +347,16 @@ then you may need a software to create virtual midi ports:
 Under Linux, you don't need any additional software. You can create virtual ports by running:
 
     `sudo modprobe snd-virmidi snd_index=1`
-    
+
+On MACOS you can use the "Audio MIDI Setup" app:
+- Open the Finder and go to: Applications > Utilities
+- Click on: "Audio MIDI Setup.app"
+- Double click the "IAC Driver" icon
+- Enable the: "Device is online" checkbox
+- Under "Ports" you can add new ports by clicking on the '+' sign.
+- You can change the base name of your MIDI ports by setting a new "Device Name".
+- Finally click the "Apply" button.
+ 
 For seeing the available MIDI ports, you can run:
 
   `python3 FootController.py --list`

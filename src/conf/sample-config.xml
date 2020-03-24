@@ -126,7 +126,7 @@
             xsi:schemaLocation="https://www.technosoft.solutions/xsd 
             MidiBassPedalController.xsd"
             xmlns="https://www.technosoft.solutions/xsd"
-            InPort="InPort" OutPort="OutPort"
+            InPort="MIDI In" OutPort="MIDI Out"
             InChannel="1"
             OutBassPedalChannel="3" OutChordChannel="4"
             MidiEcho="true"
@@ -255,8 +255,18 @@
       bank will be selected. Please note that if you are in a bank in the middle
       and you want to select the last bank, then you can also use 'Last' for
       this; this is usefull if you are continuing changing your configuration,
-      but the last bank always remains the same. The value 'Quit' will quit the
-      controller software.
+      but the last bank always remains the same. Other posible values:
+      - 'Quit': Quits the controller software.
+      - 'Restart': Restarts the controller software. Useful if you changed the
+        configuration file, and want to reload it.
+      - 'Reboot': Reboots the system running the software.
+      - 'Shutdown': Shutdowns the system running the software.
+
+      Note: For the two last commands, under Linux or MACOS, you will need to
+      run the software with "sudo" or become the super user. Under Windows,
+      a user without admin rights can usually restart or shutdown the system;
+      howerver, there are cases where your administrator disable this; on this
+      case, you will have to run the controller software as administrator.
     -->
     <Pedal Note="60" ChordNotes="G,C,E" BankSelect="Next"/>
     

@@ -74,10 +74,10 @@ if __name__ == "__main__":
       shutdown_command = 'shutdown /s /f /t 0 /d p:0:0 /c'
     elif operating_system == "Linux":
       logger.debug("Linux detected")
-      shutdown_command = 'shutdown now'
+      shutdown_command = 'shutdown -h now'
     elif operating_system == "Darwin":
       logger.debug("MACOS detected")
-      shutdown_command = 'shutdown now'
+      shutdown_command = 'shutdown -h now'
     else:
       logger.debug("Unsupported OS.")
       raise Exception("Unsupported operating system")

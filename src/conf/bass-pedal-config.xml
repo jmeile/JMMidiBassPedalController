@@ -27,7 +27,7 @@
             xsi:schemaLocation="https://www.technosoft.solutions/xsd 
             MidiBassPedalController.xsd"
             xmlns="https://www.technosoft.solutions/xsd"
-            InPort="InPort" OutPort="OutPort"
+            InPort="MIDI In" OutPort="MIDI Out"
             InChannel="1"
             OutBassPedalChannel="3" OutChordChannel="2"
             MidiEcho="true"
@@ -96,7 +96,7 @@
     <Pedal Note="D#" Octave="2" BankSelect="Next"/>
     
     <!-- Catches the note E2, then exits -->
-    <Pedal Note="E" Octave="2" BankSelect="Reboot"/>
+    <Pedal Note="E" Octave="2" BankSelect="Quit"/>
   </Bank>
   
   <!--
