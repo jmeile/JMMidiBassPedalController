@@ -1,7 +1,7 @@
 # JMMidiBassPedalController
 This software translates **NOTE ON/OFF** messages comming from a **foot controller** to **chords**. It allows you to save several configurations in **banks**, which can be switched through **CONTROL CHANGE** messages.
 
-## Table of Contents
+# Table of Contents
 
 - [Features](#features)
 - [Definitions](#definitions)
@@ -23,7 +23,7 @@ This software translates **NOTE ON/OFF** messages comming from a **foot controll
   - [Activating the verbose mode](#activating-the-verbose-mode)
 - [License](#license)
 
-## Features
+# Features
 
 - **XML configuration file**.
 - Fully customizable parameters:
@@ -39,7 +39,7 @@ This software translates **NOTE ON/OFF** messages comming from a **foot controll
     - **SysEx** messages.
 - Its flexibility allows it to be used with several **foot controllers** at once.
 
-## Definitions
+# Definitions
 From time to time, I use the following terms on my software:
 
 - **Bank**: in my software I reffer this to be a way of grouping different settings. So, you can have for example a bank with the C Major scale chords and another bank with the C Minor scale chords. The nice thing of these groups is that you can easily switch them while playing your keyboard. This is actually an optional feature that you may use or not.
@@ -95,7 +95,7 @@ They are really small and allow you to excecute some tasks that a computer also 
 
 - **XML file**: this is just a file where you can save the configuration of your bass foot controller.
 
-## Prerequisites
+# Prerequisites
 
 Before installing the requirements, please make sure that you have admin
 rights. Under Linux/MACOS use:
@@ -228,7 +228,7 @@ If you own a foot controller (ie: a **FCB1010**) and a bass pedal controller (ie
 **Remarks:**
 - The only thing that you need to be aware of if you are using a **Behringer FCB1010** is that you will have to enable the **Merge** function under the **GLOBAL CONFIGURATION**. This will fordward all messages comming from the **MIDI IN** to the **MIDI OUT** port.
 
-## Setting up the hardware
+# Setting up the hardware
 In order to make this to work, you will have to do the following steps:
 
 - Setup the **MIDI OUT channel** of your bass pedal controller to whatever you want to use. If you are using both: a bass pedal controller and a foot controller, then setup the same port on both devices. Since the **Studiologic MP-117** I have is an old version and settings will be resseted on power off, I will leave the default **MIDI channel**, which is channel 1.
@@ -243,7 +243,7 @@ In order to make this to work, you will have to do the following steps:
 
 - If you want also want to play bass notes, then setup a **MIDI channel** on your keyboard for doing this. If you have an old keyboard, then you can select the channel from your right or left voices.
 
-## Setting up the software
+# Setting up the software
 - First figure out how the ports used by your **USB-TO-MIDI cable** are called. If your **MIDI** setup isn't going to change, then the port number should be also enough. In order to figure this out, run the software as follows:
   
   `python FootController.py --list`
@@ -258,7 +258,7 @@ In order to make this to work, you will have to do the following steps:
 
 - Open that file and modify it as you wish by filling your parameters, ie: **MIDI IN** port, **MIDI IN and OUT** channels, **NOTE ON** messages, etc..
 
-## Running the software
+# Running the software
 Now you are ready to go. Go to the **src** folder, then type:
 
 `python FootController.py`
@@ -290,9 +290,12 @@ You will find four files here:
   - Run with highest privileges
   - Trigger at system startup
   - Action > start a program:
-    - Program: "C:\Program Files\Python37\python.exe"
-    - Arguments: "C:\Users\my_user\Documents\JMMidiBassPedalController\src\FootController.py" --config="conf\bass-pedal-config.xml"
-    - Start in: C:\Users\my_user\Documents\JMMidiBassPedalController\src
+    - Program:
+      `"C:\Program Files\Python37\python.exe"`
+    - Arguments:
+      `"C:\Users\my_user\Documents\JMMidiBassPedalController\src\FootController.py" --config="conf\bass-pedal-config.xml"`
+    - Start in:
+      `C:\Users\my_user\Documents\JMMidiBassPedalController\src`
   - Start the task only if the computer is on AC power -> this is disabled
 - **Start_FootController_Windows_Verbose_Startup.xml**: this is essentially the
   same as the previous task, but the "--verbose" switch is enabled, so, debug
@@ -303,9 +306,12 @@ You will find four files here:
   - Run with highest privileges
   - Trigger at system logon of any user and delay for 30 seconds
   - Action > start a program:
-    - Program: "C:\Program Files\Python37\python.exe"
-    - Arguments: "C:\Users\my_user\Documents\JMMidiBassPedalController\src\FootController.py" --config="conf\bass-pedal-config.xml"
-    - Start in: C:\Users\my_user\Documents\JMMidiBassPedalController\src
+    - Program:
+      `"C:\Program Files\Python37\python.exe"`
+    - Arguments:
+      `"C:\Users\my_user\Documents\JMMidiBassPedalController\src\FootController.py" --config="conf\bass-pedal-config.xml"`
+    - Start in:
+      `C:\Users\my_user\Documents\JMMidiBassPedalController\src`
   - Start the task only if the computer is on AC power -> this is disabled
 - **Start_FootController_Windows_Verbose_Logon.xml**: this is essentially the
   same as the previous task, but the "--verbose" switch is enabled, so, debug
@@ -327,7 +333,10 @@ you can drop the delay. For testing purposes, ie: using loopMIDI virtual ports,
 you need a delay from at least 30 seconds because those ports are created some
 seconds after the user logons.
 
-## Troubleshooting
+Finally: never enclose the **Start in** parameters in double quotes; this will
+make your task to fail.
+
+# Troubleshooting
 If your equipment is not reacting as expected, then you can proceed as follows.
 
 Before going in detail through the following options, if you are under Windows,
@@ -343,7 +352,7 @@ For seeing the available MIDI ports, you can run:
 
   `python FootController.py --list`
 
-### Using the ManualTester script
+## Using the ManualTester script
 
 - First create two virtual ports.
 - Then setup the ports as follows:
@@ -360,7 +369,7 @@ For seeing the available MIDI ports, you can run:
   - Default velocity for NOTE ON messages: here you can use whatever you want
   - Start sending NOTE ON/OFF, BANK SELECT, CONTROL CHANGE, raw MIDI, or SysEx messages.
 
-### Use a software for intercepting MIDI messages
+## Use a software for intercepting MIDI messages
 
 You can debug your system by watching the **MIDI** messages comming out from your laptop or the **Raspberry Pi**. For doing this, you can use the following software:
 
@@ -393,11 +402,11 @@ Other option would be to connect your foot controller to Bome Send SX or MIOS St
 - Then on Bome Send SX or MIOS Studio 2 setup MIDI IN to: "USB Uno MIDI Interface"
 - Start pressing the pedals or switches, then you should see the output either in Bome Send SX or MIOS Studio 2.
 
-### Using a sequencer software
+## Using a sequencer software
 
 Alternativelly you could also use a **sequencer software**, ie: under Windows: [Aria Maestosa](https://ariamaestosa.github.io/ariamaestosa/docs/index.html), [Anvil Studio](https://www.anvilstudio.com), [KaraKEYoke Karaoke](http://karakeyoke.com/software/karakeyoke.html); under Linux: [Aria Maestosa](https://ariamaestosa.github.io/ariamaestosa/docs/index.html), or any other sequencer you know. The idea would be to route the **USB Uno MIDI Interface** to that software and start looking at the **MIDI** data comming. You have there several views: *staff view* (you will see the notes) or *message list* (you will see the MIDI messages on a human-readable format).
 
-### Activating the verbose mode
+## Activating the verbose mode
 
 Finally you can activate the **debug mode** as follows:
 
