@@ -106,7 +106,7 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
 
 - [Python 3.7](https://www.python.org/downloads/release/python-376)
 
-  Under Windows, I tried the pip installation with python 3.8 and it didn't work, it fired this error:
+  Under Windows, I tried the pip3 installation with python 3.8 and it didn't work, it fired this error:
   ```
   TypeError: stat:
   path should be string, bytes, os.PathLike or integer, not NoneType
@@ -116,31 +116,31 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
 
   This can be installed as follows:
   
-  `pip install python-rtmidi`
+  `pip3 install python-rtmidi`
   
   If you have an older version, then you can upgrade it with:
   
-  `pip install --upgrade python-rtmidi`
+  `pip3 install --upgrade python-rtmidi`
   
 - [Python Autologging module](https://pypi.org/project/Autologging)
 
   This can be installed as follows:
   
-  `pip install Autologging`
+  `pip3 install Autologging`
   
   If you have an older version, then you can upgrade it with:
   
-  `pip install --upgrade Autologging`
+  `pip3 install --upgrade Autologging`
   
 - [Python xmlschema module](https://pypi.org/project/xmlschema)
 
   This can be installed as follows:
   
-  `pip install xmlschema`
+  `pip3 install xmlschema`
   
   If you have an older version, then you can upgrade it with:
   
-  `pip install --upgrade xmlschema`
+  `pip3 install --upgrade xmlschema`
   
 - Under Windows, you may need to upgrade setuptools if you get the error:
 
@@ -148,11 +148,11 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
   
   To do so, run this command:
   
-  `pip install --upgrade setuptools`
+  `pip3 install --upgrade setuptools`
 
-- Alternativelly to all **pip** commands, you can also use the **requirements.txt** file as follows:
+- Alternativelly to all **pip3** commands, you can also use the **requirements.txt** file as follows:
 
-  `pip install -r requirements.txt`
+  `pip3 install -r requirements.txt`
 
 All the python dependencies will be installed automatically. Since it is an easy way of doing it, you may not get the latest versions.
   
