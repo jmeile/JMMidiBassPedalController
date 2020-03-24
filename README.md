@@ -246,7 +246,7 @@ In order to make this to work, you will have to do the following steps:
 # Setting up the software
 - First figure out how the ports used by your **USB-TO-MIDI cable** are called. If your **MIDI** setup isn't going to change, then the port number should be also enough. In order to figure this out, run the software as follows:
   
-  `python FootController.py --list`
+  `python3 FootController.py --list`
   
   If using an **M-Audio USB UNO cable**, then the ports should be named similar to:
   * 1: USB Uno MIDI Interface
@@ -261,19 +261,19 @@ In order to make this to work, you will have to do the following steps:
 # Running the software
 Now you are ready to go. Go to the **src** folder, then type:
 
-`python FootController.py`
+`python3 FootController.py`
 
 Alternativelly, you can also setup another name for your configuration file, ie: *my-config.xml*. Under Windows, run the sofware as follows:
 
-`python FootController.py --config "C:\file\path\my-config.xml"`
+`python3 FootController.py --config "C:\file\path\my-config.xml"`
 
 or under Linux:
 
-`python FootController.py --config "/file/path/my-config.xml"`
+`python3 FootController.py --config "/file/path/my-config.xml"`
 
 If your file is saved on the same folder as *FootController.py*, then this should be enough:
 
-`python FootController.py --config "my-config.xml"`
+`python3 FootController.py --config "my-config.xml"`
 
 # Automatic start during system boot
 If you are planning to use the software, but you don't want to always start it
@@ -350,7 +350,7 @@ Under Linux, you don't need any additional software. You can create virtual port
     
 For seeing the available MIDI ports, you can run:
 
-  `python FootController.py --list`
+  `python3 FootController.py --list`
 
 ## Using the ManualTester script
 
@@ -360,7 +360,7 @@ For seeing the available MIDI ports, you can run:
   - Out Port (xml file): Virtual Port 2
 - Finally run the script:
 
-  `python ManualTester.py`
+  `python3 ManualTester.py`
   
   and setup this parameters:
   - In Port: choose Virtual Port 2
@@ -410,7 +410,7 @@ Alternativelly you could also use a **sequencer software**, ie: under Windows: [
 
 Finally you can activate the **debug mode** as follows:
 
-`python FootController.py --config "my-config.xml" --verbose`
+`python3 FootController.py --config "my-config.xml" --verbose`
 
 Then check the **log file**, which should be called: *debug.log* and it should be stored in the same folder of *FootController.py*. Please enable this mode only if you are experiencing problems; it may decrease the performance of your system.
 
