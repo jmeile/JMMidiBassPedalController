@@ -354,6 +354,7 @@ On MACOS you can use the "Audio MIDI Setup" app:
 - Double click the "IAC Driver" icon
 - Enable the: "Device is online" checkbox
 - Under "Ports" you can add new ports by clicking on the '+' sign.
+- If you want to rename the port name, then click on it and write the new name.
 - You can change the base name of your MIDI ports by setting a new "Device Name".
 - Finally click the "Apply" button.
  
