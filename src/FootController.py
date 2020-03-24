@@ -17,6 +17,7 @@ There you will see the diferent command-line options supported by the script.
 """
 from __future__ import print_function
 import os
+import platform
 from MainArgumentParser import MainArgumentParser
 from CustomLogger import CustomLogger
 import logging
@@ -60,29 +61,6 @@ if __name__ == "__main__":
   if (file_log_level == logging.DEBUG):
     logger.debug("--verbose was detected, DEBUG log was enabled")
 
-  midi = MidiConnector(args)
-  status = None
-  logger.info("Initializing main loop")
-  while status == None:
-    status = midi.start()
-    command = None
-    if status == "Restart":
-      logger.info("Controller restart received")
-      #Here nothing need to be done. The loop will restart MIDI
-    elif status == "Reboot":
-      logger.info("Controller reboot received")
-      command = get_reboot_command()
-    elif status == "Shutdown":
-      logger.info("Controller shutdown received")
-      command = get_shutdown_command()
-    else:
-      logger.info("Quitting controller")
-      break
-      
-    if command != None:
-      logger.debug("Running command: %s", command)
-      os.system(command)
-      
   def get_shutdown_command():
     """
     Gets the shutdown command according to the plattform
@@ -128,3 +106,27 @@ if __name__ == "__main__":
       raise Exception("Unsupported operating system")
     reboot_command += ' "MidiBassPedal restart"'
     return reboot_command
+
+  midi = MidiConnector(args)
+  status = None
+  logger.info("Initializing main loop")
+  while status == None:
+    status = midi.start()
+    command = None
+    if status == "Restart":
+      logger.info("Controller restart received")
+      #Here nothing need to be done. The loop will restart MIDI
+      status = None
+    elif status == "Reboot":
+      logger.info("Controller reboot received")
+      command = get_reboot_command()
+    elif status == "Shutdown":
+      logger.info("Controller shutdown received")
+      command = get_shutdown_command()
+    else:
+      logger.info("Quitting controller")
+      break
+      
+    if command != None:
+      logger.debug("Running command: %s", command)
+      os.system(command)

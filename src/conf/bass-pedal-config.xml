@@ -27,7 +27,7 @@
             xsi:schemaLocation="https://www.technosoft.solutions/xsd 
             MidiBassPedalController.xsd"
             xmlns="https://www.technosoft.solutions/xsd"
-            InPort="USB Uno MIDI Interface" OutPort="USB Uno MIDI Interface"
+            InPort="InPort" OutPort="OutPort"
             InChannel="1"
             OutBassPedalChannel="3" OutChordChannel="2"
             MidiEcho="true"
@@ -96,7 +96,7 @@
     <Pedal Note="D#" Octave="2" BankSelect="Next"/>
     
     <!-- Catches the note E2, then exits -->
-    <Pedal Note="E" Octave="2" BankSelect="Shutdown"/>
+    <Pedal Note="E" Octave="2" BankSelect="Reboot"/>
   </Bank>
   
   <!--
