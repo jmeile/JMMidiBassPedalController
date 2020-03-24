@@ -13,6 +13,8 @@ This software translates **NOTE ON/OFF** messages comming from a **foot controll
 - [Setting up the hardware](#setting-up-the-hardware)
 - [Setting up the software](#setting-up-the-software)
 - [Running the software](#running-the-software)
+- [Automatic start during system boot](#automatic-start-during-system-boot)
+  - [Scheduled Task (Windows)](#scheduled-task-Windows)
 - [Troubleshooting](#troubleshooting)
   - [Using the ManualTester script](#using-the-manualtester-script)
   - [Using the ManualTester script](#use-a-software-for-intercepting-midi-messages)
@@ -252,7 +254,7 @@ In order to make this to work, you will have to do the following steps:
   where:
   - The first part is the port number and the last part the port name.
 
-- After you have done this, open either the file: *sample-config.xml*, an **XML configuration file** with lots of comments documenting what to do, or: *bass-pedal-config.xml*, simple configuration with a **bass pedal controller** and save it as: *config.xml*
+- After you have done this, open either the file: *sample-config.xml*, an **XML configuration file** with lots of comments documenting what to do, or: *bass-pedal-config.xml*, simple configuration with a **bass pedal controller** and save it as: *config.xml* or any other meaningful name.
 
 - Open that file and modify it as you wish by filling your parameters, ie: **MIDI IN** port, **MIDI IN and OUT** channels, **NOTE ON** messages, etc..
 
@@ -272,6 +274,58 @@ or under Linux:
 If your file is saved on the same folder as *FootController.py*, then this should be enough:
 
 `python FootController.py --config "my-config.xml"`
+
+# Automatic start during system boot
+If you are planning to use the software, but you don't want to always start it
+manually, then you can use scheduled tasks on Windows or a service on Linux. You
+will find the needed files on the Automation folder.
+
+## Scheduled Task (Windows)
+
+You will find four files here:
+
+- **Start_FootController_Windows_Normal_Startup.xml**: this will schedule a task
+  with the following parameters:
+  - Run whether the user is logged on or not
+  - Run with highest privileges
+  - Trigger at system startup
+  - Action > start a program:
+    - Program: "C:\Program Files\Python37\python.exe"
+    - Arguments: "C:\Users\my_user\Documents\JMMidiBassPedalController\src\FootController.py" --config="conf\bass-pedal-config.xml"
+    - Start in: C:\Users\my_user\Documents\JMMidiBassPedalController\src
+  - Start the task only if the computer is on AC power -> this is disabled
+- **Start_FootController_Windows_Verbose_Startup.xml**: this is essentially the
+  same as the previous task, but the "--verbose" switch is enabled, so, debug
+  messages will be written to the log file.
+- **Start_FootController_Windows_Normal_Logon.xml**: this will schedule a task
+  with the following parameters:
+  - Run whether the user is logged on or not
+  - Run with highest privileges
+  - Trigger at system logon of any user and delay for 30 seconds
+  - Action > start a program:
+    - Program: "C:\Program Files\Python37\python.exe"
+    - Arguments: "C:\Users\my_user\Documents\JMMidiBassPedalController\src\FootController.py" --config="conf\bass-pedal-config.xml"
+    - Start in: C:\Users\my_user\Documents\JMMidiBassPedalController\src
+  - Start the task only if the computer is on AC power -> this is disabled
+- **Start_FootController_Windows_Verbose_Logon.xml**: this is essentially the
+  same as the previous task, but the "--verbose" switch is enabled, so, debug
+  messages will be written to the log file.
+  
+You will need to edit those files and change the python and your script paths.
+After having done this, you need to open the Windows Task Scheduler as
+administrator (Do not do this as a normal user; otherwise it won't work). Then
+import the desired XML file. After you confirm the changes, Windows will ask you
+for a user name; it is important that you use a user with admin rights.
+
+Please also note that the tasks with the startup trigger will only work with
+physical MIDI ports, ie: USB to MIDI cable and it must be connected before
+starting the system. Virtual ports created with loopMIDI because those ports are
+only created after a user logins in the system.
+
+For the logon tasks, if working with physical ports, ie: USB to MIDI cable, then
+you can drop the delay. For testing purposes, ie: using loopMIDI virtual ports,
+you need a delay from at least 30 seconds because those ports are created some
+seconds after the user logons.
 
 ## Troubleshooting
 If your equipment is not reacting as expected, then you can proceed as follows.

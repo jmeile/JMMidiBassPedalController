@@ -27,7 +27,7 @@
             xsi:schemaLocation="https://www.technosoft.solutions/xsd 
             MidiBassPedalController.xsd"
             xmlns="https://www.technosoft.solutions/xsd"
-            InPort="InPort" OutPort="OutPort"
+            InPort="USB Uno MIDI Interface" OutPort="USB Uno MIDI Interface"
             InChannel="1"
             OutBassPedalChannel="3" OutChordChannel="2"
             MidiEcho="true"
@@ -54,7 +54,7 @@
     <Pedal Note="D#" BassNote="D#" ChordNotes="G,A#,D#"/>
 
     <!-- Catches the note E1, then sends bass note E1 and E major chord -->
-    <Pedal Note="E" BassNote="E" ChordNotes="F#,B,E"/>
+    <Pedal Note="E" BassNote="E" ChordNotes="G#,B,E"/>
     
     <!-- Catches the note F1, then sends bass note F1 and F major chord -->
     <Pedal Note="F" BassNote="F" ChordNotes="F,A,C"/>
@@ -96,7 +96,7 @@
     <Pedal Note="D#" Octave="2" BankSelect="Next"/>
     
     <!-- Catches the note E2, then exits -->
-    <Pedal Note="E" Octave="2" BankSelect="Quit"/>
+    <Pedal Note="E" Octave="2" BankSelect="Shutdown"/>
   </Bank>
   
   <!--
