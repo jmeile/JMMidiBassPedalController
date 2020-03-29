@@ -121,7 +121,9 @@ only created after a user logins in the system.
 Under MACOS you have two alternatives for automatically starting tasks: either run
 the task when a user logons (Login Item) or during system startup (Launch Daemon
 or Agent). Personally, I prefer the last option, since you won't have to login to
-the system and it will be ready as soon as MACOS starts.
+the system and it will be ready as soon as MACOS starts. Please note that when
+running Daemons as root, the MIDI configuration for virtual ports isn't available;
+only physical port, ie: an USB to MIDI cable, are visible.
 
 ## Runing a Task whenever a user logons
 
