@@ -41,6 +41,12 @@ class CustomLogger(logging.getLoggerClass()):
     Overwrites the default constructor from logging.Logger. The only difference
     here is that level defaults to DEBUG instead of NOTSET
     """
+    if name == "xmlschema":
+      #This is an uggly hack; however, I didn't find a way of disabling the
+      #initial debug message from xmlschema. If I set level to "INFO" by
+      #default, then no matter what I do, I won't be able to change log level
+      #for files
+      level = logging.INFO
     super().__init__(name, level)
 
   def setup(self, console_log_level = logging.INFO, log_format = "%(message)s",

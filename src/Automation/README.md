@@ -1,0 +1,237 @@
+# Automatic start during system boot / logon
+
+If you are planning to use the software, but you don't want to always start it
+manually, then you can use scheduled tasks on Windows, a service on Linux, or
+a Launch Daemon/Agent on MACOS. You will find the needed files on the Automation
+folder.
+
+# Table of Contents
+
+- [Windows](#windows)
+  - [Runing a Task whenever a user logons](#runing-a-task-whenever-a-user-logons)
+  - [Runing a Task after Windows has started](#runing-a-task-after-windows-has-started)
+- [MACOS](#macos)
+  - [Runing a Task whenever a user logons](#runing-a-task-whenever-a-user-logons)
+  - [Runing a Task after MACOS has started](#runing-a-task-after-macos-has-started)
+
+# Windows
+
+Under Windows, some xml Tasks, that can be imported on the Windows Scheduler
+were created. Here you have two alternatives: either run the task when a user
+logons or during system startup. Personally, I prefer the last option, since you
+won't have to login to the system and it will be ready as soon as Windows starts.
+
+In order to import an xml Task do the following:
+
+- Type: "Task Scheduler" on the search field from Windows, then right click on:
+  "Task Scheduler", and choose: "Run as Administrator".
+
+- Select "Task Scheduler Library", right click on it, and select: "Import Task".
+
+- Choose one of the files mentioned above. 
+
+## Runing a Task whenever a user logons
+
+Here you will find these two files:
+
+- **Start_FootController_Windows_Normal_Logon.xml**: this will schedule a task
+  with the following parameters:
+  - Run whether the user is logged on or not
+  - Run with highest privileges
+  - Trigger at system logon of any user and delay for 30 seconds
+  - Action > start a program:
+    - Program:
+      `"C:\Program Files\Python37\python.exe"`
+    - Arguments:
+      `"C:\Users\my_user\Documents\JMMidiBassPedalController\src\FootController.py" --config="conf\bass-pedal-config.xml"`
+    - Start in:
+      `C:\Users\my_user\Documents\JMMidiBassPedalController\src`
+  - Start the task only if the computer is on AC power -> this is disabled
+
+- **Start_FootController_Windows_Verbose_Logon.xml**: this is essentially the
+  same as the previous task, but the "--verbose" switch is enabled, so, debug
+  messages will be written to the log file.
+
+After importing the files, you will need to edit the triggered action under
+the "Action" tab, then change the python path (*Program/script* section), the
+path to FootController script (*Add arguments* section), and the working
+directory (*Start in* section). Please note the following:
+
+- Paths on the "Program/script" and "Add arguments" section must be enclosed
+  by double qoutes.
+
+- The "Start in" section can be only a path and it can't be enclosed by double
+  qoutes; otherwise, the task won't run.
+
+Once you have confirmed the changes, Windows will ask you for a user name;  it
+is important that you use a user with admin rights.
+
+If working with physical ports, ie: USB to MIDI cable, then you can drop the
+start delay. For testing purposes, ie: using loopMIDI virtual ports, you need
+a delay from at least 30 seconds because those ports are created some seconds
+after the user logons.
+
+Another parameter that you could change is the user that will trigger the script,
+ie: if you want to run the task only when a specific user logons, then edit
+the "At log on" trigger and change: "Any user" to "Specific user", then select
+the user you want to use.
+
+## Runing a Task after Windows has started
+
+Here you will find these two files:
+
+- **Start_FootController_Windows_Normal_Startup.xml**: this will schedule a task
+  with the following parameters:
+  - Run whether the user is logged on or not
+  - Run with highest privileges
+  - Trigger at system startup
+  - Action > start a program:
+    - Program:
+      `"C:\Program Files\Python37\python.exe"`
+    - Arguments:
+      `"C:\Users\my_user\Documents\JMMidiBassPedalController\src\FootController.py" --config="conf\bass-pedal-config.xml"`
+    - Start in:
+      `C:\Users\my_user\Documents\JMMidiBassPedalController\src`
+  - Start the task only if the computer is on AC power -> this is disabled
+- **Start_FootController_Windows_Verbose_Startup.xml**: this is essentially the
+  same as the previous task, but the "--verbose" switch is enabled, so, debug
+  messages will be written to the log file.
+
+After importing the files, you will need to edit the triggered action under
+the "Action" tab, then change the python path (*Program/script* section), the
+path to FootController script (*Add arguments* section), and the working
+directory (*Start in* section). Please note the following:
+
+- Paths on the "Program/script" and "Add arguments" section must be enclosed
+  by double qoutes.
+
+- The "Start in" section can be only a path and it can't be enclosed by double
+  qoutes; otherwise, the task won't run.
+
+Once you have confirmed the changes, Windows will ask you for a user name;  it
+is important that you use a user with admin rights.
+
+Please also note that the tasks with the startup trigger will only work with
+physical MIDI ports, ie: USB to MIDI cable and it must be connected before
+starting the system. Virtual ports created with loopMIDI because those ports are
+only created after a user logins in the system.
+
+# MACOS
+
+Under MACOS you have two alternatives for automatically starting tasks: either run
+the task when a user logons (Login Item) or during system startup (Launch Daemon
+or Agent). Personally, I prefer the last option, since you won't have to login to
+the system and it will be ready as soon as MACOS starts.
+
+## Runing a Task whenever a user logons
+
+Here you will find this file:
+
+- **Start_FootController_MACOS_Logon.app**: this will schedule a task
+  as soon as a user logons. 
+
+In order to use this task, do the following:
+
+- Open a Finder Window.
+
+- Go to "Applications", then open "Automator".
+
+- Locate the File and open it.
+
+- Change the following variables:
+  - WORKING_DIR: Directory where the FootController.py script is located
+  - SCRIPT_OPTIONS: Script command line options. Set this to "--verbose"
+    to enable debug messages; otherwise, leave it as it is.
+  - PYTHON_BIN: Path to the python3 binary
+  - CONFIG_FILE: Configuration file to use
+
+- You may test if it is working by pressing the "Run" button. Then try to send
+  messages with the ManualTester.py script.
+
+- Go to "Apple menu > System Preferences", then choose: "Users & Groups".
+
+- Select the user to run the task (usually: "Current User"), then click the "Login
+  Items" tab.
+
+- Add the .app file by clicking on the '+' (plus) sign.
+
+Now the task will be executed as soon as that user logons.
+
+Please take in note that "Reboot" and "Restart" commands won't work here because
+those commands need root privileges and the "Login Items" will be run with normal
+user rights.
+
+## Runing a Task after MACOS has started
+
+To install this as a Launch Agent or Daemon do the following:
+
+- Copy the file: technosoft.solutions.run_foot_controller.plist to either
+  - /Library/LaunchAgents, /Library/LaunchDaemons -> The task will be run for all users.
+  - ~/Library/LaunchAgents -> The task will be run only for the current user. 
+
+- Then edit the .plist file and change this settings:
+  - UserName: Use this only if seting up a LaunchDaemon. This is the user that
+    will run the Daemon. If not setup, root will be the default. If you copy this file
+    to either /Library/LaunchAgents or ~/Library/LaunchAgents, then it will run as root
+    or the current user respectively.
+  - ProgramArguments: Here you need to setup the right path to the shell script:
+    Start_FootController_MACOS_Startup.sh. It must be an absolute path.
+  - WorkingDirectory: Path containing the shell script. It is used to set some relative
+    paths to the log files.
+  - StandardOutPath: This is the path were the status messages will be saved. It can be
+    either relative to WorkingDirectory or an absolute path.
+  - StandardErrorPath: Path for the error log. It can be either relative to
+    WorkingDirectory or an absolute path.
+
+- Open the Start_FootController_MACOS_Startup.sh script and edit this variables:
+  - WORKING_DIR: Directory where the FootController.py script is located
+  - SCRIPT_OPTIONS: Script command line options. Set this to "--verbose"
+    to enable debug messages; otherwise, leave it as it is.
+  - PYTHON_BIN: Path to the python3 binary
+  - CONFIG_FILE: Configuration file to use
+
+- Now go on a Terminal, go to the directory were you copied the .plist file:
+  `cd ~/Library/LauchAgents`
+
+- Register and load the daemon:
+  `launchctl load -w technosoft.solutions.run_foot_controller.plist`
+
+- The daemon should be running now. To verify it run:
+  launchctl list | grep technosoft
+
+  If everything goes well, then you should see something similar to this:
+  3134	0	technosoft.solutions.run_foot_controller
+
+  3134 is the id of the running process, which may be different in your case. On
+  the other hand, if you get a dash on the begin, ie:
+
+  -	78	technosoft.solutions.run_foot_controller
+
+  it means that the daemon didn't start because of a configuration error, ie:
+  - The user running the daemon doesn't have excecution permissions of the
+    Start_FootController_MACOS_Startup.sh script. To correct this run this command:
+    `sudo chmod +x Start_FootController_MACOS_Startup.sh`
+  - The user running the daemon doesn't have write permissions on the log files.
+    To correct this, run this command:
+    `sudo chmod +w status.log error.log`
+  - The user running the daemon doesn't have reading permissions on the folders
+    where the FootController.py script is located. To correct this, run this
+    command:
+    `sudo chmod -R +r /path/to/FootController`
+  - The paths in the "ProgramArguments" and the "WorkingDirectory" are wrong or not
+    accessible.
+
+  You can also debug daemons with this utility (not for free, but on the trial
+  mode will detect errors):
+  - [LaunchControl / The launchd GUI](https://www.soma-zone.com/LaunchControl)
+
+  The file: /var/log/system.log may also have some clues.
+
+  If you want to remove the Daemon, then run:
+  `launchctl unload -w technosoft.solutions.run_foot_controller.plist`
+
+  You can also stop the daemon like this:
+  `launchctl stop technosoft.solutions.run_foot_controller`
+
+  Or start it:
+  `launchctl start technosoft.solutions.run_foot_controller`

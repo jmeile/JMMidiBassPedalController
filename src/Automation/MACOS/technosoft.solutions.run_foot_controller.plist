@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>technosoft.solutions.run_foot_controller</string>
+
+    <!--
+      This will only work if using a LaunchDaemon. LaunchAgents will run as
+      the current user, so, this option is unsupported.
+    -->
+    <!--
+    <key>UserName</key>
+    <string>your_user</string>
+    -->
+
+    <key>ProgramArguments</key>
+    <array>
+      <string>/Users/your_user/Documents/JMMidiBassPedalController/src/Automation/MACOS/Start_FootController_MACOS_Startup.sh</string>
+    </array>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/your_user/Documents/JMMidiBassPedalController/src/Automation/MACOS</string>
+
+    <key>StandardOutPath</key>
+    <string>status.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>error.log</string>
+  </dict>
+</plist>
