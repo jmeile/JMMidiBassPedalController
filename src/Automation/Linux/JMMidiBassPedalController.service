@@ -1,0 +1,39 @@
+# JMMidiBassPedalController.service
+# By: Josef Meile <jmeile@hotmail.com> @ 27.02.2020
+# This project is licensed under the MIT License. Please see the LICENSE.md file
+# on the main folder of this code. An online version can be found here:
+# https://github.com/jmeile/JMMidiBassPedalController/blob/master/LICENSE.md
+
+# Linux service for Debian based distros, ie: Ubuntu, Raspbian, etc..
+
+# To install go to the folder where this script is located and run:
+# sudo ./Start_FootController_Linux_Startup.sh install
+
+# To remove run:
+# sudo ./Start_FootController_Linux_Startup.sh install
+
+# After the sevice gets installed, it will be automaticall started during boot
+# time; however, you can also do this manually by running:
+# sudo service JMMidiBassPedalController start
+
+# To stop it run:
+# sudo service JMMidiBassPedalController stop 
+
+# To query its status run
+# sudo service JMMidiBassPedalController status
+
+#Note that linux services only work with absolute paths, so, you will have to
+#manually edit the paths for: WorkingDirectory, ExecStart, and ExecStop
+
+[Unit]
+Description=JMMidiBassPedalController by Josef Meile <jmeile@hotmail.com>
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/your_user/Documents/JMMidiBassPedalController/src/Automation/Linux
+ExecStart=/home/your_user/Documents/JMMidiBassPedalController/src/Automation/Linux/Start_FootController_Linux_Startup.sh start
+ExecStop=/home/your_user/Documents/JMMidiBassPedalController/src/Automation/Linux/Start_FootController_Linux_Startup.sh stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
