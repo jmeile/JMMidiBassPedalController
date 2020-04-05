@@ -25,6 +25,12 @@
       InPort="1" OutPort="3"
     - or the port name: 
       InPort="loopMIDI Port" OutPort="*loopMIDI*"
+    - you can also make the software to create the virtual ports:
+      InPort="Virtual:Midi In" OutPort="Virtual:Midi Out"
+      where:
+      - The Keyword: "Virtual:" indicates it is a virtual port
+      - The part after the ":" is the name you want to use. On this case, I set
+        it to "Midi In" and "Midi Out".
       
       On the first definition: "InPort", the full port name: "loopMIDI Port"
       will be used. On the second definition: "OutPort" only part of the name:

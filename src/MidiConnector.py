@@ -16,11 +16,15 @@ import traceback
 import sys
 import fnmatch
 from rtmidi import MidiIn, MidiOut
+from rtmidi.midiutil import open_midiinput, open_midioutput
 from MidiProcessor import MidiProcessor
 from CustomLogger import CustomLogger, PrettyFormat
 import logging
 from autologging import logged
 import xmlschema
+import platform
+
+VIRTUAL_PREFFIX = "Virtual:"
 
 #Creates a logger for this module.
 logger = logging.getLogger(CustomLogger.get_module_name())
@@ -49,8 +53,10 @@ class MidiConnector:
     self._midi_out = None
     self._in_ports = []
     self._in_port = 0
+    self._use_virtual_in = False 
     self._out_ports = []
     self._out_port = 0
+    self._use_virtual_out = False
     self._xml_dict = {}
     self.__log.debug("MidiConnector was initialized:\n%s", 
                      PrettyFormat(self.__dict__))
@@ -140,32 +146,64 @@ class MidiConnector:
       
     self._xml_dict = xml_dict
 
-  def _open_port(self, midi_interface, midi_port):
+  def _open_port(self, midi_callback, midi_port, is_virtual = False):
     """
-    Opens the specified MIDI port for the entered midi_interface
+    Opens the specified MIDI port for the entered midi_callback
     Parameters:
-    * midi_interface: MIDI interface that will be opened
+    * midi_callback: callback to open the port 
     * midi_port: MIDI port used to open the MIDI interface
+    * is_virtual: whether or not the port is virtual
+    Returns:
+    * In case of opening a virtual port, it will return a MIDI interface
     """
-    self.__log.debug("Opening MIDI port: %s", str(midi_port))
+    midi_interface = None
+    if not is_virtual:
+      self.__log.debug("Opening MIDI port: %s", str(midi_port))
+    else:
+      self.__log.debug("Opening Virtual MIDI port")
     try:
-      midi_interface.open_port(midi_port)
+      if is_virtual:
+        midi_interface = midi_callback(use_virtual = True, interactive = False,
+                                       port_name = midi_port,
+                                       client_name = VIRTUAL_PREFFIX[:-1])[0]
+      else:
+        midi_callback(port = midi_port)
     except:
       error = traceback.format_exc()
       self.__log.info(error)
       self._free_midi()
       sys.exit()
+    return midi_interface
 
   def _open_ports(self):
     """
     Opens the entered MIDI ports
     """
-    self._open_port(self._midi_in, self._in_port)
-    self.__log.info("MIDI IN Port: '%s' was opened",
-                    self._in_ports[self._in_port])
-    self._open_port(self._midi_out, self._out_port)
-    self.__log.info("MIDI OUT Port: '%s' was opened",
-                    self._out_ports[self._out_port])
+    midi_callback = self._midi_in.open_port
+    if self._use_virtual_in:
+      midi_callback = open_midiinput
+      port_name = self._in_port
+    else:
+      port_name = self._in_ports[self._in_port] 
+    midi_interface = self._open_port(midi_callback, self._in_port,
+                                     self._use_virtual_in)
+    if midi_interface != None:
+      del self._midi_in
+      self._midi_in = midi_interface
+    self.__log.info("MIDI IN Port: '%s' was opened", port_name)
+
+    midi_callback = self._midi_out.open_port
+    if self._use_virtual_out:
+      midi_callback = open_midioutput
+      port_name = self._out_port
+    else:
+      port_name = self._out_ports[self._out_port] 
+    midi_interface = self._open_port(midi_callback, self._out_port,
+                                     self._use_virtual_out)
+    if midi_interface != None:
+      del self._midi_out
+      self._midi_out = midi_interface
+    self.__log.info("MIDI OUT Port: '%s' was opened", port_name)
 
   def _close_port(self, midi_interface):
     """
@@ -185,11 +223,17 @@ class MidiConnector:
     Closes all opened MIDI ports
     """
     self._close_port(self._midi_in)
-    self.__log.info("MIDI IN Port: '%s' was closed",
-                    self._in_ports[self._in_port])
+    if self._use_virtual_in:
+      port_name = self._in_port
+    else:
+      port_name = self._in_ports[self._in_port]
+    self.__log.info("MIDI IN Port: '%s' was closed", port_name)
     self._close_port(self._midi_out)
-    self.__log.info("MIDI OUT Port: '%s' was closed",
-                    self._out_ports[self._out_port])
+    if self._use_virtual_out:
+      port_name = self._out_port
+    else:
+      port_name = self._out_ports[self._out_port]
+    self.__log.info("MIDI OUT Port: '%s' was closed", port_name)
 
   def _parse_port(self, port_list, arg_name):
     """
@@ -197,50 +241,71 @@ class MidiConnector:
     Parameters:
     * port_list: List of available MIDI ports
     * arg_name: name of the argument to get. It can be: InPort or OutPort
+    Returns:
+    * A tupple containing:
+      - either a port index or a virtual port string name
+      - either if using a virtual or a real port
     """
     self.__log.debug("Getting: %s from:\n%s", arg_name, PrettyFormat(port_list))
+    use_virtual = False
     num_ports = len(port_list)
     port_value = self._xml_dict.get('@'+arg_name, num_ports)
     self.__log.debug("Port value: %s", port_value)
     if (type(port_value) == str) and port_value.isdigit():
       port_value = int(port_value)
     elif type(port_value) == str:
-      self.__log.debug("Searching port")
-      #On this case, a string with part of the name was given, so, it
-      #will be searched in the available ports
-      port_index = 0
-      port_found = False
-      for port_name in port_list:
-        filtered = fnmatch.filter([port_name], port_value)
-        if filtered != []:
-          port_found = True
-          break
-        port_index += 1
-      if not port_found:
-        self.__log.info("The %s: %s wasn't found.", arg_name, port_value)
+      is_windows = (platform.system() == "Windows") 
+      if port_value.startswith(VIRTUAL_PREFFIX):
+        if not is_windows:
+          #Virtual port only work unser MACOS and Linux. Windows doesn't
+          #supports this. On the last operating system, the Virtual part will be
+          #removed and it will be threatened as a normal port. You can assure
+          #compatibilty between Windows and other OS by creating first the ports
+          #with loopMIDI
+          use_virtual = True
+        port_value = port_value[len(VIRTUAL_PREFFIX):]
+      if not use_virtual: 
+        self.__log.debug("Searching port")
+        #On this case, a string with part of the name was given, so, it
+        #will be searched in the available ports
+        port_index = 0
+        port_found = False
+        for port_name in port_list:
+          filtered = fnmatch.filter([port_name], port_value)
+          if filtered != []:
+            port_found = True
+            break
+          port_index += 1
+        if not port_found:
+          self.__log.info("The %s: %s wasn't found.", arg_name, port_value)
+          self._free_midi()
+          self.__log.debug("Port wasn't found, exiting")
+          sys.exit()
+        port_value = port_index + 1
+        self.__log.debug("Port was found, index: %d", port_value)
+      else:
+        self.__log.debug("Virutal Port will be used")
+  
+    if not use_virtual:
+      #Internally, port numbers start from 0 because they are in an array
+      port_value -= 1
+      if port_value >= num_ports:
+        self.__log.info("Invalid port number was supplied")
         self._free_midi()
-        self.__log.debug("Port wasn't found, exiting")
+        self.__log.debug("Exiting after getting invalid port")
         sys.exit()
-      port_value = port_index + 1
-      self.__log.debug("Port was found, index: %d", port_value)
-    
-    #Internally, port numbers start from 0 because they are in an array
-    port_value -= 1
-    if port_value >= num_ports:
-      self.__log.info("Invalid port number was supplied")
-      self._free_midi()
-      self.__log.debug("Exiting after getting invalid port")
-      sys.exit()
       
-    return port_value
+    return port_value, use_virtual
   
   def _parse_ports(self):
     """
     Gets the passed ports to the command line
     """
     self.__log.debug("Parsing ports")
-    self._in_port = self._parse_port(self._in_ports, 'InPort')
-    self._out_port = self._parse_port(self._out_ports, 'OutPort')
+    self._in_port, self._use_virtual_in = self._parse_port(self._in_ports,
+                                                           'InPort')
+    self._out_port, self._use_virtual_out = self._parse_port(self._out_ports,
+                                                             'OutPort')
     self.__log.debug("Ports were parsed")
   
   def _open_midi(self):
