@@ -256,6 +256,8 @@ class MidiConnector:
           #compatibilty between Windows and other OS by creating first the ports
           #with loopMIDI
           use_virtual = True
+        elif port_value[-1] != '*':
+          port_value += '*'
         port_value = port_value[len(VIRTUAL_PREFFIX):]
       if not use_virtual: 
         self.__log.debug("Searching port")
