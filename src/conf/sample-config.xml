@@ -31,6 +31,10 @@
       - The Keyword: "Virtual:" indicates it is a virtual port
       - The part after the ":" is the name you want to use. On this case, I set
         it to "Midi In" and "Midi Out".
+      Please note that virtual ports aren't supported by Windows. In order to
+      guarantee that the configuration files are compatible in several operating
+      systems, you will have to create the port with loopMIDI before running the
+      software; for this, use the name after: "Virtual:".
       
       On the first definition: "InPort", the full port name: "loopMIDI Port"
       will be used. On the second definition: "OutPort" only part of the name:
@@ -263,8 +267,8 @@
       this; this is usefull if you are continuing changing your configuration,
       but the last bank always remains the same. Other posible values:
       - 'Quit': Quits the controller software.
-      - 'Restart': Restarts the controller software. Useful if you changed the
-        configuration file, and want to reload it.
+      - 'Reload': Stops and starts the controller software. Useful if you
+        changed the configuration file, and want to reload it.
       - 'Reboot': Reboots the system running the software.
       - 'Shutdown': Shutdowns the system running the software.
 

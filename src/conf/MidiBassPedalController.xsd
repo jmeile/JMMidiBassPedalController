@@ -518,7 +518,7 @@
               been pressed. You can either enter a number between 1 and 121 or
               'Next' (select next bank), 'Previous' (select previous bank),
               'Last' (select the last bank), 'Quit' (quit the controller
-              software), 'Restart' (restart the controller; here the whole xml
+              software), 'Reload' (restart the controller; here the whole xml
               config file will be reloaded), 'Reboot' (reboots the computer or
               microcontroller running the software), or 'Shutdown' (shutdowns
               the system).
@@ -595,13 +595,13 @@
         <xs:documentation>
           This type is a value between 1 and 121 or 'Next' (select next bank),
           'Previous' (select previous bank), 'Last' (select the last bank),
-          'Quit' (quit the controller software), 'Restart' (restart the
+          'Quit' (quit the controller software), 'Reload' (restart the
           controller; here the whole xml config file will be reloaded), 'Reboot'
           (reboots the computer or microcontroller running the software), or
           'Shutdown' (shutdowns the system).
         </xs:documentation>
       </xs:annotation>
-      <xs:pattern value="Next|Previous|Last|Quit|Restart|Reboot|Shutdown|[1-9]|[1-9][0-9]|1[0-1][0-9]|12[0-1]"/>
+      <xs:pattern value="Next|Previous|Last|Quit|Reload|Reboot|Shutdown|[1-9]|[1-9][0-9]|1[0-1][0-9]|12[0-1]"/>
     </xs:restriction>
   </xs:simpleType>
 

@@ -32,7 +32,7 @@ NOTE_VELOCITIES = {
 #Special BankSelect commands
 BANK_SELECT_FUNCTIONS = {
   124: 'Quit',
-  125: 'Restart',
+  125: 'Reload',
   126: 'Reboot',
   127: 'Shutdown'
 }

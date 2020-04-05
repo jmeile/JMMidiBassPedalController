@@ -427,7 +427,7 @@ class MidiProcessor(MidiInputHandler):
             bank_select = current_pedal.get("@BankSelect")
             if bank_select != None:
               #Now the BANK SELECT message will be processed
-              if bank_select not in ["Quit", "Restart", "Reboot", "Shutdown"]:
+              if bank_select not in ["Quit", "Reload", "Reboot", "Shutdown"]:
                 self._current_bank = bank_select
                 self.__log.info("Bank changed to: %d", bank_select + 1)
               else:

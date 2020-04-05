@@ -159,7 +159,7 @@ In order to use this task, do the following:
 
 Now the task will be executed as soon as that user logons.
 
-Please take in note that "Reboot" and "Restart" commands won't work here because
+Please take in note that "Reboot" and "Shutdown" commands won't work here because
 those commands need root privileges and the "Login Items" will be run with normal
 user rights.
 

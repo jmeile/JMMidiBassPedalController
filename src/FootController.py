@@ -113,8 +113,8 @@ if __name__ == "__main__":
   while status == None:
     status = midi.start()
     command = None
-    if status == "Restart":
-      logger.info("Controller restart received")
+    if status == "Reload":
+      logger.info("Controller reload received")
       #Here nothing need to be done. The loop will restart MIDI
       status = None
     elif status == "Reboot":

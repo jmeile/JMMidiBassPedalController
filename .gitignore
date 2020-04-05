@@ -1,4 +1,5 @@
 src/__pycache__/
+src/conf/jm-test*.xml
 *.log
 *.log.*
 ~*.xlsx

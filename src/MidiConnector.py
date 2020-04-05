@@ -16,7 +16,7 @@ import traceback
 import sys
 import fnmatch
 from rtmidi import MidiIn, MidiOut
-from rtmidi.midiutil import open_midiinput, open_midioutput
+from rtmidi.midiutil import open_midiport
 from MidiProcessor import MidiProcessor
 from CustomLogger import CustomLogger, PrettyFormat
 import logging
@@ -68,7 +68,7 @@ class MidiConnector:
     * It will either list the available MIDI ports, run in interative or
       silent mode, according to the passed command line options
     Returns:
-    * A status string; either: "Quit", "Restart", "Reboot", or "Shutdown"
+    * A status string; either: "Quit", "Reload", "Reboot", or "Shutdown"
     """
     self.__log.info("Starting MidiConnector")
     status = None
@@ -104,7 +104,7 @@ class MidiConnector:
         status = midi_processor.read_midi()
         self.__log.info("Exiting")
         self._close_ports()
-    self._free_midi()
+        self._free_midi()
     self.__log.debug("MidiConnector has been ended")
     return status
 
@@ -146,28 +146,31 @@ class MidiConnector:
       
     self._xml_dict = xml_dict
 
-  def _open_port(self, midi_callback, midi_port, is_virtual = False):
+  def _open_port(self, interface_type, midi_port, is_virtual = False):
     """
     Opens the specified MIDI port for the entered midi_callback
     Parameters:
-    * midi_callback: callback to open the port 
+    * interface_type: which interface to open: 'input' or 'output' 
     * midi_port: MIDI port used to open the MIDI interface
     * is_virtual: whether or not the port is virtual
     Returns:
     * In case of opening a virtual port, it will return a MIDI interface
     """
-    midi_interface = None
     if not is_virtual:
       self.__log.debug("Opening MIDI port: %s", str(midi_port))
+      port_name = None
+      client_name = None
     else:
       self.__log.debug("Opening Virtual MIDI port")
+      port_name = midi_port
+      midi_port = None
+      client_name = VIRTUAL_PREFFIX[:-1]
     try:
-      if is_virtual:
-        midi_interface = midi_callback(use_virtual = True, interactive = False,
-                                       port_name = midi_port,
-                                       client_name = VIRTUAL_PREFFIX[:-1])[0]
-      else:
-        midi_callback(port = midi_port)
+      midi_interface = open_midiport(port = midi_port, type_ = interface_type,
+                                     use_virtual = is_virtual,
+                                     interactive = False,
+                                     client_name = client_name,
+                                     port_name = port_name)[0]
     except:
       error = traceback.format_exc()
       self.__log.info(error)
@@ -179,30 +182,20 @@ class MidiConnector:
     """
     Opens the entered MIDI ports
     """
-    midi_callback = self._midi_in.open_port
+    self._midi_in = self._open_port("input", self._in_port,
+                                    self._use_virtual_in)
     if self._use_virtual_in:
-      midi_callback = open_midiinput
       port_name = self._in_port
     else:
       port_name = self._in_ports[self._in_port] 
-    midi_interface = self._open_port(midi_callback, self._in_port,
-                                     self._use_virtual_in)
-    if midi_interface != None:
-      del self._midi_in
-      self._midi_in = midi_interface
     self.__log.info("MIDI IN Port: '%s' was opened", port_name)
 
-    midi_callback = self._midi_out.open_port
+    self._midi_out = self._open_port("output", self._out_port,
+                                     self._use_virtual_out)
     if self._use_virtual_out:
-      midi_callback = open_midioutput
       port_name = self._out_port
     else:
       port_name = self._out_ports[self._out_port] 
-    midi_interface = self._open_port(midi_callback, self._out_port,
-                                     self._use_virtual_out)
-    if midi_interface != None:
-      del self._midi_out
-      self._midi_out = midi_interface
     self.__log.info("MIDI OUT Port: '%s' was opened", port_name)
 
   def _close_port(self, midi_interface):
@@ -323,8 +316,7 @@ class MidiConnector:
     except:
       error = traceback.format_exc()
       self.__log.info(error)
-      del self._midi_out
-      del self._midi_in
+      self._free_midi()
       return False
     self.__log.debug("MIDI interfaces were opened")
     return True
@@ -369,6 +361,7 @@ class MidiConnector:
       self.__log.debug("Got:\n%s", PrettyFormat(out_ports))
     self._in_ports = in_ports
     self._out_ports = out_ports
+    self._free_midi()
   
   def _get_formatted_port_list(self, port_list):
     """
