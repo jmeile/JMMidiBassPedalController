@@ -13,6 +13,9 @@ folder.
 - [MACOS](#macos)
   - [Runing a Task whenever a user logons](#runing-a-task-whenever-a-user-logons)
   - [Runing a Task after MACOS has started](#runing-a-task-after-macos-has-started)
+- [Linux](#linux)
+  - [Runing a Task after Linux has started](#runing-a-task-after-linux-has-started)
+
 
 # Windows
 
@@ -165,6 +168,11 @@ user rights.
 
 ## Runing a Task after MACOS has started
 
+Note: I didn't manage to make this work. It seems that MACOS will only start the
+MIDI devices as soon as a user logins. So, no way of doing it on an unattended
+installation. I guess you will have to run a logon script and setup your user
+to automatically login.
+
 To install this as a Launch Agent or Daemon do the following:
 
 - Copy the file: technosoft.solutions.run_foot_controller.plist to either
@@ -237,3 +245,43 @@ To install this as a Launch Agent or Daemon do the following:
 
   Or start it:
   `launchctl start technosoft.solutions.run_foot_controller`
+
+# Linux
+The scripts contained here only work for debian and its based distros, ie:
+Ubuntu and Raspbian. It depends on systemd, so, your Linux must have it.
+
+## Runing a Task after Linux has started
+In order to install this, first modify this file:
+`Start_FootController_Linux_Startup.sh`
+
+Modify this variables:
+* WORKING_DIR: Directory where this file is located.
+* SCRIPT_DIR: Directory where the FootController.py script is located
+* SCRIPT_OPTIONS: If you want that the script runs in debug mode, set it to:
+  `SCRIPT_OPTIONS="--verbose"`
+* PYTHON_BIN: Path to the python3 binary, usually: /usr/bin/python3
+* CONFIG_FILE: Configuration file to use
+
+Then modify the file:
+- WorkingDirectory: Location of the Start_Foot_Controller_Linux_Startup.sh file.
+- ExecStart: Command to start the service. You only have to modify the path to
+  the script. The final part: "Start_FootController_Linux_Startup.sh start"
+  remains the same.
+- ExecStop: Command to stop the service. You only have to modify the path to the
+  script. The final part: "Start_FootController_Linux_Startup.sh stop" remains
+  the same.
+
+Once this is done, you can install the script:
+`sudo ./Start_FootController_Linux_Startup.sh install`
+
+The script will be started automatically during boot.
+
+Here some usefull commands:
+- To manually starting it, run:
+  `sudo service JMMidiBassPedalController start` 
+- To stop it run:
+  `sudo service JMMidiBassPedalController stop` 
+- To query its status, run:
+  `sudo service JMMidiBassPedalController status` 
+- To remove the service, run:
+  `sudo ./Start_FootController_Linux_Startup.sh remove`

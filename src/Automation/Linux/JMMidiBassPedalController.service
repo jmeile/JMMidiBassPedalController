@@ -30,9 +30,18 @@ Description=JMMidiBassPedalController by Josef Meile <jmeile@hotmail.com>
 
 [Service]
 Type=oneshot
+
+#Location of the Start_Foot_Controller_Linux_Startup.sh file 
 WorkingDirectory=/home/your_user/Documents/JMMidiBassPedalController/src/Automation/Linux
+
+#Command to start the service. You only have to modify the path to the script
+#The final part: "Start_FootController_Linux_Startup.sh start" remains the same
 ExecStart=/home/your_user/Documents/JMMidiBassPedalController/src/Automation/Linux/Start_FootController_Linux_Startup.sh start
+
+#Command to stop the service. You only have to modify the path to the script
+#The final part: "Start_FootController_Linux_Startup.sh start" remains the same
 ExecStop=/home/your_user/Documents/JMMidiBassPedalController/src/Automation/Linux/Start_FootController_Linux_Startup.sh stop
+
 RemainAfterExit=yes
 
 [Install]

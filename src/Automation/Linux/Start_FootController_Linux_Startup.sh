@@ -29,7 +29,7 @@ SCRIPT_DIR="/home/your_user/Documents/JMMidiBassPedalController/src"
 #Set this to "--verbose" to enable debug messages
 SCRIPT_OPTIONS=""
 
-#Path to the python3 binary
+#Path to the python3 binary, usually /usr/bin/python3
 PYTHON_BIN="/usr/bin/python3"
 
 #Configuration file to use
@@ -40,17 +40,17 @@ stop()
   echo `date` " " `whoami` " Received a signal to shutdown"
 }
 
-function start()
+start()
 {
   echo `date` " " `whoami` " Starting..."
   cd $SCRIPT_DIR
-  $PYTHON_BIN FootController.py --config=$CONFIG_FILE $SCRIPT_OPTIONS
+  ( $PYTHON_BIN FootController.py --config=$CONFIG_FILE $SCRIPT_OPTIONS ) &
 }
 
 install()
 {
   echo "Installing the $SERVICE_NAME service"
-  cd $WORKING_FOLDER
+  cd $WORKING_DIR
   sudo cp $SERVICE_NAME.service /etc/systemd/system
   sudo systemctl enable $SERVICE_NAME
   sudo systemctl daemon-reload
@@ -59,10 +59,11 @@ install()
 
 remove()
 {
-        echo "Removing the SERVICE_NAME service"
-        sudo systemctl disable $SERVICE_NAME
-        rm /etc/systemd/system/$SERVICE_NAME.service
-        sudo  systemctl daemon-reload
+  echo "Removing the $SERVICE_NAME service"
+  sudo service $SERVICE_NAME stop
+  sudo systemctl disable $SERVICE_NAME
+  sudo rm /etc/systemd/system/$SERVICE_NAME.service
+  sudo systemctl daemon-reload
 }
 
 case "$1" in
