@@ -289,11 +289,21 @@ then you may need a software to create virtual midi ports:
 
   - [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html).
 
-Under Linux, you don't need any additional software. You can create virtual ports by running:
+Under Linux and MACOS, you don't need any additional software. You can create
+virtual ports by setting them on the configuration file, ie:
+`InPort="Virtual:MIDI IN" OutPort="Virtual:MIDI OUT"`
 
-    `sudo modprobe snd-virmidi snd_index=1`
+where:
+- The string after the keyword: "Virtual:" is the name you want to give to the
+  port.
+  
+Under Linux, it is also possible to create virtual ports as follows:
+`sudo modprobe snd-virmidi snd_index=1`
 
-On MACOS you can use the "Audio MIDI Setup" app:
+However, I didn't manage to make the MIDI connections working with those ports,
+so, I used rtmidi virtual ports instead.
+
+Alternativelly, on MACOS you can use the "Audio MIDI Setup" app:
 - Open the Finder and go to: Applications > Utilities
 - Click on: "Audio MIDI Setup.app"
 - On the "Window" menu, choose: "Show MIDI Studio"
