@@ -346,6 +346,134 @@ In order to make this to work, you will have to do the following steps:
   keyboard for doing this. If you have an old keyboard, then you can select the
   channel from your right or left voices.
 
+## Setting up a Behringer FCB1010 (options)
+If using this foot controller with or without another controller, then you may
+need to setup some parameters, for example: MIDI Merge, NOTE ON/OFF messages,
+CONTROL CHANGE messages, etc.. The first thing you have to go is to go to either
+"GLOBAL CONFIGURATION" or "PRESET" mode.
+
+### Entering "GLOBAL CONFIGURATION" mode
+Keep the DOWN switch pressed during power-up for about 2.5 seconds to enter
+"GLOBAL CONFIGURATION" mode. Here the "DIRECT SELECT" LED in the display lights
+up.
+
+#### Enabling the "MERGE" function
+This function is needed if you want to connect two controllers: a Behringer
+FCB1010 and a bass pedal controller (ie: a Studiologic MP-117), see:\
+[Connecting a foot and a bass pedal controllers with a laptop or a Raspberry Pi](#connecting-a-foot-and-a-bass-pedal-controllers-with-a-laptop-or-a-raspberry-pi)\
+This will just merge the messages from your FCB1010 with your bass pedal
+controller, allowing them to use the same MIDI OUT port. In order to enable this
+function do follow this steps:
+- Go to the "GLOBAL CONFIGURATION" mode (click [here](#entering-global-configuration-mode)
+  for more details.
+- Use the "DOWN" or "UP" switches until you reach the "CONFIG" page.
+- Press the Switch 8 until its LED is on. This will activate the MERGE function.
+- You may want to setup other parameters before exiting this mode, ie: [set the
+  MIDI channel for the "CNT" function](#set-the-midi-channel-for-the-cnt-function)
+  or [set the MIDI channel for "NOTE" function](#set-the-midi-channel-for-the-note-function).
+- After you are done, press the "DOWN" switch for about 2.5 seconds to save
+  changes.
+
+#### Set the MIDI channel for the "CNT" function
+If you are going to use the FCB1010 for sending "BANK SELECT" messages, then you
+will have to set the right channel for the CNT (CONTROL CHANGE) function. Here
+you can use two controllers CNT1 or CNT2; which one you choose is up to you. For
+doing this, follow this steps:
+- Go to the "GLOBAL CONFIGURATION" mode (click [here](#entering-global-configuration-mode)
+  for more details).
+- Use the "DOWN" or "UP" switches until you reach the "SELECT MIDI FUNCTION"
+  page. Its LED starts flashing.
+- Then hit the switch 6. It will start flashing. If you want to use "CNT 2"
+  instead, then hit the switch 7.
+- Press the "UP/ENTER" switch to confirm that you want to change the MIDI channel
+  for that function.
+- Press the switches from 1 until 10 to change the channel value, which will
+  appear on the display, ie: choose "1" for MIDI channel 1.
+- Then press the "UP/ENTER" switch to go back to the "CONFIG" page and save the
+  changes. To undo changes, hit the "DOWN/ESCAPE" switch.
+- If you want, you can setup other parameters here, ie: [set the MIDI channel for
+  the "NOTE" function](#set-the-midi-channel-for-the-note-function).
+- After you are done, press the "DOWN" switch for about 2.5 seconds to save
+  changes.
+
+#### Set the MIDI channel for the "NOTE" function
+If you are going to use the FCB1010 for sending "NOTE ON/OFF" messages, then you
+will have to set the right channel for the NOTE function. For doing this, follow
+this steps:
+- Go to the "GLOBAL CONFIGURATION" mode (click [here](#entering-global-configuration-mode)
+  for more details).
+- Use the "DOWN" or "UP" switches until you reach the "SELECT MIDI FUNCTION"
+  page. Its LED starts flashing.
+- Then hit the switch 10. It will start flashing.
+- Press the "UP/ENTER" switch to confirm that you want to change the MIDI channel
+  for that function.
+- Press the switches from 1 until 10 to change the channel value, which will
+  appear on the display, ie: choose "1" for MIDI channel 1.
+- Then press the "UP/ENTER" switch to go back to the "CONFIG" page and save the
+  changes. To undo changes, hit the "DOWN/ESCAPE" switch.
+- If you want, you can setup other parameters here, ie: [set the MIDI channel for
+  the "CNT" function](#set-the-midi-channel-for-the-cnt-function).
+- After you are done, press the "DOWN" switch for about 2.5 seconds to save
+  changes.
+
+
+### Entering "PRESET programming" mode
+In order to change the messages sent by each switch, you will have to follow this
+steps:
+- Turn on the FCB1010
+- Hit the switch you want to change.
+- Press the "DOWN" switch for about 2.5 seconds until the SWITCH 1/SWITCH 2 LED
+  starts flashing.
+- Press the "UP/ENTER" switch to enter the programming mode.
+- Here you may [set "NOTE"](#set-note-messages) or ["CNT"](#set-cnt-messages)
+  messages.
+- Finally save changes, by pressing the "DOWN" swich for a few seconds.
+
+#### Set "NOTE" messages
+For sending bass notes and chords with the FCB1010, you will have to set "NOTE"
+messages. For doing this, follow this steps:
+- Go to the "PRESET programming" mode (click [here](#entering-preset-programming-mode)
+  for more details).
+- Press the switch 10 for a few seconds until its LED is on.
+- Hit it again. It will start flashing.
+- Confirm the selection by pressing the "UP/ENTER" switch.
+- Enter the note you want to send by pressing the switchs from 1 until 10.
+- Confirm the entered value by pressing the "UP/ENTER" switch or cancel it by
+  pressing "DOWN/ESCAPE".
+- At this point, you may select a different function and setup its value, ie:
+  [set "CNT" messages](#set-cnt-messages).
+- To save changes, press the "DOWN" swich for a few seconds.
+
+#### Set "CNT" messages
+For sending BANK SELECT messages with the FCB1010, you will have to either set
+"CNT1" or "CNT2" messages; this choice is up to you. In order to setup this
+messages, follow this steps:
+- Go to the "PRESET programming" mode (click [here](#entering-preset-programming-mode)
+  for more details).
+- Press the switch 6 (CNT1) or 7 (CNT2) for a few seconds until its LED is on.
+- Hit it again. It will start flashing.
+- Confirm the selection by pressing the "UP/ENTER" switch.
+- Enter the controller you want to use for "BANK SELECT" messages (usually 32;
+  depending on your xml configuration file) by pressing the switchs from 1 until
+  10.
+- Confirm the entered value by pressing the "UP/ENTER" switch or cancel it by
+  pressing "DOWN/ESCAPE".
+- Then enter the "BANK SELECT" message you want to sent:
+  - Value from 0 until 120 for selecting banks from 1 until 121 respectively.
+  - 121 will go to the previous bank.
+  - 122 will go to the next bank.
+  - 123 will go to the last bank.
+  - 124 will cause the controller software to quit.
+  - 125 will cause the controller software to restart and reread the xml
+     configuration file.
+  - 126 will cause the computer running the controller software to reboot.
+  - 127 will cause the computer running the controller software to shutdown.
+- Confirm the entered value by pressing the "UP/ENTER" switch or cancel it by
+  pressing "DOWN/ESCAPE".
+- At this point, you may select a different function and setup its value, ie:
+  [set "NOTE" messages](#set-note-messages).
+- To save changes, press the "DOWN" swich for a few seconds.
+
 # Setting up the software
 - First figure out how the ports used by your **USB-TO-MIDI cable** are called.
   If your **MIDI** setup isn't going to change, then the port number should be
