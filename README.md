@@ -53,63 +53,113 @@ From time to time, I use the following terms on my software:
   is that you can easily switch them while playing your keyboard. This is
   actually an optional feature that you may use or not.
 
-- **BANK SELECT message**: message used to change the active bank to another one, for example: you can navigate to the next, previous, or last banks, or you can eben jump to a specific bank.
+- **BANK SELECT message**: message used to change the active bank to another one,
+  for example: you can navigate to the next, previous, or last banks, or you can
+  also jump to a specific bank.
 
-- **Bass note:** for me, a bass note is the note that comes when you hit a bass pedal; it is usually the root note of a chord, but since you can setup your pedals as you want, this may not be always the case.
+- **Bass note:** for me, a bass note is the note that comes when you hit a bass 
+  pedal; it is usually the root note of a chord, but since you can setup your
+  pedals as you want, this may not be always the case.
 
-- **Bass pedal controller:** to be honest, I don't know if this term is correct; I think that **pedalboard** may be better, but I want to emphasize that it is a foot controller that looks like those bass pedals from an old organ, for example, the **studiologic MP-117**:
+- **Bass pedal controller:** to be honest, I don't know if this term is correct;
+  I think that **pedalboard** may be better, but I want to emphasize that it is
+  a foot controller that looks like those bass pedals from an old organ, for
+  example, the **studiologic MP-117**:
 
-[![studiologic MP-117 pedalboard](assets/Studiologic_MP-117_small.jpg)](assets/Studiologic_MP-117.jpg)
+  [![studiologic MP-117 pedalboard](assets/Studiologic_MP-117_small.jpg)](assets/Studiologic_MP-117.jpg)
 
-Please note that it is not necessary that you use a bass pedal controller, you can also use a foot controller like the **Behringer FCB1010**:
+  Please note that it is not necessary that you use a bass pedal controller, you
+  can also use a foot controller like the **Behringer FCB1010**:
 
-[![Behringer FCB1010 foot controller](assets/Behringer_FCB1010_small.jpg)](assets/Behringer_FCB1010.jpg)
+  [![Behringer FCB1010 foot controller](assets/Behringer_FCB1010_small.jpg)](assets/Behringer_FCB1010.jpg)
 
-  However the feeling won't be the same as when you use a real bass pedal; for example the switches may be harder and so difficult to push. Another advantage of the bass pedal controller is that it may also include the force (velocity) that you use to push an specific pedal.
-  Finally, you can also use both together, ie: the bass pedal controller for sending your chords and the foot controller to switch between banks and setup other things on your keyboard.
+  However the feeling won't be the same as when you use a real bass pedal; for
+  example the switches may be harder and so difficult to push. Another advantage
+  of the bass pedal controller is that it may also include the force (velocity)
+  that you use to push an specific pedal. Finally, you can also use both
+  together, ie: the bass pedal controller for sending your chords and the foot
+  controller to switch between banks and setup other things on your keyboard.
 
-- **CONTROL CHANGE message**: this message allows you to modify several settings on a keyboard or a controller, ie: switch between banks, change modulation and pitch wheel levels, modify the main volume, set several accoustic effects, etc.. In the software, I will use this mainly to switch between banks.
+- **CONTROL CHANGE message**: this message allows you to modify several settings
+  on a keyboard or a controller, ie: switch between banks, change modulation and
+  pitch wheel levels, modify the main volume, set several accoustic effects,
+  etc.. In the software, I will use this mainly to switch between banks.
 
-- **Foot controller:** it is basically a MIDI controller that you can manipulate with your feet. It allows you to do some common MIDI tasks, ie: send **NOTE ON**, **NOTE OFF**, **PROGRAM** and **CONTROLLER  CHANGE** messages. There are some that even allow you to send **SYSTEM EXCLUSIVE** messages.
+- **Foot controller:** it is basically a MIDI controller that you can manipulate
+  with your feet. It allows you to do some common MIDI tasks, ie: send
+  **NOTE ON**, **NOTE OFF**, **PROGRAM** and **CONTROLLER  CHANGE** messages.
+  There are some that even allow you to send **SYSTEM EXCLUSIVE** messages.
 
-- **MIDI** and related terms: this would cost me a lot of time to write down everything here, so, I will just let you some links:
-  -  [Summary of MIDI Messages from the MIDI association.](https://www.midi.org/specifications-old/item/table-1-summary-of-midi-message )
+- **MIDI** and related terms: this would cost me a lot of time to write down
+  everything here, so, I will just let you some links:
+  - [Summary of MIDI Messages from the MIDI association.](https://www.midi.org/specifications-old/item/table-1-summary-of-midi-message )
   - [MIDI definition from Wikipedia](https://en.wikipedia.org/wiki/MIDI)
   - [MIDI tutorial from Dominique Vandenneucker.](http://www.music-software-development.com/midi-tutorial.html)
   - [How MIDI Works, YouTube playlist from Andrew Kilpatrick.](https://www.youtube.com/watch?v=5IQvu8zlmJk&list=PLgWv1tajHyBsAo5OBLiQlY0hLC4ZagyJB)
  
-- **MIDI Echo function:** this is the ability of the software to fordward other not recognized messages to the connected devices. ie: let's say that you want to send a **System Exclusive** message; the software won't process it, but it will send it through the **MIDI OUT** port.
+- **MIDI Echo function:** this is the ability of the software to fordward other
+  not recognized messages to the connected devices. ie: let's say that you want
+  to send a **System Exclusive** message; the software won't process it, but it
+  will send it through the **MIDI OUT** port.
  
-- **Log file:** file where the debug information is going to be stored. It is usally named *debug.log* and it is located in the same folder of the main program. It is useful to help you detect possible issues that you may have with your equimpment.
+- **Log file:** file where the debug information is going to be stored. It is
+  usally named *debug.log* and it is located in the same folder of the main
+  program. It is useful to help you detect possible issues that you may have with
+  your equimpment.
  
-- **MIDI port:** it is the physical connection where you connect your MIDI cables on the keyboard and your foot controllers. Please note that you can also have virtual ports, which are used inside the software to simulate a real port. You can have **IN** (input) and **OUT** (output) ports to receive and send messages comming from or to other connected devices.
+- **MIDI port:** it is the physical connection where you connect your MIDI cables
+  on the keyboard and your foot controllers. Please note that you can also have
+  virtual ports, which are used inside the software to simulate a real port. You
+  can have **IN** (input) and **OUT** (output) ports to receive and send messages
+  comming from or to other connected devices.
 
-- **MIDI to USB cable**: since modern computers don't have **MIDI ports**, this cable allows you to have two ports: **MIDI IN and OUT** connected through an USB port. Right now, I use M-Audio Uno USB cable:
-[![M-Audio Uno USB cable](assets/M-Audio_Uno_USB_cable_small.jpg)](assets/M-Audio_Uno_USB_cable.jpg)
+- **MIDI to USB cable**: since modern computers don't have **MIDI ports**, this
+  cable allows you to have two ports: **MIDI IN and OUT** connected through an
+  USB port. Right now, I use M-Audio Uno USB cable:
+  [![M-Audio Uno USB cable](assets/M-Audio_Uno_USB_cable_small.jpg)](assets/M-Audio_Uno_USB_cable.jpg)
 
-- **NOTE ON/OFF message:** messages that results when hitting or releasing a note on a keyboard or a foot controller respectively. **NOTE ON** messages are commonly associated with at note velocity. You may also have this on a **NOTE OFF** message, but it is uncommon.
+- **NOTE ON/OFF message:** messages that results when hitting or releasing a note
+  on a keyboard or a foot controller respectively. **NOTE ON** messages are
+  commonly associated with at note velocity. You may also have this on a **NOTE
+  OFF** message, but it is uncommon.
 
-- **Note Transposition:** usually you can move notes by semitones, tones, and octaves, ie: if you have a C3 (middle C), you can transpose it by a semitone, then you get: C#3 or by an octave: C4. On the software, I will only use octave transposition; I don't see any utility on trasposing chords.
+- **Note Transposition:** usually you can move notes by semitones, tones, and
+  octaves, ie: if you have a C3 (middle C), you can transpose it by a semitone,
+  then you get: C#3 or by an octave: C4. On the software, I will only use octave
+  transposition; I don't see any utility on trasposing chords.
 
-- **Note velocity**: it is the pressure you apply to hit a key on your keyboard or bass pedal controller. It is commonly associated to the volume (see MIDI for more details).
+- **Note velocity**: it is the pressure you apply to hit a key on your keyboard
+  or bass pedal controller. It is commonly associated to the volume (see MIDI for
+  more details).
 
-- **Raspberry Pi**: think of it as a mini computer (micro controller to be exact), for example, the Raspberry Pi 4:
-[![Raspberry Pi 4](assets/Raspberry_pi_4_small.jpg)](assets/Raspberry_pi_4.jpg)
+- **Raspberry Pi**: think of it as a mini computer (micro controller to be
+  exact), for example, the Raspberry Pi 4:
+  [![Raspberry Pi 4](assets/Raspberry_pi_4_small.jpg)](assets/Raspberry_pi_4.jpg)
 
-They are really small and allow you to excecute some tasks that a computer also can do, but with the advantage that they are really small and usually after you setup them, then you don't need a keyboard or a screen to start it.
+  They are really small and allow you to excecute some tasks that a computer also
+  can do, but with the advantage that they are really small and usually after you
+  setup them, then you don't need a keyboard or a screen to start it.
 
-- **Sequencer software:** since the MIDI message are send sequentially to your keyboard, sequencer is a software that is used to catch those messages or send them. It counts with nice graphical tools, ie: message list (human readable list) and also a staff view to see the note messages.
+- **Sequencer software:** since the MIDI message are send sequentially to your
+  keyboard, sequencer is a software that is used to catch those messages or send
+  them. It counts with nice graphical tools, ie: message list (human readable
+  list) and also a staff view to see the note messages.
 
-- **System Exclusive message or SysEx:** this is a way of sending a manufacturer specific message to your keyboard, ie: activate a voice on the keyboard's panel.
+- **System Exclusive message or SysEx:** this is a way of sending a manufacturer
+  specific message to your keyboard, ie: activate a voice on the keyboard's
+  panel.
 
-- **XML file**: this is just a file where you can save the configuration of your bass foot controller.
+- **XML file**: this is just a file where you can save the configuration of your
+  bass foot controller.
 
 # Prerequisites
 
-Before installing the requirements, please make sure that you have admin
-rights. Under Linux/MACOS use:
+Before installing the requirements, please make sure that you have admin rights.
+Under Linux/MACOS use:
 
-`sudo <install_command>`
+```
+sudo <install_command>
+```
 
 Under Windows run a "**cmd**" (Command propt) as Administrator.
 
