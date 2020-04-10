@@ -16,6 +16,14 @@ in **banks**, which can be switched through **CONTROL CHANGE** messages.
   - [Connecting a foot controller to a laptop or a Rasberry Pi](#connecting-a-foot-controller-to-a-laptop-or-a-rasberry-pi)
   - [Connecting a foot and a bass pedal controllers with a laptop or a Raspberry Pi](#connecting-a-foot-and-a-bass-pedal-controllers-with-a-laptop-or-a-raspberry-pi)
 - [Setting up the hardware](#setting-up-the-hardware)
+  - [Setting up a Behringer FCB1010 (optional)](#setting-up-a-behringer-fcb1010-optional)
+    - [Entering "GLOBAL CONFIGURATION" mode](#entering-global-configuration-mode)
+      - [Enabling the "MERGE" function](#enabling-the-merge-function)
+      - [Set the MIDI channel for the "CNT" function](#set-the-midi-channel-for-the-cnt-function)
+      - [Set the MIDI channel for the "NOTE" function](#set-the-midi-channel-for-the-note-function)
+    - [Entering "PRESET programming" mode](#entering-preset-programming-mode)
+      - [Set "NOTE" messages](#set-note-messages)
+      - [Set "CNT" messages](#set-cnt-messages)
 - [Setting up the software](#setting-up-the-software)
 - [Running the software](#running-the-software)
 - [Automatic start during system boot](#automatic-start-during-system-boot)
@@ -306,7 +314,8 @@ a **Studiologic MP-117**), then you can connect them as follows:
 - The only thing that you need to be aware of if you are using a **Behringer
   FCB1010** is that you will have to enable the **Merge** function under the
   **GLOBAL CONFIGURATION**. This will fordward all messages comming from the
-  **MIDI IN** to the **MIDI OUT** port.
+  **MIDI IN** to the **MIDI OUT** port. For more information about this process,
+  see: [Setting up a Behringer FCB1010](#setting-up-a-behringer-fcb1010-optional)
 
 # Setting up the hardware
 In order to make this to work, you will have to do the following steps:
@@ -346,11 +355,15 @@ In order to make this to work, you will have to do the following steps:
   keyboard for doing this. If you have an old keyboard, then you can select the
   channel from your right or left voices.
 
-## Setting up a Behringer FCB1010 (options)
+## Setting up a Behringer FCB1010 (optional)
 If using this foot controller with or without another controller, then you may
-need to setup some parameters, for example: MIDI Merge, NOTE ON/OFF messages,
-CONTROL CHANGE messages, etc.. The first thing you have to go is to go to either
-"GLOBAL CONFIGURATION" or "PRESET" mode.
+need to setup some parameters, for example: [MIDI Merge](#enabling-the-merge-function),
+MIDI channel for [NOTE ON/OFF](#set-the-midi-channel-for-the-note-function) or
+[CONTROL CHANGE](#set-the-midi-channel-for-the-cnt-function) messages, values for
+[NOTE ON/OFF](#set-note-messages) or [CONTROL CHANGE](#set-cnt-messages), etc..
+The first thing you have to go is to go to either
+["GLOBAL CONFIGURATION"](#entering-global-configuration-mode) or
+["PRESET programming"](#entering-preset-programming-mode) mode.
 
 ### Entering "GLOBAL CONFIGURATION" mode
 Keep the DOWN switch pressed during power-up for about 2.5 seconds to enter
@@ -425,7 +438,7 @@ steps:
 - Press the "DOWN" switch for about 2.5 seconds until the SWITCH 1/SWITCH 2 LED
   starts flashing.
 - Press the "UP/ENTER" switch to enter the programming mode.
-- Here you may [set "NOTE"](#set-note-messages) or ["CNT"](#set-cnt-messages)
+- Here you may set ["NOTE"](#set-note-messages) or ["CNT"](#set-cnt-messages)
   messages.
 - Finally save changes, by pressing the "DOWN" swich for a few seconds.
 
@@ -441,7 +454,7 @@ messages. For doing this, follow this steps:
 - Confirm the entered value by pressing the "UP/ENTER" switch or cancel it by
   pressing "DOWN/ESCAPE".
 - At this point, you may select a different function and setup its value, ie:
-  [set "CNT" messages](#set-cnt-messages).
+  [Set "CNT" messages](#set-cnt-messages).
 - To save changes, press the "DOWN" swich for a few seconds.
 
 #### Set "CNT" messages
@@ -471,7 +484,7 @@ messages, follow this steps:
 - Confirm the entered value by pressing the "UP/ENTER" switch or cancel it by
   pressing "DOWN/ESCAPE".
 - At this point, you may select a different function and setup its value, ie:
-  [set "NOTE" messages](#set-note-messages).
+  [Set "NOTE" messages](#set-note-messages).
 - To save changes, press the "DOWN" swich for a few seconds.
 
 # Setting up the software
