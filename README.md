@@ -163,6 +163,7 @@ sudo <install_command>
 Under Windows run a "**cmd**" (Command propt) as Administrator.
 
 - [Python 3.7](https://www.python.org/downloads/release/python-376)
+
   Under Windows, I tried the pip3 installation with python 3.8 and it didn't
   work, it fired this error:
   ```
@@ -171,6 +172,7 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
   ```
 
 - [Python rtmidi module](https://pypi.org/project/python-rtmidi)
+
   This can be installed as follows:
   ```
   pip3 install python-rtmidi
@@ -181,6 +183,7 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
   ```
  
 - [Python Autologging module](https://pypi.org/project/Autologging)
+
   This can be installed as follows:
   ```
   pip3 install Autologging
@@ -191,6 +194,7 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
   ```
  
 - [Python xmlschema module](https://pypi.org/project/xmlschema)
+
   This can be installed as follows:
   ```
   pip3 install xmlschema
@@ -216,7 +220,7 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
   All the python dependencies will be installed automatically. Since it is an
   easy way of doing it, you may not get the latest versions.
  
-- MIDI USB interface, for example the [M-Audio Uno USB cable](https://www.m-audio.com/products/view/uno)
+- MIDI USB interface, for example the [M-Audio Uno USB cable](https://www.m-audio.com/products/view/uno).
   Another MIDI Audio interface or cable may also work. I tested this with the
   M-Audio cable.
  
