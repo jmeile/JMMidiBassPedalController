@@ -445,9 +445,9 @@ python3 FootController.py --list
   - In Port (xml file): Virtual Port 1
   - Out Port (xml file): Virtual Port 2
 - Finally run the script:
-
-  `python3 ManualTester.py`
-  
+  ```
+  python3 ManualTester.py
+  ```
   and setup this parameters:
   - In Port: choose Virtual Port 2
   - Out Port: choose Virtual Port 1

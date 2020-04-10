@@ -47,11 +47,17 @@ Here you will find these two files:
   - Trigger at system logon of any user and delay for 30 seconds
   - Action > start a program:
     - Program:
-      `"C:\Program Files\Python37\python.exe"`
+      ```
+      "C:\Program Files\Python37\python.exe"
+      ```
     - Arguments:
-      `"C:\Users\my_user\Documents\JMMidiBassPedalController\src\FootController.py" --config="conf\bass-pedal-config.xml"`
+      ```
+      "C:\Users\my_user\Documents\JMMidiBassPedalController\src\FootController.py" --config="conf\bass-pedal-config.xml"
+      ```
     - Start in:
-      `C:\Users\my_user\Documents\JMMidiBassPedalController\src`
+      ```
+      C:\Users\my_user\Documents\JMMidiBassPedalController\src
+      ```
   - Start the task only if the computer is on AC power -> this is disabled
 
 - **Start_FootController_Windows_Verbose_Logon.xml**: this is essentially the
@@ -93,11 +99,17 @@ Here you will find these two files:
   - Trigger at system startup
   - Action > start a program:
     - Program:
-      `"C:\Program Files\Python37\python.exe"`
+      ```
+      "C:\Program Files\Python37\python.exe"
+      ```
     - Arguments:
-      `"C:\Users\my_user\Documents\JMMidiBassPedalController\src\FootController.py" --config="conf\bass-pedal-config.xml"`
+      ```
+      "C:\Users\my_user\Documents\JMMidiBassPedalController\src\FootController.py" --config="conf\bass-pedal-config.xml"
+      ```
     - Start in:
-      `C:\Users\my_user\Documents\JMMidiBassPedalController\src`
+      ```
+      C:\Users\my_user\Documents\JMMidiBassPedalController\src
+      ```
   - Start the task only if the computer is on AC power -> this is disabled
 - **Start_FootController_Windows_Verbose_Startup.xml**: this is essentially the
   same as the previous task, but the "--verbose" switch is enabled, so, debug
@@ -124,12 +136,12 @@ only created after a user logins in the system.
 
 # MACOS
 
-Under MACOS you have two alternatives for automatically starting tasks: either run
-the task when a user logons (Login Item) or during system startup (Launch Daemon
-or Agent). Personally, I prefer the last option, since you won't have to login to
-the system and it will be ready as soon as MACOS starts. Please note that when
-running Daemons as root, the MIDI configuration for virtual ports isn't available;
-only physical port, ie: an USB to MIDI cable, are visible.
+Under MACOS you have two alternatives for automatically starting tasks: either
+run the task when a user logons (Login Item) or during system startup (Launch
+Daemon or Agent). Personally, I prefer the last option, since you won't have to
+login to the system and it will be ready as soon as MACOS starts. Please note
+that when running Daemons as root, the MIDI configuration for virtual ports isn't
+available; only physical port, ie: an USB to MIDI cable, are visible.
 
 ## Runing a Task whenever a user logons
 
@@ -158,8 +170,8 @@ In order to use this task, do the following:
 
 - Go to "Apple menu > System Preferences", then choose: "Users & Groups".
 
-- Select the user to run the task (usually: "Current User"), then click the "Login
-  Items" tab.
+- Select the user to run the task (usually: "Current User"), then click the
+  "Login Items" tab.
 
 - Add the .app file by clicking on the '+' (plus) sign.
 
@@ -179,20 +191,21 @@ to automatically login.
 To install this as a Launch Agent or Daemon do the following:
 
 - Copy the file: technosoft.solutions.run_foot_controller.plist to either
-  - /Library/LaunchAgents, /Library/LaunchDaemons -> The task will be run for all users.
+  - /Library/LaunchAgents, /Library/LaunchDaemons -> The task will be run for all
+    users.
   - ~/Library/LaunchAgents -> The task will be run only for the current user. 
 
 - Then edit the .plist file and change this settings:
   - UserName: Use this only if seting up a LaunchDaemon. This is the user that
-    will run the Daemon. If not setup, root will be the default. If you copy this file
-    to either /Library/LaunchAgents or ~/Library/LaunchAgents, then it will run as root
-    or the current user respectively.
+    will run the Daemon. If not setup, root will be the default. If you copy this
+    file to either /Library/LaunchAgents or ~/Library/LaunchAgents, then it will
+    run as root or the current user respectively.
   - ProgramArguments: Here you need to setup the right path to the shell script:
     Start_FootController_MACOS_Startup.sh. It must be an absolute path.
-  - WorkingDirectory: Path containing the shell script. It is used to set some relative
-    paths to the log files.
-  - StandardOutPath: This is the path were the status messages will be saved. It can be
-    either relative to WorkingDirectory or an absolute path.
+  - WorkingDirectory: Path containing the shell script. It is used to set some
+    relative paths to the log files.
+  - StandardOutPath: This is the path were the status messages will be saved. It
+    can be either relative to WorkingDirectory or an absolute path.
   - StandardErrorPath: Path for the error log. It can be either relative to
     WorkingDirectory or an absolute path.
 
@@ -204,10 +217,14 @@ To install this as a Launch Agent or Daemon do the following:
   - CONFIG_FILE: Configuration file to use
 
 - Now go on a Terminal, go to the directory were you copied the .plist file:
-  `cd ~/Library/LauchAgents`
+  ```
+  cd ~/Library/LauchAgents
+  ```
 
 - Register and load the daemon:
-  `launchctl load -w technosoft.solutions.run_foot_controller.plist`
+  ```
+  launchctl load -w technosoft.solutions.run_foot_controller.plist
+  ```
 
 - The daemon should be running now. To verify it run:
   launchctl list | grep technosoft
@@ -222,17 +239,24 @@ To install this as a Launch Agent or Daemon do the following:
 
   it means that the daemon didn't start because of a configuration error, ie:
   - The user running the daemon doesn't have excecution permissions of the
-    Start_FootController_MACOS_Startup.sh script. To correct this run this command:
-    `sudo chmod +x Start_FootController_MACOS_Startup.sh`
+    Start_FootController_MACOS_Startup.sh script. To correct this run this
+    command:
+    ```
+    sudo chmod +x Start_FootController_MACOS_Startup.sh
+    ```
   - The user running the daemon doesn't have write permissions on the log files.
     To correct this, run this command:
-    `sudo chmod +w status.log error.log`
+    ```
+    sudo chmod +w status.log error.log
+    ```
   - The user running the daemon doesn't have reading permissions on the folders
     where the FootController.py script is located. To correct this, run this
     command:
-    `sudo chmod -R +r /path/to/FootController`
-  - The paths in the "ProgramArguments" and the "WorkingDirectory" are wrong or not
-    accessible.
+    ```
+    sudo chmod -R +r /path/to/FootController
+    ```
+  - The paths in the "ProgramArguments" and the "WorkingDirectory" are wrong or
+    not accessible.
 
   You can also debug daemons with this utility (not for free, but on the trial
   mode will detect errors):
@@ -241,13 +265,19 @@ To install this as a Launch Agent or Daemon do the following:
   The file: /var/log/system.log may also have some clues.
 
   If you want to remove the Daemon, then run:
-  `launchctl unload -w technosoft.solutions.run_foot_controller.plist`
+  ```
+  launchctl unload -w technosoft.solutions.run_foot_controller.plist
+  ```
 
   You can also stop the daemon like this:
-  `launchctl stop technosoft.solutions.run_foot_controller`
+  ```
+  launchctl stop technosoft.solutions.run_foot_controller
+  ```
 
   Or start it:
-  `launchctl start technosoft.solutions.run_foot_controller`
+  ```
+  launchctl start technosoft.solutions.run_foot_controller
+  ```
 
 # Linux
 The scripts contained here only work for debian and its based distros, ie:
@@ -255,13 +285,17 @@ Ubuntu and Raspbian. It depends on systemd, so, your Linux must have it.
 
 ## Runing a Task after Linux has started
 In order to install this, first modify this file:
-`Start_FootController_Linux_Startup.sh`
+```
+Start_FootController_Linux_Startup.sh
+```
 
 Modify this variables:
 * WORKING_DIR: Directory where this file is located.
 * SCRIPT_DIR: Directory where the FootController.py script is located
 * SCRIPT_OPTIONS: If you want that the script runs in debug mode, set it to:
-  `SCRIPT_OPTIONS="--verbose"`
+  ```
+  SCRIPT_OPTIONS="--verbose"
+  ```
 * PYTHON_BIN: Path to the python3 binary, usually: /usr/bin/python3
 * CONFIG_FILE: Configuration file to use
 
@@ -275,16 +309,26 @@ Then modify the file:
   the same.
 
 Once this is done, you can install the script:
-`sudo ./Start_FootController_Linux_Startup.sh install`
+```
+sudo ./Start_FootController_Linux_Startup.sh install
+```
 
 The script will be started automatically during boot.
 
 Here some usefull commands:
 - To manually starting it, run:
-  `sudo service JMMidiBassPedalController start` 
+  ```
+  sudo service JMMidiBassPedalController start
+  ```
 - To stop it run:
-  `sudo service JMMidiBassPedalController stop` 
+  ```
+  sudo service JMMidiBassPedalController stop
+  ```
 - To query its status, run:
-  `sudo service JMMidiBassPedalController status` 
+  ```
+  sudo service JMMidiBassPedalController status
+  ```
 - To remove the service, run:
-  `sudo ./Start_FootController_Linux_Startup.sh remove`
+  ```
+  sudo ./Start_FootController_Linux_Startup.sh remove
+  ```
