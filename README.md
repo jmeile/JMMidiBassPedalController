@@ -398,6 +398,26 @@ located there or access an online version [here](https://github.com/jmeile/JMMid
 # Troubleshooting
 If your equipment is not reacting as expected, then you can proceed as follows.
 
+The most common problem would be that you get:
+
+`'python3' is not recognized as an internal or external command, operable
+program or batch file`
+
+under Windows. This is because on Windows, there is no python3, so, you will
+have to use either "python" or the full path to it, ie:
+`"C:\Program Files\Python37\python.exe"`
+
+Similarly, under Linux you may get:
+`-bash: python3: command not found`
+
+This is because python is not installed or your default python is already
+python3. On the first case, install python3, on a debian like distro this can be
+accomplished as follows:
+`sudo apt install python3`
+
+On the second case, then try to just run: `python`. Please make sure that it is
+a 3.x version.
+
 Before going in detail through the following options, if you are under Windows,
 then you may need a software to create virtual midi ports:
 
