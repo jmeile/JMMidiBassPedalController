@@ -448,13 +448,17 @@ For seeing the available MIDI ports, you can run:
   and setup this parameters:
   - In Port: choose Virtual Port 2
   - Out Port: choose Virtual Port 1
-  - MIDI IN channel and Bank select controller used by controller: use the ones defined on your config file
+  - MIDI IN channel and Bank select controller used by controller: use the ones
+    defined on your config file
   - Default velocity for NOTE ON messages: here you can use whatever you want
-  - Start sending NOTE ON/OFF, BANK SELECT, CONTROL CHANGE, raw MIDI, or SysEx messages.
+  - Start sending NOTE ON/OFF, BANK SELECT, CONTROL CHANGE, raw MIDI, or SysEx
+    messages.
 
 ## Use a software for intercepting MIDI messages
 
-You can debug your system by watching the **MIDI** messages comming out from your laptop or the **Raspberry Pi**. For doing this, you can use the following software:
+You can debug your system by watching the **MIDI** messages comming out from your
+laptop or the **Raspberry Pi**. For doing this, you can use the following
+software:
 
 - Under Windows:
   - [Bome Send SX](https://www.bome.com/products/sendsx).
@@ -472,39 +476,57 @@ Then setup the ports as follows:
 - Out Port (Bome Send SX / MIOS Studio 2): Virtual Port 1
 - Then begin to send NOTE IN, NOTE ON, and CC messages, ie:
   - 80 0F 00 -> Sends a NOTE OFF on channel 1, whith note = 15 (0x0F)
-  - 90 0F 40 -> Sends a NOTE ON on channel 1, whith note = 15 (0x0F), and velocity = 64 (0x40)
+  - 90 0F 40 -> Sends a NOTE ON on channel 1, whith note = 15 (0x0F), and
+    velocity = 64 (0x40)
   - B0 20 01 -> Send a CONTROL CHANGE message on channel 1, with
                 controller = 32 (0x20) and value = 01, which will select bank 2.
 
 If you sent notes that are defined on your XML configuration file, then you
 should see the resulting messages on the output of Bome Send SX or MIOS Studio 2.
 
-Other option would be to connect your foot controller to Bome Send SX or MIOS Studio 2. Here you will need the USB-TO-MIDI cable, then setup the system as follows:
+Other option would be to connect your foot controller to Bome Send SX or MIOS
+Studio 2. Here you will need the USB-TO-MIDI cable, then setup the system as
+follows:
 - Connect the USB-TO-MIDI to your laptop or Raspberry Pi USB port.
 - The part labeled with "TO MIDI OUT" connect it to your Foot Controller
-- Then on Bome Send SX or MIOS Studio 2 setup MIDI IN to: "USB Uno MIDI Interface"
-- Start pressing the pedals or switches, then you should see the output either in Bome Send SX or MIOS Studio 2.
+- Then on Bome Send SX or MIOS Studio 2 setup MIDI IN to: "USB Uno MIDI
+  Interface"
+- Start pressing the pedals or switches, then you should see the output either in
+  Bome Send SX or MIOS Studio 2.
 
 ## Using a sequencer software
 
-Alternativelly you could also use a **sequencer software**, ie: under Windows: [Aria Maestosa](https://ariamaestosa.github.io/ariamaestosa/docs/index.html), [Anvil Studio](https://www.anvilstudio.com), [KaraKEYoke Karaoke](http://karakeyoke.com/software/karakeyoke.html); under Linux: [Aria Maestosa](https://ariamaestosa.github.io/ariamaestosa/docs/index.html), or any other sequencer you know. The idea would be to route the **USB Uno MIDI Interface** to that software and start looking at the **MIDI** data comming. You have there several views: *staff view* (you will see the notes) or *message list* (you will see the MIDI messages on a human-readable format).
+Alternativelly you could also use a **sequencer software**, ie: under Windows:
+[Aria Maestosa](https://ariamaestosa.github.io/ariamaestosa/docs/index.html),
+[Anvil Studio](https://www.anvilstudio.com),
+[KaraKEYoke Karaoke](http://karakeyoke.com/software/karakeyoke.html); under
+Linux: [Aria Maestosa](https://ariamaestosa.github.io/ariamaestosa/docs/index.html),
+or any other sequencer you know. The idea would be to route the **USB Uno MIDI
+Interface** to that software and start looking at the **MIDI** data comming. You
+have there several views: *staff view* (you will see the notes) or *message list*
+(you will see the MIDI messages on a human-readable format).
 
 ## Activating the verbose mode
 
 Finally you can activate the **debug mode** as follows:
+```
+python3 FootController.py --config "my-config.xml" --verbose
+```
+Then check the **log file**, which should be called: *debug.log* and it should be
+stored in the same folder of *FootController.py*. Please enable this mode only if
+you are experiencing problems; it may decrease the performance of your system.
 
-`python3 FootController.py --config "my-config.xml" --verbose`
-
-Then check the **log file**, which should be called: *debug.log* and it should be stored in the same folder of *FootController.py*. Please enable this mode only if you are experiencing problems; it may decrease the performance of your system.
-
-I may also help you, but you need to create a new issue [here](https://github.com/jmeile/JMMidiBassPedalController/issues). Please include the following information:
+I may also help you, but you need to create a new issue [here](https://github.com/jmeile/JMMidiBassPedalController/issues).
+Please include the following information:
 - Screenshot or text of the error message
 - If there isn't an error message, then explain exactly what's the issue
 - If relevant, also include:
   - Your XML configuration file
-  - The file: *debug.log*, which is located on the same folder of the main script.
+  - The file: *debug.log*, which is located on the same folder of the main
+    script.
 
-Since this is a hobby, I may not have many time to solve the issue, so, do not expected me to fix it quickly.
+Since this is a hobby, I may not have many time to solve the issue, so, do not
+expected me to fix it quickly.
 
 # License
 This project is licensed under the [MIT License](LICENSE.md)
