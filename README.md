@@ -230,17 +230,22 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
   Pi.
 
 # Installation
-The easiest way of installing the software is getting it from [here](https://github.com/jmeile/JMMidiBassPedalController/archive/master.zip), then decompress the zip file and put it contents whereever you want.
+The easiest way of installing the software is getting it from [here](https://github.com/jmeile/JMMidiBassPedalController/archive/master.zip), then decompress the zip file and put it contents
+wherever you want.
 
 Alternatively, you can also clone the git repository:
-
-`git clone https://github.com/jmeile/JMMidiBassPedalController.git`
+```
+git clone https://github.com/jmeile/JMMidiBassPedalController.git
+```
 
 # Hardware connections
-Before running the software, it is important that you make the right connections between your devices and your computer, which can be also a **Raspberry Pi**.
+Before running the software, it is important that you make the right connections
+between your devices and your computer, which can be also a **Raspberry Pi**.
 
 ## Connecting a foot controller to a laptop or a Rasberry Pi
-This setup is ideal if only have a foot controller, ie: a **Studiologic MP-117** (bass pedal controller) or a **Behringer FCB1010** (foot controller). Do the following connections:
+This setup is ideal if only have a foot controller, ie: a **Studiologic MP-117**
+(bass pedal controller) or a **Behringer FCB1010** (foot controller). Do the
+following connections:
 
 <!-- Text Version
 +----------+                       +---------+
@@ -260,12 +265,16 @@ This setup is ideal if only have a foot controller, ie: a **Studiologic MP-117**
 [![Connecting foot controller only](assets/connecting_foot_controller_only_small.jpg)](assets/connecting_foot_controller_only.jpg)
 
 **Explanation:**
-- Connect the USB-TO-MIDI cable to the USB-Port from your Laptop or the Raspberry Pi.
-- Connect the MIDI end labeled with "TO MIDI OUT" to the MIDI OUT port from your foot controller.
-- Connect the MIDI end labeled with "TO MIDI IN" to the MIDI IN port from your keyboard.
+- Connect the USB-TO-MIDI cable to the USB-Port from your Laptop or the Raspberry
+  Pi.
+- Connect the MIDI end labeled with "TO MIDI OUT" to the MIDI OUT port from your
+  foot controller.
+- Connect the MIDI end labeled with "TO MIDI IN" to the MIDI IN port from your
+  keyboard.
 
 ## Connecting a foot and a bass pedal controllers with a laptop or a Raspberry Pi
-If you own a foot controller (ie: a **FCB1010**) and a bass pedal controller (ie: a **Studiologic MP-117**), then you can connect them as follows:
+If you own a foot controller (ie: a **FCB1010**) and a bass pedal controller (ie:
+a **Studiologic MP-117**), then you can connect them as follows:
 
 <!-- Text Version
 +----------+              +----------+                       +---------+
@@ -285,13 +294,20 @@ If you own a foot controller (ie: a **FCB1010**) and a bass pedal controller (ie
 [![Connecting bass and foot controllers only](assets/connecting_bass_and_foot_controllers_small.jpg)](assets/connecting_bass_and_foot_controllers.jpg)
 
 **Explanation:**
-- Connect the **USB-TO-MIDI cable** to the **USB-Port** from your laptop or the Raspberry Pi.
-- Connect the MIDI end from the USB cable labeled with **TO MIDI OUT** to the **MIDI OUT** port from your foot controller.
-* Connect the MIDI end from the USB cable labeled with **TO MIDI IN** to the **MIDI IN** port from your keyboard.
-* Connect the **MIDI OUT** port from your pedal controller to the **MIDI IN** port of your foot controller
+- Connect the **USB-TO-MIDI cable** to the **USB-Port** from your laptop or the
+  Raspberry Pi.
+- Connect the MIDI end from the USB cable labeled with **TO MIDI OUT** to the
+  **MIDI OUT** port from your foot controller.
+- Connect the MIDI end from the USB cable labeled with **TO MIDI IN** to the
+  **MIDI IN** port from your keyboard.
+- Connect the **MIDI OUT** port from your pedal controller to the **MIDI IN**
+  port of your foot controller.
 
 **Remarks:**
-- The only thing that you need to be aware of if you are using a **Behringer FCB1010** is that you will have to enable the **Merge** function under the **GLOBAL CONFIGURATION**. This will fordward all messages comming from the **MIDI IN** to the **MIDI OUT** port.
+- The only thing that you need to be aware of if you are using a **Behringer
+  FCB1010** is that you will have to enable the **Merge** function under the
+  **GLOBAL CONFIGURATION**. This will fordward all messages comming from the
+  **MIDI IN** to the **MIDI OUT** port.
 
 # Setting up the hardware
 In order to make this to work, you will have to do the following steps:
