@@ -162,8 +162,7 @@ sudo <install_command>
 
 Under Windows run a "**cmd**" (Command propt) as Administrator.
 
-- [Python 3.7](https://www.python.org/downloads/release/python-376)
-
+- [Python 3.7](https://www.python.org/downloads/release/python-376)\
   Under Windows, I tried the pip3 installation with python 3.8 and it didn't
   work, it fired this error:
   ```
@@ -171,8 +170,7 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
   path should be string, bytes, os.PathLike or integer, not NoneType
   ```
 
-- [Python rtmidi module](https://pypi.org/project/python-rtmidi)
-
+- [Python rtmidi module](https://pypi.org/project/python-rtmidi)\
   This can be installed as follows:
   ```
   pip3 install python-rtmidi
@@ -182,8 +180,7 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
   pip3 install --upgrade python-rtmidi
   ```
  
-- [Python Autologging module](https://pypi.org/project/Autologging)
-
+- [Python Autologging module](https://pypi.org/project/Autologging)\
   This can be installed as follows:
   ```
   pip3 install Autologging
@@ -193,8 +190,7 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
   pip3 install --upgrade Autologging
   ```
  
-- [Python xmlschema module](https://pypi.org/project/xmlschema)
-
+- [Python xmlschema module](https://pypi.org/project/xmlschema)\
   This can be installed as follows:
   ```
   pip3 install xmlschema
