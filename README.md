@@ -1,7 +1,9 @@
 # JMMidiBassPedalController v1.0
-## File: README.md
-## By:   Josef Meile <jmeile@hotmail.com> @ 10.04.2020
-This software translates **NOTE ON/OFF** messages comming from a **foot controller** to **chords**. It allows you to save several configurations in **banks**, which can be switched through **CONTROL CHANGE** messages.
+*File: README.md*
+*By:   Josef Meile <jmeile@hotmail.com> @ 10.04.2020*
+This software translates **NOTE ON/OFF** messages comming from a
+**foot controller** to **chords**. It allows you to save several configurations
+in **banks**, which can be switched through **CONTROL CHANGE** messages.
 
 # Table of Contents
 
