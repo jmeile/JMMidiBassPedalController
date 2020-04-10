@@ -406,8 +406,9 @@ then you may need a software to create virtual midi ports:
 
 Under Linux and MACOS, you don't need any additional software. You can create
 virtual ports by setting them on the configuration file, ie:
-`InPort="Virtual:MIDI IN" OutPort="Virtual:MIDI OUT"`
-
+```
+InPort="Virtual:MIDI IN" OutPort="Virtual:MIDI OUT"
+```
 where:
 - The string after the keyword: "Virtual:" is the name you want to give to the
   port.
