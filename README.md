@@ -225,80 +225,7 @@ If you own a foot controller (ie: a **FCB1010**) and a bass pedal controller (ie
 * Connect the **MIDI OUT** port from your pedal controller to the **MIDI IN** port of your foot controller
 
 **Remarks:**
-- The only thing that you need to be aware of if you are using a **Behringer FCB1010** is that you will have to enable the **Merge** function under the **GLOBAL CONFIGURATION**. This will fordward all messages comming from the **MIDI IN** to the **MIDI OUT** port. You can do this as follows:
-
-- Keep the DOWN switch pressed during power-up for about 2.5 seconds to enter
-  "GLOBAL CONFIGURATION" mode. Here the "DIRECT SELECT" LED in the display
-  lights up.
-  
-- Use the "DOWN" switch to navigate to "CONFIG".
-
-- Press the Switch 8 until its LED is on. This will activate the MERGE function.
-
-- You may also select the MIDI channel for the "CNT 1" function (Control change)
-  by hitting the "DOWN" switch once more and select the "SELECT MIDI FUNCTION"
-  page. Its LED starts flashing.
-
-- Then hit the switch 6. It will start flashing. If you want to use "CNT 2"
-  instead, then hit the switch 7.
-
-- Press the "UP" switch to confirm that you want to change the MIDI channel for
-  that function.
-
-- Press the switches from 1 until 10 to change the channel value, which will
-  appear on the display, ie: choose "1" for MIDI channel 1.
-  
-- Then press the "UP" switch to go back to the "CONFIG" page and
-  save the changes. To undo changes, hit the "DOWN" switch.
-
-- If you want to send notes from the Behringer to the JMMidiBassPedalController
-  software, then change also the MIDI channel for NOTE IN / NOTE OFF messages,
-  for this, first press the "UP" switch to go back to the "SELECT MIDI
-  FUNCTION" page.
-  
-- Press the switch 10. It will start flashing.
-
-- Press the "UP" switch to confirm that you want to change the MIDI channel for
-  that function.
-
-- Press the switches from 1 until 10 to change the channel value, which will
-  appear on the display, ie: choose "1" for MIDI channel 1.
-  
-- Then press the "UP" switch to go back to the "CONFIG" page and
-  save the changes. To undo changes, hit the "DOWN" switch.
-
-- Finally press the "DOWN" switch for about 2.5 seconds to save changes.
-
-Afterwards, you can program the different switches as follows:
-
-- Hit the switch you want to change.
-
-- Press the "DOWN" switch for about 2.5 seconds until the SWITCH 1/SWITCH 2 LED
-  starts flashing.
-  
-- Press the "UP" switch to enter the programming mode.
-
-- Press the function for a few seconds that you want to activate, ie: switch 10
-  for NOTE ON/OFF. Its LED should be on.
-  
-- To change its paramaters, hit it again. It will start flashing.
-
-- Confirm the selection by pressing the "UP" switch.
-
-- Enter the first parameter by pressing the switchs from 1 until 10.
-
-- Confirm the entered value by pressing the "UP" switch or cancel it by pressing
-  "DOWN".
-
-- If the function has more values, ie: "CNT 1" or "CNT 2", then you will have
-  to enter each value until no LED is flashing.
-  
-- At this point, you may select a different function and setup its value.
-
-- To save changes, press the "DOWN" swich for a few seconds.
-
-- You may repeat the procedure for setting up a "CNT 1", for example with a
-  value of 32 and 122 to go to the next bank, or 32 and 125 for reloading.
+- The only thing that you need to be aware of if you are using a **Behringer FCB1010** is that you will have to enable the **Merge** function under the **GLOBAL CONFIGURATION**. This will fordward all messages comming from the **MIDI IN** to the **MIDI OUT** port.
 
 # Setting up the hardware
 In order to make this to work, you will have to do the following steps:
@@ -356,6 +283,26 @@ located there or access an online version [here](https://github.com/jmeile/JMMid
 
 # Troubleshooting
 If your equipment is not reacting as expected, then you can proceed as follows.
+
+The most common problem would be that you get:
+
+`'python3' is not recognized as an internal or external command, operable
+program or batch file`
+
+under Windows. This is because on Windows, there is no python3, so, you will
+have to use either "python" or the full path to it, ie:
+`"C:\Program Files\Python37\python.exe"`
+
+Similarly, under Linux you may get:
+`-bash: python3: command not found`
+
+This is because python is not installed or your default python is already
+python3. On the first case, install python3, on a debian like distro this can be
+accomplished as follows:
+`sudo apt install python3`
+
+On the second case, then try to just run: `python`. Please make sure that it is
+a 3.x version.
 
 Before going in detail through the following options, if you are under Windows,
 then you may need a software to create virtual midi ports:
