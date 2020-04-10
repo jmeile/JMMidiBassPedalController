@@ -163,64 +163,71 @@ sudo <install_command>
 Under Windows run a "**cmd**" (Command propt) as Administrator.
 
 - [Python 3.7](https://www.python.org/downloads/release/python-376)
-
-  Under Windows, I tried the pip3 installation with python 3.8 and it didn't work, it fired this error:
+  Under Windows, I tried the pip3 installation with python 3.8 and it didn't
+  work, it fired this error:
   ```
   TypeError: stat:
   path should be string, bytes, os.PathLike or integer, not NoneType
   ```
 
 - [Python rtmidi module](https://pypi.org/project/python-rtmidi)
-
   This can be installed as follows:
-  
-  `pip3 install python-rtmidi`
-  
+  ```
+  pip3 install python-rtmidi
+  ```
   If you have an older version, then you can upgrade it with:
-  
-  `pip3 install --upgrade python-rtmidi`
-  
+  ```
+  pip3 install --upgrade python-rtmidi
+  ```
+ 
 - [Python Autologging module](https://pypi.org/project/Autologging)
-
   This can be installed as follows:
-  
-  `pip3 install Autologging`
-  
+  ```
+  pip3 install Autologging
+  ```
   If you have an older version, then you can upgrade it with:
-  
-  `pip3 install --upgrade Autologging`
-  
+  ```
+  pip3 install --upgrade Autologging
+  ```
+ 
 - [Python xmlschema module](https://pypi.org/project/xmlschema)
-
   This can be installed as follows:
-  
-  `pip3 install xmlschema`
-  
+  ```
+  pip3 install xmlschema
+  ```
   If you have an older version, then you can upgrade it with:
-  
-  `pip3 install --upgrade xmlschema`
-  
+  ```
+  pip3 install --upgrade xmlschema
+  ```
+ 
 - Under Windows, you may need to upgrade setuptools if you get the error:
-
-  `error: command 'cl.exe' failed: No such file or directory`
-  
+  ```
+  error: command 'cl.exe' failed: No such file or directory
+  ```
   To do so, run this command:
-  
-  `pip3 install --upgrade setuptools`
+  ```
+  pip3 install --upgrade setuptools
+  ```
 
 - Alternativelly to all **pip3** commands, you can also use the **requirements.txt** file as follows:
-
-  `pip3 install -r requirements.txt`
-
-All the python dependencies will be installed automatically. Since it is an easy way of doing it, you may not get the latest versions.
-  
+  ```
+  pip3 install -r requirements.txt
+  ```
+  All the python dependencies will be installed automatically. Since it is an
+  easy way of doing it, you may not get the latest versions.
+ 
 - MIDI USB interface, for example the [M-Audio Uno USB cable](https://www.m-audio.com/products/view/uno)
+  Another MIDI Audio interface or cable may also work. I tested this with the
+  M-Audio cable.
+ 
+- A foot controller capable of sending **NOTE ON/OFF messages**, ie: a
+  **Studiologic MP-117**, which looks like more as organ bass pedals, or a
+  **Behringer FCB1010**, which allows you to do more things, but it doesn't give
+  you the same feeling as the organ bass pedals, or both.
 
-  Another MIDI Audio interface or cable may also work. I tested this with the M-Audio cable.
-  
-- A foot controller capable of sending **NOTE ON/OFF messages**, ie: a **Studiologic MP-117**, which looks like more as organ bass pedals, or a **Behringer FCB1010**, which allows you to do more things, but it doesn't give you the same feeling as the organ bass pedals, or both.
-
-- And off course you need a keyboard with the old **MIDI ports**. USB MIDI may also work, but you will have to use two USB ports on your laptop or Raspberry Pi.
+- And off course you need a keyboard with the old **MIDI ports**. USB MIDI may
+  also work, but you will have to use two USB ports on your laptop or Raspberry
+  Pi.
 
 # Installation
 The easiest way of installing the software is getting it from [here](https://github.com/jmeile/JMMidiBassPedalController/archive/master.zip), then decompress the zip file and put it contents whereever you want.
