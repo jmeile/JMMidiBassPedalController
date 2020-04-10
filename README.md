@@ -1,6 +1,5 @@
 # JMMidiBassPedalController v1.0
-**File: README.md**
-
+**File: README.md**\
 **By:   Josef Meile <jmeile@hotmail.com> @ 10.04.2020**
 
 This software translates **NOTE ON/OFF** messages comming from a
@@ -48,7 +47,11 @@ in **banks**, which can be switched through **CONTROL CHANGE** messages.
 # Definitions
 From time to time, I use the following terms on my software:
 
-- **Bank**: in my software I reffer this to be a way of grouping different settings. So, you can have for example a bank with the C Major scale chords and another bank with the C Minor scale chords. The nice thing of these groups is that you can easily switch them while playing your keyboard. This is actually an optional feature that you may use or not.
+- **Bank**: in my software I reffer this to be a way of grouping different
+  settings. So, you can have for example a bank with the C Major scale chords
+  and another bank with the C Minor scale chords. The nice thing of these groups
+  is that you can easily switch them while playing your keyboard. This is
+  actually an optional feature that you may use or not.
 
 - **BANK SELECT message**: message used to change the active bank to another one, for example: you can navigate to the next, previous, or last banks, or you can eben jump to a specific bank.
 
