@@ -1,6 +1,8 @@
 # JMMidiBassPedalController v1.0
-*File: README.md*
-*By:   Josef Meile <jmeile@hotmail.com> @ 10.04.2020*
+**File: README.md**
+
+**By:   Josef Meile <jmeile@hotmail.com> @ 10.04.2020**
+
 This software translates **NOTE ON/OFF** messages comming from a
 **foot controller** to **chords**. It allows you to save several configurations
 in **banks**, which can be switched through **CONTROL CHANGE** messages.
@@ -32,7 +34,8 @@ in **banks**, which can be switched through **CONTROL CHANGE** messages.
 - Fully customizable parameters:
   - **MIDI IN and OUT** ports and channels.
   - **MIDI Echo** function.
-  - Setup custom **bass note** and **chord velocities** and **octave transpositions**.
+  - Setup custom **bass note** and **chord velocities** and
+    **octave transpositions**.
   - Define multiple **banks** to store different pedal layouts.
   - Each pedal can send this messages:
     - **Bass notes**.
