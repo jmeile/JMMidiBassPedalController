@@ -348,36 +348,46 @@ In order to make this to work, you will have to do the following steps:
   channel from your right or left voices.
 
 # Setting up the software
-- First figure out how the ports used by your **USB-TO-MIDI cable** are called. If your **MIDI** setup isn't going to change, then the port number should be also enough. In order to figure this out, run the software as follows:
-  
-  `python3 FootController.py --list`
-  
-  If using an **M-Audio USB UNO cable**, then the ports should be named similar to:
-  * 1: USB Uno MIDI Interface
+- First figure out how the ports used by your **USB-TO-MIDI cable** are called.
+  If your **MIDI** setup isn't going to change, then the port number should be
+  also enough. In order to figure this out, run the software as follows:
+  ``` 
+  python3 FootController.py --list
+  ``` 
+  If using an **M-Audio USB UNO cable**, then the ports should be named similar
+  to:
+  - 1: USB Uno MIDI Interface
   
   where:
   - The first part is the port number and the last part the port name.
 
-- After you have done this, open either the file: *sample-config.xml*, an **XML configuration file** with lots of comments documenting what to do, or: *bass-pedal-config.xml*, simple configuration with a **bass pedal controller** and save it as: *config.xml* or any other meaningful name.
+- After you have done this, open either the file: *sample-config.xml*, an **XML
+  configuration file** with lots of comments documenting what to do, or:
+  *bass-pedal-config.xml*, simple configuration with a **bass pedal controller**
+  and save it as: *config.xml* or any other meaningful name.
 
-- Open that file and modify it as you wish by filling your parameters, ie: **MIDI IN** port, **MIDI IN and OUT** channels, **NOTE ON** messages, etc..
+- Open that file and modify it as you wish by filling your parameters, ie: **MIDI
+  IN** port, **MIDI IN and OUT** channels, **NOTE ON** messages, etc..
 
 # Running the software
 Now you are ready to go. Go to the **src** folder, then type:
-
-`python3 FootController.py`
-
-Alternativelly, you can also setup another name for your configuration file, ie: *my-config.xml*. Under Windows, run the sofware as follows:
-
-`python3 FootController.py --config "C:\file\path\my-config.xml"`
-
+``` 
+python3 FootController.py
+``` 
+Alternativelly, you can also setup another name for your configuration file, ie:
+*my-config.xml*. Under Windows, run the sofware as follows:
+``` 
+python3 FootController.py --config "C:\file\path\my-config.xml"
+``` 
 or under Linux:
-
-`python3 FootController.py --config "/file/path/my-config.xml"`
-
-If your file is saved on the same folder as *FootController.py*, then this should be enough:
-
-`python3 FootController.py --config "my-config.xml"`
+``` 
+python3 FootController.py --config "/file/path/my-config.xml"
+``` 
+If your file is saved on the same folder as *FootController.py*, then this should
+be enough:
+``` 
+python3 FootController.py --config "my-config.xml"
+``` 
 
 # Automatic start during system boot
 If you are planning to use the software, but you don't want to always start it
