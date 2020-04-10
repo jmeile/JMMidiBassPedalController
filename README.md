@@ -414,8 +414,9 @@ where:
   port.
   
 Under Linux, it is also possible to create virtual ports as follows:
-`sudo modprobe snd-virmidi snd_index=1`
-
+```
+sudo modprobe snd-virmidi snd_index=1
+```
 However, I didn't manage to make the MIDI connections working with those ports,
 so, I used rtmidi virtual ports instead.
 
@@ -433,8 +434,9 @@ Alternativelly, on MACOS you can use the "Audio MIDI Setup" app:
   only work with normal user rigths.
 
 For seeing the available MIDI ports, you can run:
-
-  `python3 FootController.py --list`
+```
+python3 FootController.py --list
+```
 
 ## Using the ManualTester script
 
