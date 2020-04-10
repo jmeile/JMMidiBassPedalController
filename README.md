@@ -68,7 +68,8 @@ From time to time, I use the following terms on my software:
 
   [![studiologic MP-117 pedalboard](assets/Studiologic_MP-117_small.jpg)](assets/Studiologic_MP-117.jpg)\
   Please note that it is not necessary that you use a bass pedal controller, you
-  can also use a foot controller like the **Behringer FCB1010**:\
+  can also use a foot controller like the **Behringer FCB1010**:
+
   [![Behringer FCB1010 foot controller](assets/Behringer_FCB1010_small.jpg)](assets/Behringer_FCB1010.jpg)\
   However the feeling won't be the same as when you use a real bass pedal; for
   example the switches may be harder and so difficult to push. Another advantage
@@ -113,6 +114,7 @@ From time to time, I use the following terms on my software:
 - **MIDI to USB cable**: since modern computers don't have **MIDI ports**, this
   cable allows you to have two ports: **MIDI IN and OUT** connected through an
   USB port. Right now, I use M-Audio Uno USB cable:
+
   [![M-Audio Uno USB cable](assets/M-Audio_Uno_USB_cable_small.jpg)](assets/M-Audio_Uno_USB_cable.jpg)
 
 - **NOTE ON/OFF message:** messages that results when hitting or releasing a note
@@ -131,8 +133,8 @@ From time to time, I use the following terms on my software:
 
 - **Raspberry Pi**: think of it as a mini computer (micro controller to be
   exact), for example, the Raspberry Pi 4:
-  [![Raspberry Pi 4](assets/Raspberry_pi_4_small.jpg)](assets/Raspberry_pi_4.jpg)
 
+  [![Raspberry Pi 4](assets/Raspberry_pi_4_small.jpg)](assets/Raspberry_pi_4.jpg)\
   They are really small and allow you to excecute some tasks that a computer also
   can do, but with the advantage that they are really small and usually after you
   setup them, then you don't need a keyboard or a screen to start it.
