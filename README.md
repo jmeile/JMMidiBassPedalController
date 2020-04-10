@@ -21,7 +21,6 @@ in **banks**, which can be switched through **CONTROL CHANGE** messages.
 - [Automatic start during system boot](#automatic-start-during-system-boot)
 - [Troubleshooting](#troubleshooting)
   - [Using the ManualTester script](#using-the-manualtester-script)
-  - [Using the ManualTester script](#use-a-software-for-intercepting-midi-messages)
   - [Use a software for intercepting MIDI messages](#use-a-software-for-intercepting-midi-messages)
   - [Using a sequencer software](#using-a-sequencer-software)
   - [Activating the verbose mode](#activating-the-verbose-mode)
