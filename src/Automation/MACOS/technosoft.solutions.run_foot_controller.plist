@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+
+<!--
+  JMMidiBassPedalController v1.0
+  File: src/Automation/MACOS/technosoft.solutions.run_foot_controller.plist
+  By:   Josef Meile <jmeile@hotmail.com> @ 10.04.2020
+  This project is licensed under the MIT License. Please see the LICENSE.md file
+  on the main folder of this code. An online version can be found here:
+  https://github.com/jmeile/JMMidiBassPedalController/blob/master/LICENSE.md
+-->
+
 <plist version="1.0">
   <dict>
     <key>Label</key>
