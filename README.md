@@ -558,8 +558,7 @@ If you are planning to use the software, but you don't want to always start it
 manually, then you have several alternatives according to your operating system. 
 
 You will find the needed files on the Automation folder. See the README.md file
-located there or access an online version [here
-](https://github.com/jmeile/JMMidiBassPedalController/tree/master/src/Automation).
+located there or access an online version [here](src/Automation).
 
 # Troubleshooting
 If your equipment is not reacting as expected, then you can proceed as follows.
