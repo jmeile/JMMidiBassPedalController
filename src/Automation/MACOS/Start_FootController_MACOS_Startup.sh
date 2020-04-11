@@ -8,6 +8,8 @@
 # https://github.com/jmeile/JMMidiBassPedalController/blob/master/LICENSE.md
 #
 
+#Script to start the JMMidiBassPedalController while starting MACOS
+
 #Usage:
 #This script should be used as a Launch Daemon or Agent. See the README.md file
 #inside the Automation folder for more details.
