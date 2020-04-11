@@ -237,12 +237,12 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
   Pi.
 
 # Installation
-The easiest way of installing the software is getting it from [here](https://github.com/jmeile/JMMidiBassPedalController/archive/master.zip), then decompress the zip file and put it contents
-wherever you want.
+The easiest way of installing the software is getting it from [here](https://github.com/jmeile/JMMidiBassPedalController/archive/1.0.zip),
+then decompress the zip file and put it contents wherever you want.
 
 Alternatively, you can also clone the git repository:
 ```
-git clone https://github.com/jmeile/JMMidiBassPedalController.git
+git clone https://github.com/jmeile/JMMidiBassPedalController.git -b 1.0
 ```
 
 # Hardware connections
