@@ -525,10 +525,11 @@ messages, follow this steps:
   where:
   - The first part is the port number and the last part the port name.
 
-- After you have done this, open either the file: *sample-config.xml*, an **XML
-  configuration file** with lots of comments documenting what to do, or:
-  *bass-pedal-config.xml*, simple configuration with a **bass pedal controller**
-  and save it as: *config.xml* or any other meaningful name.
+- After you have done this, open either the file: [sample-config.xml
+  ](src/config/sample-config.xml), an **XML configuration file** with lots of
+  comments documenting what to do, or: [bass-pedal-config.xml
+  ](src/config/bass-pedal-config.xml), simple configuration with a **bass pedal
+  controller** and save it as: *config.xml* or any other meaningful name.
 
 - Open that file and modify it as you wish by filling your parameters, ie: **MIDI
   IN** port, **MIDI IN and OUT** channels, **NOTE ON** messages, etc..
