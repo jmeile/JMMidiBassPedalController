@@ -11,13 +11,18 @@ folder.
 # Table of Contents
 
 - [Windows](#windows)
-  - [Starting the software whenever a user logons](#starting-the-software-whenever-a-user-logons)
-  - [Starting the software after Windows has started](#starting-the-software-after-windows-has-started)
+  - [Starting the software whenever a user logons
+    ](#starting-the-software-whenever-a-user-logons)
+  - [Starting the software after Windows has started
+    ](#starting-the-software-after-windows-has-started)
 - [MACOS](#macos)
-  - [Starting the software whenever a user logons](#starting-the-software-whenever-a-user-logons)
-  - [Starting the software after MACOS has started](#starting-the-software-after-macos-has-started)
+  - [Starting the software whenever a user logons
+    ](#starting-the-software-whenever-a-user-logons)
+  - [Starting the software after MACOS has started
+    ](#starting-the-software-after-macos-has-started)
 - [Linux](#linux)
-  - [Starting the software after Linux has started](#starting-the-software-after-linux-has-started)
+  - [Starting the software after Linux has started
+    ](#starting-the-software-after-linux-has-started)
 
 
 # Windows
@@ -40,8 +45,9 @@ In order to import an xml Task do the following:
 
 Here you will find these two files:
 
-- **Start_FootController_Windows_Normal_Logon.xml**: this will schedule a task
-  with the following parameters:
+- [Start_FootController_Windows_Normal_Logon.xml
+  ](Windows/Start_FootController_Windows_Normal_Logon.xml): this will schedule a
+  task with the following parameters:
   - Run whether the user is logged on or not
   - Run with highest privileges
   - Trigger at system logon of any user and delay for 30 seconds
@@ -60,8 +66,9 @@ Here you will find these two files:
       ```
   - Start the task only if the computer is on AC power -> this is disabled
 
-- **Start_FootController_Windows_Verbose_Logon.xml**: this is essentially the
-  same as the previous task, but the "--verbose" switch is enabled, so, debug
+- [Start_FootController_Windows_Verbose_Logon.xml
+  ](Windows/Start_FootController_Windows_Verbose_Logon.xml): this is essentially
+  the same as the previous task, but the "--verbose" switch is enabled, so, debug
   messages will be written to the log file.
 
 After importing the files, you will need to edit the triggered action under
@@ -92,8 +99,9 @@ the user you want to use.
 
 Here you will find these two files:
 
-- **Start_FootController_Windows_Normal_Startup.xml**: this will schedule a task
-  with the following parameters:
+- [Start_FootController_Windows_Normal_Startup.xml
+  ](Windows/Start_FootController_Windows_Normal_Startup.xml): this will schedule
+  a task with the following parameters:
   - Run whether the user is logged on or not
   - Run with highest privileges
   - Trigger at system startup
@@ -111,9 +119,10 @@ Here you will find these two files:
       C:\Users\my_user\Documents\JMMidiBassPedalController\src
       ```
   - Start the task only if the computer is on AC power -> this is disabled
-- **Start_FootController_Windows_Verbose_Startup.xml**: this is essentially the
-  same as the previous task, but the "--verbose" switch is enabled, so, debug
-  messages will be written to the log file.
+- [Start_FootController_Windows_Verbose_Startup.xml
+  ](Windows/Start_FootController_Windows_Verbose_Startup.xml): this is
+  essentially the same as the previous task, but the "--verbose" switch is
+  enabled, so, debug messages will be written to the log file.
 
 After importing the files, you will need to edit the triggered action under
 the "Action" tab, then change the python path (*Program/script* section), the
@@ -145,10 +154,11 @@ available; only physical port, ie: an USB to MIDI cable, are visible.
 
 ## Starting the software whenever a user logons
 
-Here you will find this file:
+Here you will find this folder:
 
-- **Start_FootController_MACOS_Logon.app**: this will schedule a task
-  as soon as a user logons. 
+- [Start_FootController_MACOS_Logon.app
+  ](MACOS/Start_FootController_MACOS_Logon.app): this will schedule a task as
+  soon as a user logons. 
 
 In order to use this task, do the following:
 
@@ -190,10 +200,11 @@ to automatically login.
 
 To install this as a Launch Agent or Daemon do the following:
 
-- Copy the file: technosoft.solutions.run_foot_controller.plist to either
+- Copy the file: [technosoft.solutions.run_foot_controller.plist
+  ](MACOS/technosoft.solutions.run_foot_controller.plist) to either:
   - /Library/LaunchAgents, /Library/LaunchDaemons -> The task will be run for all
     users.
-  - ~/Library/LaunchAgents -> The task will be run only for the current user. 
+  - or ~/Library/LaunchAgents -> The task will be run only for the current user. 
 
 - Then edit the .plist file and change this settings:
   - UserName: Use this only if seting up a LaunchDaemon. This is the user that
@@ -209,7 +220,8 @@ To install this as a Launch Agent or Daemon do the following:
   - StandardErrorPath: Path for the error log. It can be either relative to
     WorkingDirectory or an absolute path.
 
-- Open the Start_FootController_MACOS_Startup.sh script and edit this variables:
+- Open the [Start_FootController_MACOS_Startup.sh
+  ](MACOS/Start_FootController_MACOS_Startup.sh) script and edit this variables:
   - WORKING_DIR: Directory where the FootController.py script is located
   - SCRIPT_OPTIONS: Script command line options. Set this to "--verbose"
     to enable debug messages; otherwise, leave it as it is.
@@ -285,9 +297,8 @@ Ubuntu and Raspbian. It depends on systemd, so, your Linux must have it.
 
 ## Starting the software after Linux has started
 In order to install this, first modify this file:
-```
-Start_FootController_Linux_Startup.sh
-```
+[Start_FootController_Linux_Startup.sh
+](Linux/Start_FootController_Linux_Startup.sh)
 
 Modify this variables:
 * WORKING_DIR: Directory where this file is located.
