@@ -13,8 +13,10 @@ in **banks**, which can be switched through **CONTROL CHANGE** messages.
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Hardware connections](#hardware-connections)
-  - [Connecting a foot controller to a laptop or a Rasberry Pi](#connecting-a-foot-controller-to-a-laptop-or-a-rasberry-pi)
-  - [Connecting a foot and a bass pedal controllers with a laptop or a Raspberry Pi](#connecting-a-foot-and-a-bass-pedal-controllers-with-a-laptop-or-a-raspberry-pi)
+  - [Connecting a foot controller to a laptop or a Rasberry Pi]
+    (#connecting-a-foot-controller-to-a-laptop-or-a-rasberry-pi)
+  - [Connecting a foot and a bass pedal controllers with a laptop or a Raspberry
+    Pi](#connecting-a-foot-and-a-bass-pedal-controllers-with-a-laptop-or-a-raspberry-pi)
 - [Setting up the hardware](#setting-up-the-hardware)
   - [Setting up a Behringer FCB1010 (optional)](#setting-up-a-behringer-fcb1010-optional)
     - [Entering "GLOBAL CONFIGURATION" mode](#entering-global-configuration-mode)
@@ -223,9 +225,10 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
   All the python dependencies will be installed automatically. Since it is an
   easy way of doing it, you may not get the latest versions.
  
-- MIDI USB interface, for example the [M-Audio Uno USB cable](https://www.m-audio.com/products/view/uno).
-  Another MIDI Audio interface or cable may also work. I tested this with the
-  M-Audio cable.
+- MIDI USB interface, for example the
+  [M-Audio Uno USB cable](https://www.m-audio.com/products/view/uno). Another
+  MIDI Audio interface or cable may also work. I tested this with the M-Audio
+  cable.
  
 - A foot controller capable of sending **NOTE ON/OFF messages**, ie: a
   **Studiologic MP-117**, which looks like more as organ bass pedals, or a
@@ -237,8 +240,9 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
   Pi.
 
 # Installation
-The easiest way of installing the software is getting it from [here](https://github.com/jmeile/JMMidiBassPedalController/archive/1.0.zip),
-then decompress the zip file and put it contents wherever you want.
+The easiest way of installing the software is getting it from
+[here](https://github.com/jmeile/JMMidiBassPedalController/archive/1.0.zip) then
+decompress the zip file and put it contents wherever you want.
 
 Alternatively, you can also clone the git repository:
 ```
@@ -357,8 +361,9 @@ In order to make this to work, you will have to do the following steps:
 
 ## Setting up a Behringer FCB1010 (optional)
 If using this foot controller with or without another controller, then you may
-need to setup some parameters, for example: [MIDI Merge](#enabling-the-merge-function),
-MIDI channel for [NOTE ON/OFF](#set-the-midi-channel-for-the-note-function) or
+need to setup some parameters, for example:
+[MIDI Merge](#enabling-the-merge-function), MIDI channel for
+[NOTE ON/OFF](#set-the-midi-channel-for-the-note-function) or
 [CONTROL CHANGE](#set-the-midi-channel-for-the-cnt-function) messages, values for
 [NOTE ON/OFF](#set-note-messages) or [CONTROL CHANGE](#set-cnt-messages), etc..
 The first thing you have to go is to go to either
@@ -377,8 +382,8 @@ FCB1010 and a bass pedal controller (ie: a Studiologic MP-117), see:\
 This will just merge the messages from your FCB1010 with your bass pedal
 controller, allowing them to use the same MIDI OUT port. In order to enable this
 function do follow this steps:
-- Go to the "GLOBAL CONFIGURATION" mode (click [here](#entering-global-configuration-mode)
-  for more details.
+- Go to the "GLOBAL CONFIGURATION" mode (click
+  [here](#entering-global-configuration-mode) for more details.
 - Use the "DOWN" or "UP" switches until you reach the "CONFIG" page.
 - Press the Switch 8 until its LED is on. This will activate the MERGE function.
 - You may want to setup other parameters before exiting this mode, ie: [set the
