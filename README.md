@@ -13,14 +13,19 @@ in **banks**, which can be switched through **CONTROL CHANGE** messages.
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Hardware connections](#hardware-connections)
-  - [Connecting a foot controller to a laptop or a Rasberry Pi](#connecting-a-foot-controller-to-a-laptop-or-a-rasberry-pi)
-  - [Connecting a foot and a bass pedal controllers with a laptop or a Raspberry Pi](#connecting-a-foot-and-a-bass-pedal-controllers-with-a-laptop-or-a-raspberry-pi)
+  - [Connecting a foot controller to a laptop or a Rasberry Pi
+    ](#connecting-a-foot-controller-to-a-laptop-or-a-rasberry-pi)
+  - [Connecting a foot and a bass pedal controllers with a laptop or a Raspberry
+    Pi](#connecting-a-foot-and-a-bass-pedal-controllers-with-a-laptop-or-a-raspberry-pi)
 - [Setting up the hardware](#setting-up-the-hardware)
-  - [Setting up a Behringer FCB1010 (optional)](#setting-up-a-behringer-fcb1010-optional)
+  - [Setting up a Behringer FCB1010 (optional)
+    ](#setting-up-a-behringer-fcb1010-optional)
     - [Entering "GLOBAL CONFIGURATION" mode](#entering-global-configuration-mode)
       - [Enabling the "MERGE" function](#enabling-the-merge-function)
-      - [Set the MIDI channel for the "CNT" function](#set-the-midi-channel-for-the-cnt-function)
-      - [Set the MIDI channel for the "NOTE" function](#set-the-midi-channel-for-the-note-function)
+      - [Set the MIDI channel for the "CNT" function
+        ](#set-the-midi-channel-for-the-cnt-function)
+      - [Set the MIDI channel for the "NOTE" function
+        ](#set-the-midi-channel-for-the-note-function)
     - [Entering "PRESET programming" mode](#entering-preset-programming-mode)
       - [Set "NOTE" messages](#set-note-messages)
       - [Set "CNT" messages](#set-cnt-messages)
@@ -29,7 +34,8 @@ in **banks**, which can be switched through **CONTROL CHANGE** messages.
 - [Automatic start during system boot](#automatic-start-during-system-boot)
 - [Troubleshooting](#troubleshooting)
   - [Using the ManualTester script](#using-the-manualtester-script)
-  - [Use a software for intercepting MIDI messages](#use-a-software-for-intercepting-midi-messages)
+  - [Use a software for intercepting MIDI messages
+    ](#use-a-software-for-intercepting-midi-messages)
   - [Using a sequencer software](#using-a-sequencer-software)
   - [Activating the verbose mode](#activating-the-verbose-mode)
 - [License](#license)
@@ -73,11 +79,13 @@ From time to time, I use the following terms on my software:
   a foot controller that looks like those bass pedals from an old organ, for
   example, the **studiologic MP-117**:
 
-  [![studiologic MP-117 pedalboard](assets/Studiologic_MP-117_small.jpg)](assets/Studiologic_MP-117.jpg)\
+  [![studiologic MP-117 pedalboard](assets/Studiologic_MP-117_small.jpg)
+  ](assets/Studiologic_MP-117.jpg)\
   Please note that it is not necessary that you use a bass pedal controller, you
   can also use a foot controller like the **Behringer FCB1010**:
 
-  [![Behringer FCB1010 foot controller](assets/Behringer_FCB1010_small.jpg)](assets/Behringer_FCB1010.jpg)\
+  [![Behringer FCB1010 foot controller
+  ](assets/Behringer_FCB1010_small.jpg)](assets/Behringer_FCB1010.jpg)\
   However the feeling won't be the same as when you use a real bass pedal; for
   example the switches may be harder and so difficult to push. Another advantage
   of the bass pedal controller is that it may also include the force (velocity)
@@ -97,10 +105,13 @@ From time to time, I use the following terms on my software:
 
 - **MIDI** and related terms: this would cost me a lot of time to write down
   everything here, so, I will just let you some links:
-  - [Summary of MIDI Messages from the MIDI association.](https://www.midi.org/specifications-old/item/table-1-summary-of-midi-message )
+  - [Summary of MIDI Messages from the MIDI association.
+    ](https://www.midi.org/specifications-old/item/table-1-summary-of-midi-message )
   - [MIDI definition from Wikipedia](https://en.wikipedia.org/wiki/MIDI)
-  - [MIDI tutorial from Dominique Vandenneucker.](http://www.music-software-development.com/midi-tutorial.html)
-  - [How MIDI Works, YouTube playlist from Andrew Kilpatrick.](https://www.youtube.com/watch?v=5IQvu8zlmJk&list=PLgWv1tajHyBsAo5OBLiQlY0hLC4ZagyJB)
+  - [MIDI tutorial from Dominique Vandenneucker.
+    ](http://www.music-software-development.com/midi-tutorial.html)
+  - [How MIDI Works, YouTube playlist from Andrew Kilpatrick.
+    ](https://www.youtube.com/watch?v=5IQvu8zlmJk&list=PLgWv1tajHyBsAo5OBLiQlY0hLC4ZagyJB)
  
 - **MIDI Echo function:** this is the ability of the software to fordward other
   not recognized messages to the connected devices. ie: let's say that you want
@@ -122,7 +133,8 @@ From time to time, I use the following terms on my software:
   cable allows you to have two ports: **MIDI IN and OUT** connected through an
   USB port. Right now, I use M-Audio Uno USB cable:
 
-  [![M-Audio Uno USB cable](assets/M-Audio_Uno_USB_cable_small.jpg)](assets/M-Audio_Uno_USB_cable.jpg)
+  [![M-Audio Uno USB cable](assets/M-Audio_Uno_USB_cable_small.jpg)
+  ](assets/M-Audio_Uno_USB_cable.jpg)
 
 - **NOTE ON/OFF message:** messages that results when hitting or releasing a note
   on a keyboard or a foot controller respectively. **NOTE ON** messages are
@@ -141,7 +153,8 @@ From time to time, I use the following terms on my software:
 - **Raspberry Pi**: think of it as a mini computer (micro controller to be
   exact), for example, the Raspberry Pi 4:
 
-  [![Raspberry Pi 4](assets/Raspberry_pi_4_small.jpg)](assets/Raspberry_pi_4.jpg)\
+  [![Raspberry Pi 4](assets/Raspberry_pi_4_small.jpg)
+  ](assets/Raspberry_pi_4.jpg)\
   They are really small and allow you to excecute some tasks that a computer also
   can do, but with the advantage that they are really small and usually after you
   setup them, then you don't need a keyboard or a screen to start it.
@@ -216,16 +229,18 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
   pip3 install --upgrade setuptools
   ```
 
-- Alternativelly to all **pip3** commands, you can also use the **requirements.txt** file as follows:
+- Alternativelly to all **pip3** commands, you can also use the 
+  **requirements.txt** file as follows:
   ```
   pip3 install -r requirements.txt
   ```
   All the python dependencies will be installed automatically. Since it is an
   easy way of doing it, you may not get the latest versions.
  
-- MIDI USB interface, for example the [M-Audio Uno USB cable](https://www.m-audio.com/products/view/uno).
-  Another MIDI Audio interface or cable may also work. I tested this with the
-  M-Audio cable.
+- MIDI USB interface, for example the
+  [M-Audio Uno USB cable](https://www.m-audio.com/products/view/uno). Another
+  MIDI Audio interface or cable may also work. I tested this with the M-Audio
+  cable.
  
 - A foot controller capable of sending **NOTE ON/OFF messages**, ie: a
   **Studiologic MP-117**, which looks like more as organ bass pedals, or a
@@ -237,12 +252,13 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
   Pi.
 
 # Installation
-The easiest way of installing the software is getting it from [here](https://github.com/jmeile/JMMidiBassPedalController/archive/master.zip), then decompress the zip file and put it contents
-wherever you want.
+The easiest way of installing the software is getting it from
+[here](https://github.com/jmeile/JMMidiBassPedalController/archive/1.0.zip) then
+decompress the zip file and put it contents wherever you want.
 
 Alternatively, you can also clone the git repository:
 ```
-git clone https://github.com/jmeile/JMMidiBassPedalController.git
+git clone https://github.com/jmeile/JMMidiBassPedalController.git -b 1.0
 ```
 
 # Hardware connections
@@ -269,7 +285,9 @@ following connections:
                                +---+        |
                                    +--------+
 -->
-[![Connecting foot controller only](assets/connecting_foot_controller_only_small.jpg)](assets/connecting_foot_controller_only.jpg)
+[![Connecting foot controller only
+](assets/connecting_foot_controller_only_small.jpg)
+](assets/connecting_foot_controller_only.jpg)
 
 **Explanation:**
 - Connect the USB-TO-MIDI cable to the USB-Port from your Laptop or the Raspberry
@@ -298,7 +316,9 @@ a **Studiologic MP-117**), then you can connect them as follows:
                                                          +---+        |
                                                              +--------+
 -->
-[![Connecting bass and foot controllers only](assets/connecting_bass_and_foot_controllers_small.jpg)](assets/connecting_bass_and_foot_controllers.jpg)
+[![Connecting bass and foot controllers only
+](assets/connecting_bass_and_foot_controllers_small.jpg)
+](assets/connecting_bass_and_foot_controllers.jpg)
 
 **Explanation:**
 - Connect the **USB-TO-MIDI cable** to the **USB-Port** from your laptop or the
@@ -357,8 +377,9 @@ In order to make this to work, you will have to do the following steps:
 
 ## Setting up a Behringer FCB1010 (optional)
 If using this foot controller with or without another controller, then you may
-need to setup some parameters, for example: [MIDI Merge](#enabling-the-merge-function),
-MIDI channel for [NOTE ON/OFF](#set-the-midi-channel-for-the-note-function) or
+need to setup some parameters, for example:
+[MIDI Merge](#enabling-the-merge-function), MIDI channel for
+[NOTE ON/OFF](#set-the-midi-channel-for-the-note-function) or
 [CONTROL CHANGE](#set-the-midi-channel-for-the-cnt-function) messages, values for
 [NOTE ON/OFF](#set-note-messages) or [CONTROL CHANGE](#set-cnt-messages), etc..
 The first thing you have to go is to go to either
@@ -373,17 +394,19 @@ up.
 #### Enabling the "MERGE" function
 This function is needed if you want to connect two controllers: a Behringer
 FCB1010 and a bass pedal controller (ie: a Studiologic MP-117), see:\
-[Connecting a foot and a bass pedal controllers with a laptop or a Raspberry Pi](#connecting-a-foot-and-a-bass-pedal-controllers-with-a-laptop-or-a-raspberry-pi)\
+[Connecting a foot and a bass pedal controllers with a laptop or a Raspberry Pi
+](#connecting-a-foot-and-a-bass-pedal-controllers-with-a-laptop-or-a-raspberry-pi)\
 This will just merge the messages from your FCB1010 with your bass pedal
 controller, allowing them to use the same MIDI OUT port. In order to enable this
 function do follow this steps:
-- Go to the "GLOBAL CONFIGURATION" mode (click [here](#entering-global-configuration-mode)
-  for more details.
+- Go to the "GLOBAL CONFIGURATION" mode (click
+  [here](#entering-global-configuration-mode) for more details.
 - Use the "DOWN" or "UP" switches until you reach the "CONFIG" page.
 - Press the Switch 8 until its LED is on. This will activate the MERGE function.
 - You may want to setup other parameters before exiting this mode, ie: [set the
-  MIDI channel for the "CNT" function](#set-the-midi-channel-for-the-cnt-function)
-  or [set the MIDI channel for "NOTE" function](#set-the-midi-channel-for-the-note-function).
+  MIDI channel for the "CNT" function
+  ](#set-the-midi-channel-for-the-cnt-function) or [set the MIDI channel for
+  "NOTE" function](#set-the-midi-channel-for-the-note-function).
 - After you are done, press the "DOWN" switch for about 2.5 seconds to save
   changes.
 
@@ -392,8 +415,8 @@ If you are going to use the FCB1010 for sending "BANK SELECT" messages, then you
 will have to set the right channel for the CNT (CONTROL CHANGE) function. Here
 you can use two controllers CNT1 or CNT2; which one you choose is up to you. For
 doing this, follow this steps:
-- Go to the "GLOBAL CONFIGURATION" mode (click [here](#entering-global-configuration-mode)
-  for more details).
+- Go to the "GLOBAL CONFIGURATION" mode (click [here
+  ](#entering-global-configuration-mode) for more details).
 - Use the "DOWN" or "UP" switches until you reach the "SELECT MIDI FUNCTION"
   page. Its LED starts flashing.
 - Then hit the switch 6. It will start flashing. If you want to use "CNT 2"
@@ -413,8 +436,8 @@ doing this, follow this steps:
 If you are going to use the FCB1010 for sending "NOTE ON/OFF" messages, then you
 will have to set the right channel for the NOTE function. For doing this, follow
 this steps:
-- Go to the "GLOBAL CONFIGURATION" mode (click [here](#entering-global-configuration-mode)
-  for more details).
+- Go to the "GLOBAL CONFIGURATION" mode (click [here
+  ](#entering-global-configuration-mode) for more details).
 - Use the "DOWN" or "UP" switches until you reach the "SELECT MIDI FUNCTION"
   page. Its LED starts flashing.
 - Then hit the switch 10. It will start flashing.
@@ -445,7 +468,8 @@ steps:
 #### Set "NOTE" messages
 For sending bass notes and chords with the FCB1010, you will have to set "NOTE"
 messages. For doing this, follow this steps:
-- Go to the "PRESET programming" mode (click [here](#entering-preset-programming-mode)
+- Go to the "PRESET programming" mode (click [here
+  ](#entering-preset-programming-mode)
   for more details).
 - Press the switch 10 for a few seconds until its LED is on.
 - Hit it again. It will start flashing.
@@ -461,8 +485,8 @@ messages. For doing this, follow this steps:
 For sending BANK SELECT messages with the FCB1010, you will have to either set
 "CNT1" or "CNT2" messages; this choice is up to you. In order to setup this
 messages, follow this steps:
-- Go to the "PRESET programming" mode (click [here](#entering-preset-programming-mode)
-  for more details).
+- Go to the "PRESET programming" mode (click [here
+  ](#entering-preset-programming-mode) for more details).
 - Press the switch 6 (CNT1) or 7 (CNT2) for a few seconds until its LED is on.
 - Hit it again. It will start flashing.
 - Confirm the selection by pressing the "UP/ENTER" switch.
@@ -501,10 +525,11 @@ messages, follow this steps:
   where:
   - The first part is the port number and the last part the port name.
 
-- After you have done this, open either the file: *sample-config.xml*, an **XML
-  configuration file** with lots of comments documenting what to do, or:
-  *bass-pedal-config.xml*, simple configuration with a **bass pedal controller**
-  and save it as: *config.xml* or any other meaningful name.
+- After you have done this, open either the file: [sample-config.xml
+  ](src/conf/sample-config.xml), an **XML configuration file** with lots of
+  comments documenting what to do, or: [bass-pedal-config.xml
+  ](src/conf/bass-pedal-config.xml), simple configuration with a **bass pedal
+  controller** and save it as: *config.xml* or any other meaningful name.
 
 - Open that file and modify it as you wish by filling your parameters, ie: **MIDI
   IN** port, **MIDI IN and OUT** channels, **NOTE ON** messages, etc..
@@ -534,7 +559,7 @@ If you are planning to use the software, but you don't want to always start it
 manually, then you have several alternatives according to your operating system. 
 
 You will find the needed files on the Automation folder. See the README.md file
-located there or access an online version [here](https://github.com/jmeile/JMMidiBassPedalController/tree/master/src/Automation).
+located there or access an online version [here](src/Automation).
 
 # Troubleshooting
 If your equipment is not reacting as expected, then you can proceed as follows.
@@ -663,11 +688,12 @@ Alternativelly you could also use a **sequencer software**, ie: under Windows:
 [Aria Maestosa](https://ariamaestosa.github.io/ariamaestosa/docs/index.html),
 [Anvil Studio](https://www.anvilstudio.com),
 [KaraKEYoke Karaoke](http://karakeyoke.com/software/karakeyoke.html); under
-Linux: [Aria Maestosa](https://ariamaestosa.github.io/ariamaestosa/docs/index.html),
-or any other sequencer you know. The idea would be to route the **USB Uno MIDI
-Interface** to that software and start looking at the **MIDI** data comming. You
-have there several views: *staff view* (you will see the notes) or *message list*
-(you will see the MIDI messages on a human-readable format).
+Linux: [Aria Maestosa
+](https://ariamaestosa.github.io/ariamaestosa/docs/index.html), or any other
+sequencer you know. The idea would be to route the **USB Uno MIDI Interface** to
+that software and start looking at the **MIDI** data comming. You have there
+several views: *staff view* (you will see the notes) or *message list* (you will
+see the MIDI messages on a human-readable format).
 
 ## Activating the verbose mode
 
@@ -679,8 +705,9 @@ Then check the **log file**, which should be called: *debug.log* and it should b
 stored in the same folder of *FootController.py*. Please enable this mode only if
 you are experiencing problems; it may decrease the performance of your system.
 
-I may also help you, but you need to create a new issue [here](https://github.com/jmeile/JMMidiBassPedalController/issues).
-Please include the following information:
+I may also help you, but you need to create a new issue [here
+](https://github.com/jmeile/JMMidiBassPedalController/issues). Please include the
+following information:
 - Screenshot or text of the error message
 - If there isn't an error message, then explain exactly what's the issue
 - If relevant, also include:
