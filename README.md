@@ -18,11 +18,14 @@ in **banks**, which can be switched through **CONTROL CHANGE** messages.
   - [Connecting a foot and a bass pedal controllers with a laptop or a Raspberry
     Pi](#connecting-a-foot-and-a-bass-pedal-controllers-with-a-laptop-or-a-raspberry-pi)
 - [Setting up the hardware](#setting-up-the-hardware)
-  - [Setting up a Behringer FCB1010 (optional)](#setting-up-a-behringer-fcb1010-optional)
+  - [Setting up a Behringer FCB1010 (optional)
+    ](#setting-up-a-behringer-fcb1010-optional)
     - [Entering "GLOBAL CONFIGURATION" mode](#entering-global-configuration-mode)
       - [Enabling the "MERGE" function](#enabling-the-merge-function)
-      - [Set the MIDI channel for the "CNT" function](#set-the-midi-channel-for-the-cnt-function)
-      - [Set the MIDI channel for the "NOTE" function](#set-the-midi-channel-for-the-note-function)
+      - [Set the MIDI channel for the "CNT" function
+        ](#set-the-midi-channel-for-the-cnt-function)
+      - [Set the MIDI channel for the "NOTE" function
+        ](#set-the-midi-channel-for-the-note-function)
     - [Entering "PRESET programming" mode](#entering-preset-programming-mode)
       - [Set "NOTE" messages](#set-note-messages)
       - [Set "CNT" messages](#set-cnt-messages)
@@ -31,7 +34,8 @@ in **banks**, which can be switched through **CONTROL CHANGE** messages.
 - [Automatic start during system boot](#automatic-start-during-system-boot)
 - [Troubleshooting](#troubleshooting)
   - [Using the ManualTester script](#using-the-manualtester-script)
-  - [Use a software for intercepting MIDI messages](#use-a-software-for-intercepting-midi-messages)
+  - [Use a software for intercepting MIDI messages
+    ](#use-a-software-for-intercepting-midi-messages)
   - [Using a sequencer software](#using-a-sequencer-software)
   - [Activating the verbose mode](#activating-the-verbose-mode)
 - [License](#license)
@@ -75,7 +79,8 @@ From time to time, I use the following terms on my software:
   a foot controller that looks like those bass pedals from an old organ, for
   example, the **studiologic MP-117**:
 
-  [![studiologic MP-117 pedalboard](assets/Studiologic_MP-117_small.jpg)](assets/Studiologic_MP-117.jpg)\
+  [![studiologic MP-117 pedalboard](assets/Studiologic_MP-117_small.jpg)
+  ](assets/Studiologic_MP-117.jpg)\
   Please note that it is not necessary that you use a bass pedal controller, you
   can also use a foot controller like the **Behringer FCB1010**:
 
