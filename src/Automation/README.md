@@ -11,13 +11,13 @@ folder.
 # Table of Contents
 
 - [Windows](#windows)
-  - [Runing a Task whenever a user logons](#runing-a-task-whenever-a-user-logons)
-  - [Runing a Task after Windows has started](#runing-a-task-after-windows-has-started)
+  - [Starting the software whenever a user logons](#starting-the-software-whenever-a-user-logons)
+  - [Starting the software after Windows has started](#starting-the-software-after-windows-has-started)
 - [MACOS](#macos)
-  - [Runing a Task whenever a user logons](#runing-a-task-whenever-a-user-logons)
-  - [Runing a Task after MACOS has started](#runing-a-task-after-macos-has-started)
+  - [Starting the software whenever a user logons](#starting-the-software-whenever-a-user-logons)
+  - [Starting the software after MACOS has started](#starting-the-software-after-macos-has-started)
 - [Linux](#linux)
-  - [Runing a Task after Linux has started](#runing-a-task-after-linux-has-started)
+  - [Starting the software after Linux has started](#starting-the-software-after-linux-has-started)
 
 
 # Windows
@@ -36,7 +36,7 @@ In order to import an xml Task do the following:
 
 - Choose one of the files mentioned above. 
 
-## Runing a Task whenever a user logons
+## Starting the software whenever a user logons
 
 Here you will find these two files:
 
@@ -88,7 +88,7 @@ ie: if you want to run the task only when a specific user logons, then edit
 the "At log on" trigger and change: "Any user" to "Specific user", then select
 the user you want to use.
 
-## Runing a Task after Windows has started
+## Starting the software after Windows has started
 
 Here you will find these two files:
 
@@ -143,7 +143,7 @@ login to the system and it will be ready as soon as MACOS starts. Please note
 that when running Daemons as root, the MIDI configuration for virtual ports isn't
 available; only physical port, ie: an USB to MIDI cable, are visible.
 
-## Runing a Task whenever a user logons
+## Starting the software whenever a user logons
 
 Here you will find this file:
 
@@ -181,7 +181,7 @@ Please take in note that "Reboot" and "Shutdown" commands won't work here becaus
 those commands need root privileges and the "Login Items" will be run with normal
 user rights.
 
-## Runing a Task after MACOS has started
+## Starting the software after MACOS has started
 
 Note: I didn't manage to make this work. It seems that MACOS will only start the
 MIDI devices as soon as a user logins. So, no way of doing it on an unattended
@@ -283,7 +283,7 @@ To install this as a Launch Agent or Daemon do the following:
 The scripts contained here only work for debian and its based distros, ie:
 Ubuntu and Raspbian. It depends on systemd, so, your Linux must have it.
 
-## Runing a Task after Linux has started
+## Starting the software after Linux has started
 In order to install this, first modify this file:
 ```
 Start_FootController_Linux_Startup.sh
