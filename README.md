@@ -84,7 +84,8 @@ From time to time, I use the following terms on my software:
   Please note that it is not necessary that you use a bass pedal controller, you
   can also use a foot controller like the **Behringer FCB1010**:
 
-  [![Behringer FCB1010 foot controller](assets/Behringer_FCB1010_small.jpg)](assets/Behringer_FCB1010.jpg)\
+  [![Behringer FCB1010 foot controller
+  ](assets/Behringer_FCB1010_small.jpg)](assets/Behringer_FCB1010.jpg)\
   However the feeling won't be the same as when you use a real bass pedal; for
   example the switches may be harder and so difficult to push. Another advantage
   of the bass pedal controller is that it may also include the force (velocity)
@@ -104,10 +105,13 @@ From time to time, I use the following terms on my software:
 
 - **MIDI** and related terms: this would cost me a lot of time to write down
   everything here, so, I will just let you some links:
-  - [Summary of MIDI Messages from the MIDI association.](https://www.midi.org/specifications-old/item/table-1-summary-of-midi-message )
+  - [Summary of MIDI Messages from the MIDI association.
+    ](https://www.midi.org/specifications-old/item/table-1-summary-of-midi-message )
   - [MIDI definition from Wikipedia](https://en.wikipedia.org/wiki/MIDI)
-  - [MIDI tutorial from Dominique Vandenneucker.](http://www.music-software-development.com/midi-tutorial.html)
-  - [How MIDI Works, YouTube playlist from Andrew Kilpatrick.](https://www.youtube.com/watch?v=5IQvu8zlmJk&list=PLgWv1tajHyBsAo5OBLiQlY0hLC4ZagyJB)
+  - [MIDI tutorial from Dominique Vandenneucker.
+    ](http://www.music-software-development.com/midi-tutorial.html)
+  - [How MIDI Works, YouTube playlist from Andrew Kilpatrick.
+    ](https://www.youtube.com/watch?v=5IQvu8zlmJk&list=PLgWv1tajHyBsAo5OBLiQlY0hLC4ZagyJB)
  
 - **MIDI Echo function:** this is the ability of the software to fordward other
   not recognized messages to the connected devices. ie: let's say that you want
@@ -129,7 +133,8 @@ From time to time, I use the following terms on my software:
   cable allows you to have two ports: **MIDI IN and OUT** connected through an
   USB port. Right now, I use M-Audio Uno USB cable:
 
-  [![M-Audio Uno USB cable](assets/M-Audio_Uno_USB_cable_small.jpg)](assets/M-Audio_Uno_USB_cable.jpg)
+  [![M-Audio Uno USB cable](assets/M-Audio_Uno_USB_cable_small.jpg)
+  ](assets/M-Audio_Uno_USB_cable.jpg)
 
 - **NOTE ON/OFF message:** messages that results when hitting or releasing a note
   on a keyboard or a foot controller respectively. **NOTE ON** messages are
@@ -148,7 +153,8 @@ From time to time, I use the following terms on my software:
 - **Raspberry Pi**: think of it as a mini computer (micro controller to be
   exact), for example, the Raspberry Pi 4:
 
-  [![Raspberry Pi 4](assets/Raspberry_pi_4_small.jpg)](assets/Raspberry_pi_4.jpg)\
+  [![Raspberry Pi 4](assets/Raspberry_pi_4_small.jpg)
+  ](assets/Raspberry_pi_4.jpg)\
   They are really small and allow you to excecute some tasks that a computer also
   can do, but with the advantage that they are really small and usually after you
   setup them, then you don't need a keyboard or a screen to start it.
@@ -223,7 +229,8 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
   pip3 install --upgrade setuptools
   ```
 
-- Alternativelly to all **pip3** commands, you can also use the **requirements.txt** file as follows:
+- Alternativelly to all **pip3** commands, you can also use the 
+  **requirements.txt** file as follows:
   ```
   pip3 install -r requirements.txt
   ```
@@ -278,7 +285,9 @@ following connections:
                                +---+        |
                                    +--------+
 -->
-[![Connecting foot controller only](assets/connecting_foot_controller_only_small.jpg)](assets/connecting_foot_controller_only.jpg)
+[![Connecting foot controller only
+](assets/connecting_foot_controller_only_small.jpg)
+](assets/connecting_foot_controller_only.jpg)
 
 **Explanation:**
 - Connect the USB-TO-MIDI cable to the USB-Port from your Laptop or the Raspberry
