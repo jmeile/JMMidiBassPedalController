@@ -13,8 +13,8 @@ in **banks**, which can be switched through **CONTROL CHANGE** messages.
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Hardware connections](#hardware-connections)
-  - [Connecting a foot controller to a laptop or a Rasberry Pi]
-    (#connecting-a-foot-controller-to-a-laptop-or-a-rasberry-pi)
+  - [Connecting a foot controller to a laptop or a Rasberry
+    Pi](#connecting-a-foot-controller-to-a-laptop-or-a-rasberry-pi)
   - [Connecting a foot and a bass pedal controllers with a laptop or a Raspberry
     Pi](#connecting-a-foot-and-a-bass-pedal-controllers-with-a-laptop-or-a-raspberry-pi)
 - [Setting up the hardware](#setting-up-the-hardware)
