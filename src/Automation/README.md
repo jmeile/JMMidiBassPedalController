@@ -221,7 +221,7 @@ To install this as a Launch Agent or Daemon do the following:
     WorkingDirectory or an absolute path.
 
 - Open the [Start_FootController_MACOS_Startup.sh
-  ](MACOS/Start_FootContrller_MACOS_Startup.sh) script and edit this variables:
+  ](MACOS/Start_FootController_MACOS_Startup.sh) script and edit this variables:
   - WORKING_DIR: Directory where the FootController.py script is located
   - SCRIPT_OPTIONS: Script command line options. Set this to "--verbose"
     to enable debug messages; otherwise, leave it as it is.
