@@ -11,13 +11,18 @@ folder.
 # Table of Contents
 
 - [Windows](#windows)
-  - [Starting the software whenever a user logons](#starting-the-software-whenever-a-user-logons)
-  - [Starting the software after Windows has started](#starting-the-software-after-windows-has-started)
+  - [Starting the software whenever a user logons
+    ](#starting-the-software-whenever-a-user-logons)
+  - [Starting the software after Windows has started
+    ](#starting-the-software-after-windows-has-started)
 - [MACOS](#macos)
-  - [Starting the software whenever a user logons](#starting-the-software-whenever-a-user-logons)
-  - [Starting the software after MACOS has started](#starting-the-software-after-macos-has-started)
+  - [Starting the software whenever a user logons
+    ](#starting-the-software-whenever-a-user-logons)
+  - [Starting the software after MACOS has started
+    ](#starting-the-software-after-macos-has-started)
 - [Linux](#linux)
-  - [Starting the software after Linux has started](#starting-the-software-after-linux-has-started)
+  - [Starting the software after Linux has started
+    ](#starting-the-software-after-linux-has-started)
 
 
 # Windows

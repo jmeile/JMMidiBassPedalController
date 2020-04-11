@@ -316,7 +316,9 @@ a **Studiologic MP-117**), then you can connect them as follows:
                                                          +---+        |
                                                              +--------+
 -->
-[![Connecting bass and foot controllers only](assets/connecting_bass_and_foot_controllers_small.jpg)](assets/connecting_bass_and_foot_controllers.jpg)
+[![Connecting bass and foot controllers only
+](assets/connecting_bass_and_foot_controllers_small.jpg)
+](assets/connecting_bass_and_foot_controllers.jpg)
 
 **Explanation:**
 - Connect the **USB-TO-MIDI cable** to the **USB-Port** from your laptop or the
@@ -392,7 +394,8 @@ up.
 #### Enabling the "MERGE" function
 This function is needed if you want to connect two controllers: a Behringer
 FCB1010 and a bass pedal controller (ie: a Studiologic MP-117), see:\
-[Connecting a foot and a bass pedal controllers with a laptop or a Raspberry Pi](#connecting-a-foot-and-a-bass-pedal-controllers-with-a-laptop-or-a-raspberry-pi)\
+[Connecting a foot and a bass pedal controllers with a laptop or a Raspberry Pi
+](#connecting-a-foot-and-a-bass-pedal-controllers-with-a-laptop-or-a-raspberry-pi)\
 This will just merge the messages from your FCB1010 with your bass pedal
 controller, allowing them to use the same MIDI OUT port. In order to enable this
 function do follow this steps:
@@ -401,8 +404,9 @@ function do follow this steps:
 - Use the "DOWN" or "UP" switches until you reach the "CONFIG" page.
 - Press the Switch 8 until its LED is on. This will activate the MERGE function.
 - You may want to setup other parameters before exiting this mode, ie: [set the
-  MIDI channel for the "CNT" function](#set-the-midi-channel-for-the-cnt-function)
-  or [set the MIDI channel for "NOTE" function](#set-the-midi-channel-for-the-note-function).
+  MIDI channel for the "CNT" function
+  ](#set-the-midi-channel-for-the-cnt-function) or [set the MIDI channel for
+  "NOTE" function](#set-the-midi-channel-for-the-note-function).
 - After you are done, press the "DOWN" switch for about 2.5 seconds to save
   changes.
 
@@ -411,8 +415,8 @@ If you are going to use the FCB1010 for sending "BANK SELECT" messages, then you
 will have to set the right channel for the CNT (CONTROL CHANGE) function. Here
 you can use two controllers CNT1 or CNT2; which one you choose is up to you. For
 doing this, follow this steps:
-- Go to the "GLOBAL CONFIGURATION" mode (click [here](#entering-global-configuration-mode)
-  for more details).
+- Go to the "GLOBAL CONFIGURATION" mode (click [here
+  ](#entering-global-configuration-mode) for more details).
 - Use the "DOWN" or "UP" switches until you reach the "SELECT MIDI FUNCTION"
   page. Its LED starts flashing.
 - Then hit the switch 6. It will start flashing. If you want to use "CNT 2"
@@ -432,8 +436,8 @@ doing this, follow this steps:
 If you are going to use the FCB1010 for sending "NOTE ON/OFF" messages, then you
 will have to set the right channel for the NOTE function. For doing this, follow
 this steps:
-- Go to the "GLOBAL CONFIGURATION" mode (click [here](#entering-global-configuration-mode)
-  for more details).
+- Go to the "GLOBAL CONFIGURATION" mode (click [here
+  ](#entering-global-configuration-mode) for more details).
 - Use the "DOWN" or "UP" switches until you reach the "SELECT MIDI FUNCTION"
   page. Its LED starts flashing.
 - Then hit the switch 10. It will start flashing.
@@ -464,7 +468,8 @@ steps:
 #### Set "NOTE" messages
 For sending bass notes and chords with the FCB1010, you will have to set "NOTE"
 messages. For doing this, follow this steps:
-- Go to the "PRESET programming" mode (click [here](#entering-preset-programming-mode)
+- Go to the "PRESET programming" mode (click [here
+  ](#entering-preset-programming-mode)
   for more details).
 - Press the switch 10 for a few seconds until its LED is on.
 - Hit it again. It will start flashing.
@@ -480,8 +485,8 @@ messages. For doing this, follow this steps:
 For sending BANK SELECT messages with the FCB1010, you will have to either set
 "CNT1" or "CNT2" messages; this choice is up to you. In order to setup this
 messages, follow this steps:
-- Go to the "PRESET programming" mode (click [here](#entering-preset-programming-mode)
-  for more details).
+- Go to the "PRESET programming" mode (click [here
+  ](#entering-preset-programming-mode) for more details).
 - Press the switch 6 (CNT1) or 7 (CNT2) for a few seconds until its LED is on.
 - Hit it again. It will start flashing.
 - Confirm the selection by pressing the "UP/ENTER" switch.
@@ -553,7 +558,8 @@ If you are planning to use the software, but you don't want to always start it
 manually, then you have several alternatives according to your operating system. 
 
 You will find the needed files on the Automation folder. See the README.md file
-located there or access an online version [here](https://github.com/jmeile/JMMidiBassPedalController/tree/master/src/Automation).
+located there or access an online version [here
+](https://github.com/jmeile/JMMidiBassPedalController/tree/master/src/Automation).
 
 # Troubleshooting
 If your equipment is not reacting as expected, then you can proceed as follows.
@@ -682,11 +688,12 @@ Alternativelly you could also use a **sequencer software**, ie: under Windows:
 [Aria Maestosa](https://ariamaestosa.github.io/ariamaestosa/docs/index.html),
 [Anvil Studio](https://www.anvilstudio.com),
 [KaraKEYoke Karaoke](http://karakeyoke.com/software/karakeyoke.html); under
-Linux: [Aria Maestosa](https://ariamaestosa.github.io/ariamaestosa/docs/index.html),
-or any other sequencer you know. The idea would be to route the **USB Uno MIDI
-Interface** to that software and start looking at the **MIDI** data comming. You
-have there several views: *staff view* (you will see the notes) or *message list*
-(you will see the MIDI messages on a human-readable format).
+Linux: [Aria Maestosa
+](https://ariamaestosa.github.io/ariamaestosa/docs/index.html), or any other
+sequencer you know. The idea would be to route the **USB Uno MIDI Interface** to
+that software and start looking at the **MIDI** data comming. You have there
+several views: *staff view* (you will see the notes) or *message list* (you will
+see the MIDI messages on a human-readable format).
 
 ## Activating the verbose mode
 
@@ -698,8 +705,9 @@ Then check the **log file**, which should be called: *debug.log* and it should b
 stored in the same folder of *FootController.py*. Please enable this mode only if
 you are experiencing problems; it may decrease the performance of your system.
 
-I may also help you, but you need to create a new issue [here](https://github.com/jmeile/JMMidiBassPedalController/issues).
-Please include the following information:
+I may also help you, but you need to create a new issue [here
+](https://github.com/jmeile/JMMidiBassPedalController/issues). Please include the
+following information:
 - Screenshot or text of the error message
 - If there isn't an error message, then explain exactly what's the issue
 - If relevant, also include:
