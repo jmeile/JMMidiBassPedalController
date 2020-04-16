@@ -10,7 +10,7 @@ in **banks**, which can be switched through **CONTROL CHANGE** messages.
 
 - [Features](#features)
 - [Definitions](#definitions)
-- [Prerequisites](#prerequisites)
+- [Requirements](#requirements)
 - [Installation](#installation)
 - [Hardware connections](#hardware-connections)
   - [Connecting a foot controller to a laptop or a Rasberry Pi
@@ -171,7 +171,7 @@ From time to time, I use the following terms on my software:
 - **XML file**: this is just a file where you can save the configuration of your
   bass foot controller.
 
-# Prerequisites
+# Requirements
 
 Before installing the requirements, please make sure that you have admin rights.
 Under Linux/MACOS use:
