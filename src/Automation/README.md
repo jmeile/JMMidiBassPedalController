@@ -27,8 +27,8 @@ folder.
 
 # Windows
 
-Under Windows, some xml Tasks, that can be imported on the Windows Scheduler
-were created. Here you have two alternatives: either run the task when a user
+Under Windows, some xml Tasks, which can be imported on the Windows Scheduler,
+are available. Here you have two alternatives: either run the task when a user
 logons or during system startup. Personally, I prefer the last option, since you
 won't have to login to the system and it will be ready as soon as Windows starts.
 
