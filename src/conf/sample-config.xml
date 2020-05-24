@@ -137,7 +137,7 @@
             xsi:schemaLocation="https://www.technosoft.solutions/xsd 
             MidiBassPedalController.xsd"
             xmlns="https://www.technosoft.solutions/xsd"
-            InPort="MIDI In" OutPort="MIDI Out"
+            InPort="MIDI In*" OutPort="MIDI Out*"
             InChannel="1"
             OutBassPedalChannel="3" OutChordChannel="4"
             MidiEcho="true"
@@ -149,10 +149,15 @@
             PedalMonophony="false">
 
   <!--
-    The following next two nodes: Start and Stop are optional and they are used
-    for sending MIDI or SysEx messages while the controller is starting or
-    stopping respectively. You can send one or more messages at once and they
-    will be excecuted sequentially in the order you define.
+    The following next three nodes: Start, Stop, and Panic are optional and they
+    are used for sending MIDI or SysEx messages while the controller is
+    starting or stopping respectively. The Panic node is used to define a
+    sequence of messages that a controller sends to fix posible playback issues;
+    during the transmition of this message bank select messages will be disabled
+    in order to avoid unexpected behaviour.
+
+    For each the start and stop nodes, you can send one or more messages at once
+    and they will be excecuted sequentially in the order you define.
   -->
 
   <Start>
@@ -169,6 +174,50 @@
     -->
     <Message Type="Midi" String="FC"/>
   </Stop>
+
+  <!--
+    Panic messages can be either included as text, ie:
+    <Panic>
+      Line 1
+      Line 2
+      ...
+    </Panic>
+    
+    or if they are really long, then you may save it on a text file, ie:
+    <Panic file="/path/to/file.txt"/>
+  
+    On the last case, you have to give either an absolute or a relative path,
+    ie:
+    
+    Absolute:
+    Windows:
+      C:\my_path\my_command.txt
+      C:/my_path/my_command.txt
+    Linux:
+      /my_path/my_command.txt
+    
+    Relative:
+    Windows:
+      conf\unitor8_panic.txt
+      conf/unitor8_panic.txt
+    Linux:
+      conf/unitor8_panic.txt
+    
+    Please note that Windows can also use "/" for paths. This is because the
+    python function for doing this validation doesn't care if it is an slash or
+    a backslash.
+    
+    Finally, if you give a file and also a text, then an error will be shown;
+    you can only use one of them.
+    
+    The command text can contain the following elements:
+    * a comment: //some comment
+    * a MIDI message
+    * A SysEx message
+    You may have spaces or tabs at the beginning and end of each line;
+    each line will be separated by an enter.
+  -->
+  <Panic File="conf/unitor8_panic.txt"/>
 
   <!--
     Next you can define the different Banks for each bass pedal. You need to

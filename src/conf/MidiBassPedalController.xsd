@@ -50,6 +50,8 @@
           <xs:sequence>
             <xs:element name="Start" type="StartStopNodeType" minOccurs="0"/>
             <xs:element name="Stop" type="StartStopNodeType" minOccurs="0"/>
+            <xs:element name="Panic" type="PanicNodeType" minOccurs="0"
+                        maxOccurs="1"/>
             <xs:element name="Bank" type="BankType" maxOccurs="121">
               <xs:annotation>
                 <xs:documentation xml:lang="en">
@@ -771,4 +773,41 @@
       <xs:pattern value="NoteOn|NoteOff"/>
     </xs:restriction>
   </xs:simpleType>
+
+  <xs:complexType name="PanicNodeType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Here you can either include the text of the panic command or give a path
+        to a text file containing it.
+        
+        The command text can contain the following elements:
+        * a comment: //some comment
+        * a MIDI message (see the definition of MidiMessageType for a list of
+          valid messages)
+        * A SysEx message (see the definition of SysExMessageType for seen the
+          form of a valid message)
+        You may have spaces or tabs at the beginning and end of each line;
+        each line will be separated by an enter.
+        
+        Since this validation is really difficult to do here, I opted to do it
+        inside the python code.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="File" type="xs:string">
+          <xs:annotation>
+            <xs:documentation xml:lang="en">
+              Path to the file containing the Panic message. It should be a
+              text file containing several lines with MIDI messages that
+              represent the panic message from your device (ie: an Emagic
+              Unitor 8). This file may include comments starting with "//" and
+              also empty lines, which will be discarted. Please note that the
+              validity of this path will be checked inside the python code.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
 </xs:schema>

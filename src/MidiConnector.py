@@ -113,7 +113,7 @@ class MidiConnector:
     """
     Parses the specified xml configuration file
     """
-    self.__log.info("Parsing XML config")
+    self.__log.info("Parsing XML config: %s", self._xsd_schema)
     exit = False
     self.__log.debug("Calling XMLSchema11 api")
     try:
@@ -158,7 +158,7 @@ class MidiConnector:
     * In case of opening a virtual port, it will return a MIDI interface
     """
     if not is_virtual:
-      self.__log.debug("Opening MIDI port: %s", str(midi_port))
+      self.__log.debug("Opening MIDI port: %s", PrettyFormat(midi_port))
       port_name = None
       client_name = None
     else:

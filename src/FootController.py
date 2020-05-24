@@ -20,7 +20,6 @@ from __future__ import print_function
 import os
 import platform
 from MainArgumentParser import MainArgumentParser
-from CustomLogger import CustomLogger
 import logging
 from MidiConnector import MidiConnector
 
