@@ -221,7 +221,7 @@
 
   <!--
     Next you can define the different Banks for each bass pedal. You need to
-    have at least one and maximum 121. Inside each bank, you can overwrite the 
+    have at least one and maximum 120. Inside each bank, you can overwrite the 
     BassPedalVelocity, ChordVelocity, BassPedalTranspose, and ChordTranspose if
     you want.
   -->
@@ -316,6 +316,7 @@
       and you want to select the last bank, then you can also use 'Last' for
       this; this is usefull if you are continuing changing your configuration,
       but the last bank always remains the same. Other posible values:
+      - 'Panic': Sends a panic message.
       - 'Quit': Quits the controller software.
       - 'Reload': Stops and starts the controller software. Useful if you
         changed the configuration file, and want to reload it.

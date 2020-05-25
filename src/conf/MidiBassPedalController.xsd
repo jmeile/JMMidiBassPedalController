@@ -52,10 +52,10 @@
             <xs:element name="Stop" type="StartStopNodeType" minOccurs="0"/>
             <xs:element name="Panic" type="PanicNodeType" minOccurs="0"
                         maxOccurs="1"/>
-            <xs:element name="Bank" type="BankType" maxOccurs="121">
+            <xs:element name="Bank" type="BankType" maxOccurs="120">
               <xs:annotation>
                 <xs:documentation xml:lang="en">
-                  You can define up to 121 Banks. Here you will define the
+                  You can define up to 120 Banks. Here you will define the
                   different combinations for your Bass pedal and chord notes.
                   See the Bank complexType definition to see what's inside.
                 </xs:documentation>
@@ -99,17 +99,20 @@
                     MIDI channel that the controller is using for processing
                     messages and they will change Banks for the controller. Here
                     the controller set on: BankSelectController will be used, so
-                    this will give you the posibility of setting up maximum 121
+                    this will give you the posibility of setting up maximum 120
                     banks, so, if you send CC + 13 (0DH), then the bank 12 will
                     be selected (please note that the index is zero based, so
                     the first bank would be 0). There will be three special
                     operations:
-                    > Sending a CC with a value of 121 (79H) will go to the
+                    > Sending a CC with a value of 120 (78H) will go to the
                       previous bank.
-                    > Sending a CC with a value of 122 (7AH) will go to the
+                    > Sending a CC with a value of 121 (79H) will go to the
                       next bank.
-                    > Sending a CC with a value of 123 (7BH) will go to the
+                    > Sending a CC with a value of 122 (7AH) will go to the
                       last bank.
+                    > Sending a CC with a value of 123 (7BH) will send a panic
+                      command. For this to work, you will need to define the
+                      "Panic" node.
                     > Sending a CC with a value of 124 (7CH) will cause the
                       controller software to quit.
                     > Sending a CC with a value of 125 (7DH) will cause the
@@ -407,17 +410,17 @@
   <xs:simpleType name="BankNumberType">
     <xs:annotation>
       <xs:documentation xml:lang="en">
-        Type for Bank numbers. Here you must use values between 1 and 121.
+        Type for Bank numbers. Here you must use values between 1 and 120.
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:integer">
       <xs:annotation>
         <xs:appinfo>
-          A value between 1 and 121 must be entered.
+          A value between 1 and 120 must be entered.
         </xs:appinfo>
       </xs:annotation>
       <xs:minInclusive value="1"/>
-      <xs:maxInclusive value="121"/>
+      <xs:maxInclusive value="120"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -518,7 +521,8 @@
           <xs:annotation>
             <xs:documentation xml:lang="en">
               Bank number that the controller will select after this pedal has
-              been pressed. You can either enter a number between 1 and 121 or
+              been pressed. You can either enter a number between 1 and 120 or
+              'Panic' (sends a panic command - The Panic node needs to be set),
               'Next' (select next bank), 'Previous' (select previous bank),
               'Last' (select the last bank), 'Quit' (quit the controller
               software), 'Reload' (restart the controller; here the whole xml
@@ -596,15 +600,16 @@
     <xs:restriction base="xs:string">
       <xs:annotation>
         <xs:documentation>
-          This type is a value between 1 and 121 or 'Next' (select next bank),
-          'Previous' (select previous bank), 'Last' (select the last bank),
-          'Quit' (quit the controller software), 'Reload' (restart the
-          controller; here the whole xml config file will be reloaded), 'Reboot'
-          (reboots the computer or microcontroller running the software), or
-          'Shutdown' (shutdowns the system).
+          This type is a value between 1 and 120 or 'Panic' (send a panic
+          message), 'Next' (select next bank), 'Previous' (select previous
+          bank), 'Last' (select the last bank), 'Quit' (quit the controller
+          software), 'Reload' (restart the controller; here the whole xml config
+          file will be reloaded), 'Reboot' (reboots the computer or
+          microcontroller running the software), or 'Shutdown' (shutdowns the
+          system).
         </xs:documentation>
       </xs:annotation>
-      <xs:pattern value="Next|Previous|Last|Quit|Reload|Reboot|Shutdown|[1-9]|[1-9][0-9]|1[0-1][0-9]|12[0-1]"/>
+      <xs:pattern value="Panic|Next|Previous|Last|Quit|Reload|Reboot|Shutdown|[1-9]|[1-9][0-9]|1[0-1][0-9]|120"/>
     </xs:restriction>
   </xs:simpleType>
 

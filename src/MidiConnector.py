@@ -134,12 +134,14 @@ class MidiConnector:
           raise Exception("InitialBank is higher than the possible number of "
                           "banks / maximum: " + str(len(xml_dict['Bank'])) + \
                           ", given value: " + str(xml_dict['@InitialBank']))
+        self.__log.debug("Got: \n%s", PrettyFormat(xml_dict))
       except:
         exit = True
         error = traceback.format_exc()
-        self.__log.info("Error while parsing xml file:\n%s\n\n%s", 
-                        self._args.config, error)
-    self.__log.debug("Got: \n%s", PrettyFormat(xml_dict))
+        message = "Error while parsing xml file:\n%s\n\n%s" % (
+                    self._args.config, error
+                  )
+        self.__log.info(message)
     if exit:
       self.__log.debug("Unexpected error occured, aborting...")
       self._free_midi()
@@ -327,8 +329,11 @@ class MidiConnector:
   def _free_midi(self):
     """Frees MIDI resources"""
     self.__log.debug("Releasing MIDI")
-    del self._midi_in
-    del self._midi_out
+    if hasattr(self, '_midi_in'):
+      del self._midi_in
+      
+    if hasattr(self, '_midi_out'):
+      del self._midi_out
     self.__log.info("MIDI was released")
   
   def _get_midi_ports(self, midi_interface):

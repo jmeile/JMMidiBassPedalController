@@ -516,12 +516,17 @@ class MidiProcessor(MidiInputHandler):
               bank_select = current_pedal.get("@BankSelect")
               if bank_select != None:
                 #Now the BANK SELECT message will be processed
-                if bank_select not in ["Quit", "Reload", "Reboot", "Shutdown"]:
+                if bank_select not in ["Panic", "Quit", "Reload", "Reboot", \
+                                       "Shutdown"]:
                   self._current_bank = bank_select
                   self.__log.info("Bank changed to: %d", bank_select + 1)
-                else:
+                elif bank_select != "Panic":
                   self._quit = True
                   self._status = bank_select
+                else:
+                  messages = self._panic_command
+                  self.__log.debug("Sending software Panic:\n%s", \
+                                   PrettyFormat(self._panic_command))
           elif self._xml_dict["@MidiEcho"]:
             #This is an unregistered note, so fordward it whatever it is
             messages = [message]
@@ -532,23 +537,29 @@ class MidiProcessor(MidiInputHandler):
             #If it is the BankSelectController, then the respective BANK SELECT
             #message will be excecuted
             select_value = message[2]
-            if select_value < 121:
+            if select_value < 120:
               if select_value >= len(self._xml_dict["Bank"]):
                 select_value = len(self._xml_dict["Bank"]) - 1
               self._current_bank = select_value
               self.__log.info("Bank changed to: %d", self._current_bank + 1)
             else:
+              send_panic = False
               num_banks = len(self._xml_dict["Bank"])
-              if select_value == 121:
+              if select_value == 120:
                 self._current_bank -= 1
-              elif select_value == 122:
+              elif select_value == 121:
                 self._current_bank += 1
-              elif select_value == 123:
+              elif select_value == 122:
                 self._current_bank = num_banks - 1
+              elif select_value == 123:
+                send_panic = True
+                messages = self._panic_command
+                self.__log.debug("Sending software Panic:\n%s", \
+                                 PrettyFormat(self._panic_command))
               else:
                 self._quit = True
                 self._status = BANK_SELECT_FUNCTIONS[select_value]
-              if not self._quit:
+              if not self._quit and not send_panic:
                 if self._current_bank < 0:
                   self._current_bank = num_banks - 1
                 elif self._current_bank >= num_banks:
