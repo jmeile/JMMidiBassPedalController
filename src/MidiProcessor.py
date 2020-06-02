@@ -75,11 +75,12 @@ class MidiProcessor(MidiInputHandler):
     self._previous_pedal = None
     self.__log.info("Current Bank: %s", self._xml_dict['@InitialBank'])
     self._current_velocity = 0
-    self._xml_dict["@BassPedalVelocity"] = self._parse_common_attribute(
-      "BassPedalVelocity", self._xml_dict)
-    self._xml_dict["@ChordVelocity"] = self._parse_common_attribute(
-                                         "ChordVelocity", self._xml_dict)
-                                          
+    self._xml_dict["@BassPedalVelocity"], \
+    self._xml_dict["@BassPedalVelocityRelative"] = \
+      self._parse_velocity("BassPedalVelocity", self._xml_dict)
+    self._xml_dict["@ChordVelocity"], \
+    self._xml_dict["@ChordVelocityRelative"] = \
+      self._parse_velocity("ChordVelocity", self._xml_dict)
     self._xml_dict["@BassPedalTranspose"] = self._parse_common_attribute(
                                               "BassPedalTranspose",
                                               self._xml_dict)
@@ -207,11 +208,12 @@ class MidiProcessor(MidiInputHandler):
     bank_index = 0
     for bank in self._xml_dict['Bank']:
       self.__log.debug("Parsing bank: %d", bank_index + 1)
-      bank["@BassPedalVelocity"] = self._parse_common_attribute(
-                                     "BassPedalVelocity", bank, self._xml_dict)
-      bank["@ChordVelocity"] = self._parse_common_attribute("ChordVelocity",
-                                                              bank,
-                                                              self._xml_dict)
+      bank["@BassPedalVelocity"], \
+      bank["@BassPedalVelocityRelative"] = \
+        self._parse_velocity("BassPedalVelocity", bank, self._xml_dict)
+      bank["@ChordVelocity"], \
+      bank["@ChordVelocityRelative"] = \
+        self._parse_velocity("ChordVelocity", bank, self._xml_dict)
       bank["@BassPedalTranspose"] = self._parse_common_attribute(
                                       "BassPedalTranspose", bank,
                                       self._xml_dict)
@@ -239,11 +241,12 @@ class MidiProcessor(MidiInputHandler):
     pedal_index = 0
     for pedal in parent_bank['Pedal']:
       self.__log.debug("Parsing pedal: %d", pedal_index + 1)
-      pedal["@BassPedalVelocity"] = self._parse_common_attribute(
-                                      "BassPedalVelocity", pedal, parent_bank)
-      pedal["@ChordVelocity"] = self._parse_common_attribute("ChordVelocity",
-                                                               pedal,
-                                                               parent_bank)
+      pedal["@BassPedalVelocity"], \
+      pedal["@BassPedalVelocityRelative"] = \
+        self._parse_velocity("BassPedalVelocity", pedal, parent_bank)
+      pedal["@ChordVelocity"], \
+      pedal["@ChordVelocityRelative"] = \
+        self._parse_velocity("ChordVelocity", pedal, parent_bank)
       pedal["@BassPedalTranspose"] = self._parse_common_attribute(
                                        "BassPedalTranspose", pedal, parent_bank)
       pedal["@ChordTranspose"] = self._parse_common_attribute(
@@ -432,8 +435,7 @@ class MidiProcessor(MidiInputHandler):
     numeric representation
     Parameters:
     * attribute_name: name of the attribute to retreive. It can be either:
-      BassPedalVelocity, ChordVelocity, BassPedalTranspose, ChordTranspose, or
-      Octave
+      BassPedalTranspose, ChordTranspose, or Octave
     * current_node: current note to parse
     * parent_node: reference to the parent node
     Returns:
@@ -445,19 +447,66 @@ class MidiProcessor(MidiInputHandler):
     self.__log.debug("Parsing common XML attributes")
     attribute_value = current_node.get('@' + attribute_name)
     if attribute_value != None:
-      if not isinstance(attribute_value, int):
-        #This will be only true for velocities; transpositions are always
-        #integers
-        if attribute_value.isdigit():
-          attribute_value = int(attribute_value)
-        else:
-          attribute_value = NOTE_VELOCITIES[attribute_value]
       return attribute_value
 
     if parent_node == None:
       return self._xml_dict.get('@' + attribute_name)
     self.__log.debug("Common XML attributes were parsed")
     return self._parse_common_attribute(attribute_name, parent_node)
+
+  def _parse_velocity(self, attribute_name, current_node, parent_node = None):
+    """
+    Gets the specified attribute_name from the xml_dict and converts it to its
+    numeric representation
+    Parameters:
+    * attribute_name: name of the attribute to retreive. It can be either:
+      BassPedalVelocity or ChordVelocity
+    * current_node: current note to parse
+    * parent_node: reference to the parent node
+    Returns:
+    * A tuple containing the following:
+      - first element: velocity numeric value. It can be a number between -127
+        and 127
+      - second element: either if this is an absolute or relative velocity
+    """
+    self.__log.debug("Parsing velocity XML attributes")
+    attribute_value = current_node.get('@' + attribute_name)
+    is_relative = current_node.get('@' + attribute_name + 'Relative', False)
+    if attribute_value != None:
+      if not isinstance(attribute_value, int):
+        if attribute_value[0] in ['-', '+']:
+          is_relative = True
+          attribute_value = int(attribute_value)
+        elif attribute_value.isdigit():
+          attribute_value = int(attribute_value)
+        else:
+          attribute_value = NOTE_VELOCITIES[attribute_value]
+      
+      if not is_relative:
+        return attribute_value, False
+    else:
+      attribute_value = 0
+      is_relative = True
+
+    parent_velocity = 0
+    is_parent_relative = True
+    if (parent_node == None) and (current_node != self._xml_dict):
+      parent_velocity = self._xml_dict.get('@' + attribute_name)
+      is_parent_relative = self._xml_dict.get('@' + attribute_name + 'Relative')
+    elif parent_node != None:
+      parent_velocity, is_parent_relative = \
+        self._parse_velocity(attribute_name, parent_node)
+
+    attribute_value = attribute_value + parent_velocity
+    if not is_parent_relative:
+      if attribute_value > 127:
+        attribute_value = 127
+      elif attribute_value < 0:
+        attribute_value = 0
+      is_relative = False
+
+    self.__log.debug("Common XML attributes were parsed")
+    return attribute_value, is_relative
 
   def _send_midi_message(self, message):
     """
@@ -602,19 +651,37 @@ class MidiProcessor(MidiInputHandler):
     
     note_messages = note_messages[message_type]
     pedal_velocity = pedal.get("@BassPedalVelocity")
+    is_pedal_velocity_relative = pedal.get("@BassPedalVelocityRelative")
     chord_velocity = pedal.get("@ChordVelocity")
+    is_chord_velocity_relative = pedal.get("@ChordVelocityRelative")
     bass_note = pedal.get("@BassNote")
     message_index = 0
-    if pedal_velocity == None:
-      pedal_velocity = self._current_velocity
+    if is_pedal_velocity_relative:
+      pedal_velocity += self._current_velocity
+      if pedal_velocity <= 0:
+        pedal_velocity = 1
+        self.__log.info("Pedal velocity was justed to 1. Please increase the "
+                        "relative velocity")
+      elif pedal_velocity > 127:
+        pedal_velocity = 127
+        self.__log.info("Pedal velocity was justed to 127. Please decrease the "
+                        "relative velocity")
       if bass_note != None:
         note_messages[message_index][2] = pedal_velocity
         
     if bass_note != None:
       message_index += 1
 
-    if chord_velocity == None:
-      chord_velocity = self._current_velocity
+    if is_chord_velocity_relative:
+      chord_velocity += self._current_velocity
+      if chord_velocity <= 0:
+        chord_velocity = 1
+        self.__log.info("Chord velocity was justed to 1. Please increase the "
+                        "relative velocity")
+      elif chord_velocity > 127:
+        chord_velocity = 127
+        self.__log.info("Pedal velocity was justed to 127. Please decrease the "
+                        "relative velocity")
       for i in range(message_index, len(note_messages)):
         note_messages[message_index][2] = chord_velocity
         message_index += 1

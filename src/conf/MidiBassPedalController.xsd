@@ -277,23 +277,29 @@
   <xs:simpleType name="NoteVelocityType">
     <xs:annotation>
       <xs:documentation xml:lang="en">
-        Type for Note velocities. It can be either a number between 0 and 127,
-        or one of the following symbols:
-        s:    silence,                        numeric value: 0
-        pppp: minimum value,                  numeric value: 10
-        ppp:  pianississimo, very very soft,  numeric value: 23
-        pp:   pianissimo,    very soft,       numeric value: 36
-        p:    piano,         soft,            numeric value: 49
-        mp:   mezzo-piano,   moderately soft, numeric value: 62
-        mf:   mezzo-forte,   moderately loud, numeric value: 75
-        f:    forte,         loud,            numeric value: 88
-        ff:   fortissimo,    very loud,       numeric value: 101
-        fff:  fortississimo, very very loud,  numeric value: 114
-        ffff: maximum value,                  numeric value: 127
+        Type for Note velocities. It can be either 
+        * a number between 0 and 127
+        * a relative velocity beginning with + or - and a number between 0 and
+          127. Here the original velocity comming from the pedal controller will
+          be added or substracted according to this value. If the resultant
+          velocity is greather than 127 or less or equal than 0, then 127 or 1
+          will be respectively assumed.
+        * or one of the following symbols:
+          s:    silence,                        numeric value: 0
+          pppp: minimum value,                  numeric value: 10
+          ppp:  pianississimo, very very soft,  numeric value: 23
+          pp:   pianissimo,    very soft,       numeric value: 36
+          p:    piano,         soft,            numeric value: 49
+          mp:   mezzo-piano,   moderately soft, numeric value: 62
+          mf:   mezzo-forte,   moderately loud, numeric value: 75
+          f:    forte,         loud,            numeric value: 88
+          ff:   fortissimo,    very loud,       numeric value: 101
+          fff:  fortississimo, very very loud,  numeric value: 114
+          ffff: maximum value,                  numeric value: 127
         
-        Avoid using the minimum value (zero or 's'). This is normally
-        interpreted as a NOTE OFF message. If you really need to send it, then
-        you could either set it to 1 or use another MIDI channel.
+          Avoid using the minimum value (zero or 's'). This is normally
+          interpreted as a NOTE OFF message. If you really need to send it, then
+          you could either set it to 1 or use another MIDI channel.
       </xs:documentation>
       <xs:appinfo>
         Those letter equivalences aren't unfortunatelly universal, it depends on
@@ -311,7 +317,7 @@
         </xs:appinfo>
       </xs:annotation>
       <xs:pattern
-        value="s|pppp|ppp|pp|p|mp|mf|f|ff|fff|ffff|[0-9]|[1-9][0-9]|1[0-2][0-7]"
+        value="s|pppp|ppp|pp|p|mp|mf|f|ff|fff|ffff|([+-]?([0-9]|[1-9][0-9]|1[0-2][0-7]))"
       />
     </xs:restriction>
   </xs:simpleType>
