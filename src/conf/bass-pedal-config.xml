@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  JMMidiBassPedalController v1.0
+  JMMidiBassPedalController v1.3
   File: src/conf/bass-pedal-config.xml
-  By:   Josef Meile <jmeile@hotmail.com> @ 10.04.2020
+  By:   Josef Meile <jmeile@hotmail.com> @ 21.06.2020
   This project is licensed under the MIT License. Please see the LICENSE.md file
   on the main folder of this code. An online version can be found here:
   https://github.com/jmeile/JMMidiBassPedalController/blob/master/LICENSE.md

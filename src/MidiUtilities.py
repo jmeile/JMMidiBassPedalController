@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# JMMidiBassPedalController v1.0
+# JMMidiBassPedalController v1.3
 # File: src/MidiUtilities.py
-# By:   Josef Meile <jmeile@hotmail.com> @ 10.04.2020
+# By:   Josef Meile <jmeile@hotmail.com> @ 21.06.2020
 # This project is licensed under the MIT License. Please see the LICENSE.md file
 # on the main folder of this code. An online version can be found here:
 # https://github.com/jmeile/JMMidiBassPedalController/blob/master/LICENSE.md
@@ -13,7 +13,6 @@
 from bisect import bisect
 import re
 from rtmidi.midiconstants import NOTE_ON, NOTE_OFF
-import os
 
 #Equivalences of the numeric velocities to a dynamic level. You may change them,
 #but keep in mind that 's' and 'ffff' must remain the same.
@@ -209,34 +208,3 @@ def parse_note(note, octave = None, transpose = 0):
 
   note = (12 * (octave - FIRST_OCTAVE)) + base_note     
   return note, octave
-
-def multiple_split(source_string, separators, split_by = '\n'):
-  """
-  This function allows the user to split a  string by using different
-  separators.
-
-  Note: This version is faster than using the (s)re.split method (I tested it
-  with timeit).
-
-  Parameters:
-  * source_string: string to be splitted
-  * separators: string containing the characters used to split the source
-    string.
-  * split_by: all the ocurrences of the separators will be replaced by this
-    character, then the split will be done. It defaults to '|' (pipe)
-  """
-  translate_to = split_by * len(separators)
-  translation = str.maketrans(separators, translate_to)
-  return source_string.translate(translation).split(split_by)
-  
-def read_text_file(file_path):
-  """
-  Gets the contents of a text file
-  """
-  if not os.path.isfile(file_path):
-    return False, ""
-
-  file_pointer = open(file_path)
-  contents = file_pointer.read()
-  file_pointer.close()
-  return True, contents

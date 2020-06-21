@@ -1,6 +1,6 @@
-# JMMidiBassPedalController v1.2
+# JMMidiBassPedalController v1.3
 **File: README.md**\
-**By:   Josef Meile <jmeile@hotmail.com> @ 10.04.2020**
+**By:   Josef Meile <jmeile@hotmail.com> @ 21.06.2020**
 
 This software translates **NOTE ON/OFF** messages comming from a
 **foot controller** to **chords**. It allows you to save several configurations
@@ -253,12 +253,12 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
 
 # Installation
 The easiest way of installing the software is getting it from
-[here](https://github.com/jmeile/JMMidiBassPedalController/archive/1.2.zip) then
+[here](https://github.com/jmeile/JMMidiBassPedalController/archive/1.3.zip) then
 decompress the zip file and put it contents wherever you want.
 
 Alternatively, you can also clone the git repository:
 ```
-git clone https://github.com/jmeile/JMMidiBassPedalController.git -b 1.2
+git clone https://github.com/jmeile/JMMidiBassPedalController.git -b 1.3
 ```
 
 # Hardware connections
