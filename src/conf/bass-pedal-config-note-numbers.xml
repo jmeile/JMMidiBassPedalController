@@ -28,7 +28,7 @@
     B. The last notes will be used for FILL INs, ENDING, and switch to the next
     bank
   -->
-  <Bank>
+  <Bank Name="Major chords">
     <!-- Catches the note C1, then sends bass note C1 and C major chord -->
     <Pedal Note="36" BassNote="36" ChordNotes="43,48,52"/>
     
@@ -92,7 +92,7 @@
     until B. The last notes will be used for FILL INs, ENDING, and switch to the
     previous bank
   -->
-  <Bank>
+  <Bank Name="Seventh chords">
     <!-- Catches the note C1, then sends bass note C1 and C7 chord -->
     <Pedal Note="36" BassNote="36" ChordNotes="43,46,48,52"/>
     

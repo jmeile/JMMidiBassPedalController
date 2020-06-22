@@ -52,16 +52,25 @@
             <xs:element name="Stop" type="StartStopNodeType" minOccurs="0"/>
             <xs:element name="Panic" type="PanicNodeType" minOccurs="0"
                         maxOccurs="1"/>
-            <xs:element name="Bank" type="BankType" maxOccurs="120">
+            <xs:element name="Bank" type="BankType" maxOccurs="119">
               <xs:annotation>
                 <xs:documentation xml:lang="en">
-                  You can define up to 120 Banks. Here you will define the
+                  You can define up to 119 Banks. Here you will define the
                   different combinations for your Bass pedal and chord notes.
                   See the Bank complexType definition to see what's inside.
                 </xs:documentation>
               </xs:annotation>
             </xs:element>
           </xs:sequence>
+          <xs:attribute name="Encoding" type="xs:string" default="UTF-8">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">
+                Encoding to use for the bank names. Note: if working with an
+                encoding different than "UTF-8", then you will have to change
+                the "encoding" attributes from your xml configuration files
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
           <xs:attribute name="InPort" type="MidiPortType">
             <xs:annotation>
               <xs:documentation xml:lang="en">
@@ -99,11 +108,77 @@
                     MIDI channel that the controller is using for processing
                     messages and they will change Banks for the controller. Here
                     the controller set on: BankSelectController will be used, so
-                    this will give you the posibility of setting up maximum 120
+                    this will give you the posibility of setting up maximum 119
                     banks, so, if you send CC + 13 (0DH), then the bank 12 will
                     be selected (please note that the index is zero based, so
                     the first bank would be 0). There will be three special
                     operations:
+                    > Sending a CC with a value of 119 (77H) will Send a SysEx
+                      back with the bank names. This SysEx has the form:
+                      F0 7D 00 (lengh1.1) (lengh1.2) ... (bank_name1)
+                               (lengh2.1) (lengh2.2) ... (bank_name2) ...
+                               (checksum) F7
+                      where:
+                      * 7D is the manufacturer ID, which on this case, we used
+                        this ID, which is used for reasearch and not for
+                        commercial purposes.
+                      * 00 is the operation ID: right now I only have this
+                        operation, but if there is a need of defining more
+                        SysEx, then this field will be increased.
+                      * length is the length of the bank's name. You may see
+                        different lengths if the message is longer than 127
+                        bytes, ie: for a message with a length of 381, you will
+                        have: F0 7D 00 00 00 7F (data) 02 XX YY F0
+                        
+                        So, here the number 00 will be used to indicate that the
+                        lenght exceeds 127 and that the next byte contains the
+                        rest of the lenght. If again, this lenght exceeds 127,
+                        then a 7F will appear again and so on. For this example
+                        we start readings the first bytes:
+                        F0 7D 00
+                        this tells us that it is a message with the bank names.
+                        The next byte is a lenght, but since it is "00", we get
+                        an initial lenght of 127 and we now that the message is
+                        longer than that because of the byte "00". The next one
+                        is again a "00", which gives us a lenght of 127, so, we
+                        add it to the previous value and we get: 127 + 127 = 254
+                        Since it was "00", we advanced to the next byte, wich is
+                        7F (127 in decimal); since it wasn't "00" we now that
+                        this is the end of the lengths, so, we add it to the
+                        previous value: 254 + 127 = 381. Now we now that the
+                        name of the first bank is 381 bytes long, so, we get
+                        those bytes and then we can get the length for the next
+                        bank name, which on this case would be 02 = 2 bytes
+                        length.
+                      * bank_name is the name of the bank, which will be coded
+                        in 7 bit bytes. To decode it, you will have to use the
+                        function: convert_unicode_from_7_bit_bytes from the
+                        ByteUtilities.py module.
+                      * checksum is a byte to ensure that the data was properly
+                        transmited. It will be calculated as follows:
+                        checksum = 128 - (sum(DATA) % 128)
+                        
+                        Note: % is the modulus operator.
+                        
+                        So, assuming that two messages:
+                        - 1A 32                         -> Length: 2  = 02H
+                        - 34 54 12 84 52 27 37 82 52 77 -> Length: 10 = 0AH
+                        
+                        The first part of the message would be:
+                        F0 7D 00 02 1A 32 0A 34 54 12 84 52 27 37 82 52 77
+                        
+                        Now the sum of each value:
+                        02+04+1A=20H or 32 in decimal
+                        0A+34+54+12+84+52+27+37+82+52+77=323H or 803 in decimal
+                        
+                        In total: 32 + 803 = 835
+                        
+                        Note that we consider the lengths also as part of the
+                        data. So, then we will have:
+                        
+                        checksum = 128 - (835 % 128) = 128 - 67 = 61 = 3DH
+                        Finally we get:
+                        F0 7D 00 02 1A 32 0A 34 54 12 84 52 27 37 82 52 77 3D F7
                     > Sending a CC with a value of 120 (78H) will go to the
                       previous bank.
                     > Sending a CC with a value of 121 (79H) will go to the
@@ -416,17 +491,17 @@
   <xs:simpleType name="BankNumberType">
     <xs:annotation>
       <xs:documentation xml:lang="en">
-        Type for Bank numbers. Here you must use values between 1 and 120.
+        Type for Bank numbers. Here you must use values between 1 and 119.
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:integer">
       <xs:annotation>
         <xs:appinfo>
-          A value between 1 and 120 must be entered.
+          A value between 1 and 119 must be entered.
         </xs:appinfo>
       </xs:annotation>
       <xs:minInclusive value="1"/>
-      <xs:maxInclusive value="120"/>
+      <xs:maxInclusive value="119"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -450,6 +525,14 @@
             </xs:annotation>
           </xs:element>
         </xs:sequence>
+        <xs:attribute name="Name" type="xs:string">
+          <xs:annotation>
+            <xs:documentation xml:lang="en">
+              Phrase descripting this bank. If not given, it defaults to "Bank"
+              and the number of the current bank.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -527,14 +610,14 @@
           <xs:annotation>
             <xs:documentation xml:lang="en">
               Bank number that the controller will select after this pedal has
-              been pressed. You can either enter a number between 1 and 120 or
+              been pressed. You can either enter a number between 1 and 119 or
               'Panic' (sends a panic command - The Panic node needs to be set),
               'Next' (select next bank), 'Previous' (select previous bank),
               'Last' (select the last bank), 'Quit' (quit the controller
               software), 'Reload' (restart the controller; here the whole xml
               config file will be reloaded), 'Reboot' (reboots the computer or
-              microcontroller running the software), or 'Shutdown' (shutdowns
-              the system).
+              microcontroller running the software), 'Shutdown' (shutdowns
+              the system), or 'List' (sends a SysEx back with the bank names).
               
               Note: there is no symbol for selecting the first bank; for doing
               this just send a '1'.
@@ -606,16 +689,16 @@
     <xs:restriction base="xs:string">
       <xs:annotation>
         <xs:documentation>
-          This type is a value between 1 and 120 or 'Panic' (send a panic
+          This type is a value between 1 and 119 or 'Panic' (send a panic
           message), 'Next' (select next bank), 'Previous' (select previous
           bank), 'Last' (select the last bank), 'Quit' (quit the controller
           software), 'Reload' (restart the controller; here the whole xml config
           file will be reloaded), 'Reboot' (reboots the computer or
           microcontroller running the software), or 'Shutdown' (shutdowns the
-          system).
+          system), or 'List' (gets a list of the bank names and their indexes).
         </xs:documentation>
       </xs:annotation>
-      <xs:pattern value="Panic|Next|Previous|Last|Quit|Reload|Reboot|Shutdown|[1-9]|[1-9][0-9]|1[0-1][0-9]|120"/>
+      <xs:pattern value="Panic|Next|Previous|Last|Quit|Reload|Reboot|Shutdown|List|[1-9]|[1-9][0-9]|1[0-1][0-9]"/>
     </xs:restriction>
   </xs:simpleType>
 

@@ -24,6 +24,7 @@ from MidiUtilities import get_velocity_symbol, calculate_base_note_octave, \
                           NOTE_MIDI_TO_SYMBOL, NOTE_SYMBOL_TO_MIDI, \
                           FIRST_OCTAVE, LAST_OCTAVE
 from MidiInputHandler import MidiInputHandler
+from ByteUtilities import convert_unicode_from_7_bit_bytes
 
 #By default, file logging is enabled
 file_log_level = logging.DEBUG
@@ -149,7 +150,50 @@ class MyMidiInputHandler(MidiInputHandler):
       #so, no further bytes will be received. Here the SysEx buffer will
       #be sent and afterwards cleared
       
-      self._print_message(message, "Answer")
+      if message[0:3] == [0xF0, 0x7D, 0x00]:
+        #A bank list was requested, so now we need to print it
+        time.sleep(2)
+        self.__log.info("\n\nBank list:")
+        bank_number = 0
+        byte_number = 3
+        total_byte_sum = 0
+        num_bytes = len(message)
+        data_length = 0
+        while byte_number < num_bytes - 2:
+          byte = message[byte_number]
+          total_byte_sum += byte
+          if byte == 0x00:
+            data_length += 0x7F
+            byte_number += 1
+          else:
+            data_length += byte
+            byte_number += 1
+            data_count = 1
+            byte_lst = []
+            while (byte_number < num_bytes - 2) and (data_count <= data_length):
+              byte = message[byte_number]
+              byte_lst += [byte]
+              total_byte_sum += byte
+              data_count += 1
+              byte_number += 1
+              
+            if data_count <= data_length:
+              raise Exception("Malformed SysEx: misssing data from bank: %d, "
+                              "expected: %d bytes, got %d bytes" % \
+                              (bank_number, data_length, data_count - 1))
+            
+            bank_name = convert_unicode_from_7_bit_bytes(bytes(byte_lst))
+            self.__log.info(str(bank_number) + " - " + bank_name)
+            bank_number += 1
+            data_length = 0
+            
+        checksum = message[byte_number]
+        calculated_checksum = 128 - (total_byte_sum % 128)
+        if checksum != calculated_checksum:
+          raise Exception("Malformed SysEx: invalid checksum, got: %d, "
+                          "expected: %d" % (calculated_checksum, checksum))
+      else:
+        self._print_message(message, "Answer")
 
       #Clears SysEx buffer
       self._sysex_buffer = []

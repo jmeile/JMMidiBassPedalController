@@ -227,9 +227,9 @@
 
   <!--
     Next you can define the different Banks for each bass pedal. You need to
-    have at least one and maximum 120. Inside each bank, you can overwrite the 
+    have at least one and maximum 119. Inside each bank, you can overwrite the 
     BassPedalVelocity, ChordVelocity, BassPedalTranspose, and ChordTranspose if
-    you want.
+    you want. You may optionally give it a name.
   -->
     
   <!--
@@ -237,7 +237,8 @@
     BassPedalTranspose, ChordTranspose, and Octave settings comming from the
     Controller node.
   -->
-  <Bank BassPedalVelocity="p" ChordVelocity="40"
+  <Bank Name="Bank names can be really long; they have literaly no limit and include unicode characters like: äöü; In theory even chinese should be possible. just set the correct encoding, ie: UTF-8 or GB2312"
+        BassPedalVelocity="p" ChordVelocity="40"
         BassPedalTranspose="-8" ChordTranspose="0"
         Octave="1">
     <!--
@@ -322,6 +323,26 @@
       and you want to select the last bank, then you can also use 'Last' for
       this; this is usefull if you are continuing changing your configuration,
       but the last bank always remains the same. Other posible values:
+      - 'List': Sends a SysEx back with the bank names. This SysEx has the form:
+        F0 7D 00 (lengh1.1) (lengh1.2) ... (bank_name1)
+                 (lengh2.1) (lengh2.2) ... (bank_name2) ...
+                 (checksum)
+        F7
+        where:
+        * 7D is the manufacturer ID, which on this case, we used this ID, which
+          is used for reasearch and not for commercial purposes.
+        * 00 is the operation ID: right now I only have this operation, but if
+          there is a need of defining more SysEx, then this field will be
+          increased.
+        * length are the lengths of the bank's name (see the file
+          MidiBassPedalController.xsd for more details about the format of this
+          bytes).
+        * bank_name is the name of the bank, which will be coded in 7 bit bytes.
+          To decode it, you will have to use the function:
+          convert_unicode_from_7_bit_bytes from the ByteUtilities.py module.
+        * checksum is a byte to ensure that the data was properly transmited
+          (see the file MidiBassPedalController.xsd for more details about the
+          format of this byte).
       - 'Panic': Sends a panic message.
       - 'Quit': Quits the controller software.
       - 'Reload': Stops and starts the controller software. Useful if you
@@ -375,6 +396,6 @@
     actually
   -->
   <Bank>
-    <Pedal Note="123"/>
+    <Pedal Note="123" BankSelect="List"/>
   </Bank>
 </Controller>

@@ -22,6 +22,8 @@ from MidiUtilities import calculate_base_note_octave, parse_note, \
                           NOTE_SYMBOL_TO_MIDI, NOTE_VELOCITIES, FIRST_OCTAVE, \
                           LAST_OCTAVE, BANK_SELECT_FUNCTIONS, NOTE_TRIGGERS
 from StringUtilities import read_text_file, multiple_split
+from ByteUtilities import convert_unicode_to_7_bit_bytes, \
+                          convert_byte_array_to_list
 from CustomLogger import CustomLogger, PrettyFormat
 import logging
 from autologging import logged
@@ -64,6 +66,7 @@ class MidiProcessor(MidiInputHandler):
     self._quit = False
     self._status = None
     self._panic_command = []
+    self._send_bank_names = "F0 7D 00 "
     self._panic_pointer = -1
     self.__log.debug("MidiProcessor Initialized:\n%s",
                      PrettyFormat(self.__dict__))
@@ -206,8 +209,22 @@ class MidiProcessor(MidiInputHandler):
     """
     self.__log.debug("Parsing banks")
     bank_index = 0
+    encoding = self._xml_dict.get("@Encoding")
+    total_byte_sum = 0
+    banks_sysex = [0xF0, 0x7D, 0x00]
     for bank in self._xml_dict['Bank']:
       self.__log.debug("Parsing bank: %d", bank_index + 1)
+      bank_name = bank.get('@Name', None)
+      if bank_name in [None, '']:
+        bank_name = 'Bank' + str(bank_index + 1)
+        bank["@Name"] = bank_name
+      
+      bank_name_bytes = convert_unicode_to_7_bit_bytes(bank_name, \
+                                                       encoding = encoding)
+      bank_name_sysex, bank_name_lengths, bank_name_sum = \
+        convert_byte_array_to_list(bank_name_bytes)
+      total_byte_sum += bank_name_sum
+      banks_sysex += bank_name_lengths + bank_name_sysex
       bank["@BassPedalVelocity"], \
       bank["@BassPedalVelocityRelative"] = \
         self._parse_velocity("BassPedalVelocity", bank, self._xml_dict)
@@ -226,6 +243,10 @@ class MidiProcessor(MidiInputHandler):
       self._parse_pedals(bank, bank_index)
       self.__log.debug("Bank were parsed")
       bank_index += 1
+      
+    checksum = 128 - (total_byte_sum % 128)
+    banks_sysex += [checksum, 0xF7]
+    self._xml_dict["@BanksSysEx"] = banks_sysex
     self.__log.debug("Banks were parsed")
   
   def _parse_pedals(self, parent_bank, bank_index):
@@ -566,16 +587,18 @@ class MidiProcessor(MidiInputHandler):
               if bank_select != None:
                 #Now the BANK SELECT message will be processed
                 if bank_select not in ["Panic", "Quit", "Reload", "Reboot", \
-                                       "Shutdown"]:
+                                       "Shutdown", "List"]:
                   self._current_bank = bank_select
                   self.__log.info("Bank changed to: %d", bank_select + 1)
-                elif bank_select != "Panic":
-                  self._quit = True
-                  self._status = bank_select
-                else:
+                elif bank_select == "List":
+                  messages = [self._xml_dict["@BanksSysEx"]]
+                elif bank_select == "Panic":
                   messages = self._panic_command
                   self.__log.debug("Sending software Panic:\n%s", \
                                    PrettyFormat(self._panic_command))
+                else:
+                  self._quit = True
+                  self._status = bank_select
           elif self._xml_dict["@MidiEcho"]:
             #This is an unregistered note, so fordward it whatever it is
             messages = [message]
@@ -586,15 +609,19 @@ class MidiProcessor(MidiInputHandler):
             #If it is the BankSelectController, then the respective BANK SELECT
             #message will be excecuted
             select_value = message[2]
-            if select_value < 120:
+            if select_value < 119:
               if select_value >= len(self._xml_dict["Bank"]):
                 select_value = len(self._xml_dict["Bank"]) - 1
               self._current_bank = select_value
               self.__log.info("Bank changed to: %d", self._current_bank + 1)
             else:
               send_panic = False
+              send_bank_list = False
               num_banks = len(self._xml_dict["Bank"])
-              if select_value == 120:
+              if select_value == 119:
+                messages = [self._xml_dict["@BanksSysEx"]]
+                send_bank_list = True
+              elif select_value == 120:
                 self._current_bank -= 1
               elif select_value == 121:
                 self._current_bank += 1
@@ -608,7 +635,7 @@ class MidiProcessor(MidiInputHandler):
               else:
                 self._quit = True
                 self._status = BANK_SELECT_FUNCTIONS[select_value]
-              if not self._quit and not send_panic:
+              if not self._quit and not send_panic and not send_bank_list:
                 if self._current_bank < 0:
                   self._current_bank = num_banks - 1
                 elif self._current_bank >= num_banks:
