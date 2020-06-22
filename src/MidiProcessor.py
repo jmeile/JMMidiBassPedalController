@@ -213,10 +213,10 @@ class MidiProcessor(MidiInputHandler):
     total_byte_sum = 0
     banks_sysex = [0xF0, 0x7D, 0x00]
     for bank in self._xml_dict['Bank']:
-      self.__log.debug("Parsing bank: %d", bank_index + 1)
+      self.__log.debug("Parsing bank: %d", bank_index)
       bank_name = bank.get('@Name', None)
       if bank_name in [None, '']:
-        bank_name = 'Bank' + str(bank_index + 1)
+        bank_name = 'Bank' + str(bank_index)
         bank["@Name"] = bank_name
       
       bank_name_bytes = convert_unicode_to_7_bit_bytes(bank_name, \

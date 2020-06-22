@@ -25,6 +25,7 @@ from MidiUtilities import get_velocity_symbol, calculate_base_note_octave, \
                           FIRST_OCTAVE, LAST_OCTAVE
 from MidiInputHandler import MidiInputHandler
 from ByteUtilities import convert_unicode_from_7_bit_bytes
+import codecs
 
 #By default, file logging is enabled
 file_log_level = logging.DEBUG
@@ -51,7 +52,7 @@ class MyMidiInputHandler(MidiInputHandler):
   """
   
   def __init__(self, midi_in, midi_out, midi_in_channel, bank_controller,
-               note_velocity):
+               note_velocity, encoding):
     """
     Initializes the class attributes
     Parameters:
@@ -62,6 +63,7 @@ class MyMidiInputHandler(MidiInputHandler):
       messages
     * bank_controller: Controller used to change banks
     * note_velocity: default note velocity to send
+    * encoding: character encoding for bank names
     """
     super().__init__(midi_in, midi_out, ignore_sysex = False,
                      ignore_timing = False, ignore_active_sense = False,
@@ -69,6 +71,7 @@ class MyMidiInputHandler(MidiInputHandler):
     self._midi_in_channel = midi_in_channel
     self._bank_controller = controller
     self._note_velocity = note_velocity
+    self._encoding = encoding
     self._got_answer = False
   
   def _send_midi_message(self, message):
@@ -151,9 +154,7 @@ class MyMidiInputHandler(MidiInputHandler):
       #be sent and afterwards cleared
       
       if message[0:3] == [0xF0, 0x7D, 0x00]:
-        #A bank list was requested, so now we need to print it
-        time.sleep(2)
-        self.__log.info("\n\nBank list:")
+        self.__log.info("Bank list:")
         bank_number = 0
         byte_number = 3
         total_byte_sum = 0
@@ -182,7 +183,8 @@ class MyMidiInputHandler(MidiInputHandler):
                               "expected: %d bytes, got %d bytes" % \
                               (bank_number, data_length, data_count - 1))
             
-            bank_name = convert_unicode_from_7_bit_bytes(bytes(byte_lst))
+            bank_name = convert_unicode_from_7_bit_bytes(bytes(byte_lst),
+                          encoding = self._encoding)
             self.__log.info(str(bank_number) + " - " + bank_name)
             bank_number += 1
             data_length = 0
@@ -311,7 +313,8 @@ class MyMidiInputHandler(MidiInputHandler):
     self._midi_out.send_message(message)
     
     if controller == self._bank_controller:
-      return False
+      if value != 119:
+        return False
     return True
 
   def _process_midi_or_sysex(self):
@@ -362,7 +365,7 @@ class MyMidiInputHandler(MidiInputHandler):
     else:
       wait_answer = self._process_midi_or_sysex()
     
-    if user_option != '3' and wait_answer:
+    if wait_answer:
       self._got_answer = False
       counter = 0
       while not self._got_answer and counter < 2:
@@ -459,10 +462,23 @@ if __name__ == '__main__':
       if not validated:
         logger.info("\nWrong value. Please enter numbers between 0 and 127")
     
+    validated = False
+    while not validated:
+      encoding = input("\nEnter the character encoding for bank names, ie: "
+                       "UTF-8, GB2312, etc.. (Control-C to exit): ")
+      try:
+        codecs.lookup(encoding)
+        validated = True
+      except:
+        pass
+        
+      if not validated:
+        logger.info("\nWrong encoding name.")
+    
     #Instead of using the Superclass MidiInputHandler, we use it's subclass:
     #MyMidiInputHandler
     midi_in_wrapper = MyMidiInputHandler(midi_in, midi_out, midi_channel,
-                                         controller, velocity)
+                                         controller, velocity, encoding)
     
     logger.info("Entering main loop. Press Control-C to exit.")
 

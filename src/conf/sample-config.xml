@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   JMMidiBassPedalController v1.3
   File: src/conf/sample-config.xml
@@ -19,7 +19,7 @@
     xsi:schemaLocation="https://www.technosoft.solutions/xsd 
     MidiBassPedalController.xsd"
     xmlns="https://www.technosoft.solutions/xsd"
-         
+   
   * Then you can start by defining the MIDI in and out ports you are going to
     use. You can either use: 
     - the port number (starting from 1):
@@ -137,6 +137,13 @@
       only one set of notes will be played at one time; pushing one pedal
       without having released the previous one, will cause to send MIDI NOTE OFF
       messages for the first pedal. It defaults to "false".
+  * Optionaly, you may set an encoding for your bank names. If other than UTF-8,
+    you may add it, ie:
+    Encoding="GB2312"
+    
+    In order to test this in a Windows that is setup on a diffent unicode, you
+    will have to use the python ide and not the command prompt, which seems to
+    not support other encoding than the setup on the user's profile.
 -->
 
 <Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -152,7 +159,8 @@
             BankSelectController="32" InitialBank="2"
             MinVelocityNoteOff="true"
             Octave="2"
-            PedalMonophony="false">
+            PedalMonophony="false"
+            Encoding="UTF-8">
 
   <!--
     The following next three nodes: Start, Stop, and Panic are optional and they
@@ -237,7 +245,7 @@
     BassPedalTranspose, ChordTranspose, and Octave settings comming from the
     Controller node.
   -->
-  <Bank Name="Bank names can be really long; they have literaly no limit and include unicode characters like: äöü; In theory even chinese should be possible. just set the correct encoding, ie: UTF-8 or GB2312"
+  <Bank Name="Bank names can be really long; they have literaly no limit and include unicode characters like: öèãí; In theory even chinese should be possible. just set the correct encoding, ie: UTF-8 or GB2312"
         BassPedalVelocity="p" ChordVelocity="40"
         BassPedalTranspose="-8" ChordTranspose="0"
         Octave="1">
@@ -392,8 +400,8 @@
   <!--
     The following bank won't overwrite the BassPedalVelocity, ChordVelocity,
     BassPedalTranspose, and ChordTranspose settings comming from the Controller
-    node (note that it is written without any attribute). It won't do anything
-    actually
+    node (note that it is written without any attribute). It will only list the
+    bank names after the note 123 gets released (NOTE OFF message).
   -->
   <Bank>
     <Pedal Note="123" BankSelect="List"/>

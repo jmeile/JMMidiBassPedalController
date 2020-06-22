@@ -65,9 +65,12 @@
           <xs:attribute name="Encoding" type="xs:string" default="UTF-8">
             <xs:annotation>
               <xs:documentation xml:lang="en">
-                Encoding to use for the bank names. Note: if working with an
-                encoding different than "UTF-8", then you will have to change
-                the "encoding" attributes from your xml configuration files
+                Encoding to use for the bank names, ie: UTF-8, GB2312, etc..
+                
+                In order to test this in a Windows that is setup on a diffent
+                unicode, you will have to use the python ide and not the command
+                prompt, which seems to not support other encoding than the setup
+                on the user's profile.
               </xs:documentation>
             </xs:annotation>
           </xs:attribute>
