@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# JMMidiBassPedalController v1.3
+# JMMidiBassPedalController v1.4
 # File: src/ValidateXML.py
-# By:   Josef Meile <jmeile@hotmail.com> @ 21.06.2020
+# By:   Josef Meile <jmeile@hotmail.com> @ 05.07.2020
 # This project is licensed under the MIT License. Please see the LICENSE.md file
 # on the main folder of this code. An online version can be found here:
 # https://github.com/jmeile/JMMidiBassPedalController/blob/master/LICENSE.md
