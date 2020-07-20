@@ -489,7 +489,7 @@ class MidiProcessor(MidiInputHandler):
       if attribute_suffix == "Velocity":
         zero_value = str(self._default_velocity)
       attribute_values = zero_value + ',' * len(out_channels)
-      attribute_values.split(',')[:-1]
+      attribute_values = attribute_values.split(',')[:-1]
 
     if len(attribute_values) > len(out_channels):
       raise Exception("%s list must be smaller than the output channels.\n"
