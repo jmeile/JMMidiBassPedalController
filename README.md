@@ -44,17 +44,30 @@ in **banks**, which can be switched through **CONTROL CHANGE** messages.
 
 - **XML configuration file**.
 - Fully customizable parameters:
-  - **MIDI IN and OUT** ports and channels.
+  - **MIDI IN and OUT** ports and channels. You can use as many **MIDI OUT**
+    ports as you want, ie: sending one chord to different voices.
   - **MIDI Echo** function.
-  - Setup custom **bass note** and **chord velocities** and
-    **octave transpositions**.
-  - Define multiple **banks** to store different pedal layouts.
+  - **Start**, **Stop**, and **Panic** commands.
+  - Define multiple **banks** to store different pedal layouts. You can also
+    use descriptive names to identify them.
   - Each pedal can send this messages:
-    - **Bass notes**.
-    - **Chords**.
-    - **BANK SELECT** messages.
-    - **MIDI** messages.
-    - **SysEx** messages.
+    - **Bass** and **Chord** notes, which can be expressed with symbols, ie: C#
+      or by their MIDI NOTE values, ie: 84 for C5.
+    - **BANK SELECT** messages to set change select different banks and also an
+      option to list them.
+    - **Panic messages**
+    - **MIDI** or **SysEx** messages. You can also define when to trigger them:
+      either during a **NOTE ON** or a **NOTE OFF** message.
+    - **Reload** configuration during excecution.
+    - **Quit** the controller software.
+    - **Reboot** or **shutdown** the device running the controller software.
+      Currently supported operating systems: Windows, MACOS, and Linux.
+  - Setup custom **bass note** and **chord velocities** either absolute values
+    or relative to the current pedal controller speed. Here you can use either
+    symbols ie: fff or its MIDI representation: 114.
+  - Use different **octaves** for each pedal.
+  - Setup **semitone transpositions**
+  - Either setup the pedals to be either polyphonic or monophonic.
 - Its flexibility allows it to be used with several **foot controllers** at once.
 
 # Definitions
