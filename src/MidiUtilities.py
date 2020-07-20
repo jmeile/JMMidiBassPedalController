@@ -176,35 +176,38 @@ def calculate_base_note_octave(midi_note):
   base_note = midi_note - (12 * (octave - FIRST_OCTAVE))
   return base_note, octave
   
-def parse_note(note, octave = None, transpose = 0):
+def parse_note(note, octave = None, transpose_list = [0]):
   """
   Given a note string converts it to a MIDI NOTE according to the entered
   parameters.
   Parameters:
   * note: note string to convert
   * octave: if given, the octave of the entered note. This is only necessary
-    if the entered note isn't a number, but a note symbol, ie: "C#"
-  * transpose: number of octaves to transpose the note.
+    if the entered note isn't a number, but a note symbol, ie: "C#". Here the
+    octave of the pedal note will be used
+  * transpose_list: number of semitones to transpose the note.
   Returns
-  * The recalculated note and its octave
+  * The recalculated notes according to the transpose list.
   """
-  if not note.isdigit():
+  if (type(note) == type('')) and not note.isdigit():
+    if octave == None:
+      raise Exception("An octave is needed when working with note letters; none"
+                      " was given")
     #Get the base note
-    base_note = NOTE_SYMBOL_TO_MIDI[note]
+    note = (12 * (octave - FIRST_OCTAVE)) + NOTE_SYMBOL_TO_MIDI[note]
   else:
     note = int(note)
-    #This is different, a MIDI NOTE number was given, so we need to calculate
-    #its octave as follows:
-    octave = int(note / 12) + FIRST_OCTAVE
-    base_note = note - (12 * (octave - FIRST_OCTAVE))
 
-  octave += transpose
-  if octave < FIRST_OCTAVE:
-    octave = FIRST_OCTAVE
-  elif octave > LAST_OCTAVE:
-    octave = LAST_OCTAVE
-  if (base_note >= 8) and (octave == LAST_OCTAVE):
-    octave -= 1
-
-  note = (12 * (octave - FIRST_OCTAVE)) + base_note     
-  return note, octave
+  notes = []
+  for transpose in transpose_list:
+    new_note = note + int(transpose)
+    if (new_note < 0) or (new_note > 127):
+      modulo = new_note
+      offset = 0
+      if new_note > 127:
+        offset = 120
+        if modulo >= 8:
+          offset = 108
+      new_note = modulo + offset
+    notes.append(new_note)
+  return notes

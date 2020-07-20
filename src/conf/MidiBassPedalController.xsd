@@ -118,8 +118,8 @@
                     operations:
                     > Sending a CC with a value of 119 (77H) will Send a SysEx
                       back with the bank names. This SysEx has the form:
-                      F0 7D 00 (lengh1.1) (lengh1.2) ... (bank_name1)
-                               (lengh2.1) (lengh2.2) ... (bank_name2) ...
+                      F0 7D 00 (length1.1) (length1.2) ... (bank_name1)
+                               (length2.1) (length2.2) ... (bank_name2) ...
                                (checksum) F7
                       where:
                       * 7D is the manufacturer ID, which on this case, we used
@@ -134,16 +134,16 @@
                         have: F0 7D 00 00 00 7F (data) 02 XX YY F0
                         
                         So, here the number 00 will be used to indicate that the
-                        lenght exceeds 127 and that the next byte contains the
-                        rest of the lenght. If again, this lenght exceeds 127,
+                        length exceeds 127 and that the next byte contains the
+                        rest of the length. If again, this length exceeds 127,
                         then a 7F will appear again and so on. For this example
                         we start readings the first bytes:
                         F0 7D 00
                         this tells us that it is a message with the bank names.
-                        The next byte is a lenght, but since it is "00", we get
-                        an initial lenght of 127 and we now that the message is
+                        The next byte is a length, but since it is "00", we get
+                        an initial length of 127 and we now that the message is
                         longer than that because of the byte "00". The next one
-                        is again a "00", which gives us a lenght of 127, so, we
+                        is again a "00", which gives us a length of 127, so, we
                         add it to the previous value and we get: 127 + 127 = 254
                         Since it was "00", we advanced to the next byte, wich is
                         7F (127 in decimal); since it wasn't "00" we now that
@@ -209,22 +209,6 @@
                   Other messages or messages sent on different MIDI channels
                   than the one used by the controller, will be fordwarded
                   according to the MidiEcho setting (see above).
-              </xs:documentation>
-            </xs:annotation>
-          </xs:attribute>
-          <xs:attribute name="OutBassPedalChannel" type="MidiChannelType"
-                        default="1">
-            <xs:annotation>
-              <xs:documentation xml:lang="en">
-                Channel used by the controller to fordward bass pedal messages.
-              </xs:documentation>
-            </xs:annotation>
-          </xs:attribute>
-          <xs:attribute name="OutChordChannel" type="MidiChannelType"
-                        default="1">
-            <xs:annotation>
-              <xs:documentation xml:lang="en">
-                Channel used by the controller to fordward chord messages.
               </xs:documentation>
             </xs:annotation>
           </xs:attribute>
@@ -297,44 +281,105 @@
         and Pedal.
       </xs:documentation>
     </xs:annotation>
-    <xs:attribute name="BassPedalVelocity" type="NoteVelocityType">
+    
+    <xs:attribute name="OutBassPedalChannel" type="MidiChannelListType">
       <xs:annotation>
         <xs:documentation xml:lang="en">
-          Note velocity for bass pedal notes. If not given, then the value of
+          Channel list used by the controller to fordward bass pedal messages.
+          If not given, then the value of the parent node will be assumed. If
+          there is no parent, then the 1 will be assumed.
+          
+          Notes:
+          * The length of this list determines how many pedal notes will be
+          sent, ie: if you enter: "1,14", then two notes will be sent to
+          channels 1 and 14.
+          * You can't repeat channels on the list; an error will be raised.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="OutChordChannel" type="MidiChannelListType">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+          Channel list used by the controller to fordward chord messages. If not
+          given, then the value of the parent node will be assumed. If there is
+          no parent, then the 1 will be assumed.
+          
+          Notes:
+          * The length of this list determines how many chords will be sent, ie:
+            if you enter: "1,14", then two chords will be sent to channels 1 and
+            14.
+          * You can't repeat channels on the list; an error will be raised.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="BassPedalVelocity" type="NoteVelocityListType">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+          Note velocity list for bass pedal notes. If not given, then the value
+          of the parent node will be assumed. If there is no parent, then the
+          velocity comming from your foot controller will be assumed.
+          
+          Notes:
+          * The length of this list must be less or equal than the length of
+            OutBassPedalChannel; otherwise an error will be raised.
+          * If the length of this list is less than the length of
+            OutBassPedalChannel, then the velocities of the remaining elements
+            will be set according to last value on the list.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+
+    <xs:attribute name="ChordVelocity" type="NoteVelocityListType">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+          Note velocity list for chord notes. If not given, then the value of
           the parent node will be assumed. If there is no parent, then the
           velocity comming from your foot controller will be assumed.
+          
+          Notes:
+          * The length of this list must be less or equal than the length of
+            OutChordChannel; otherwise an error will be raised.
+          * If the length of this list is less than the length of
+            OutChordChannel, then the velocities of the remaining elements will
+            be set according to the last value of the list.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
 
-    <xs:attribute name="ChordVelocity" type="NoteVelocityType">
+    <xs:attribute name="BassPedalTranspose" type="TransposeType">
       <xs:annotation>
         <xs:documentation xml:lang="en">
-          Note velocity for chord notes. If not given, then the value of the
-          parent node will be assumed. If there is no parent, then the velocity
-          comming from your foot controller will be assumed.
+          Note transposition list for bass pedal notes. If not given, then the
+          value of the parent node will be used. If there is no parent, then 0
+          (zero / no transposition) will be assumed.
+          
+          Notes:
+          * The length of this list must be less or equal than the length of
+            OutBassPedalChannel; otherwise an error will be raised.
+          * If the length of this list is less than the length of
+            OutBassPedalChannel, then the transposition of the remaining
+            elements will be set according to the last value of the list.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
 
-    <xs:attribute name="BassPedalTranspose" type="OctaveTransposeType">
+    <xs:attribute name="ChordTranspose" type="TransposeType">
       <xs:annotation>
         <xs:documentation xml:lang="en">
-          Octave transpose for bass pedal notes. If not given, then the value of
-          the parent node will be used. If there is no parent, then 0 (zero / no
-          transposition) will be assumed.
-        </xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-
-    <xs:attribute name="ChordTranspose" type="OctaveTransposeType">
-      <xs:annotation>
-        <xs:documentation xml:lang="en">
-          Octave transpose for chord notes. If not given, then the
-          ChordTranspose comming from the parent node will be given. If it is
-          not defined, then the transposition for the pedal notes will be used.
+          Note transposition list for chord notes. If not given, then the
+          value of the parent node will be given. If it is there is no, then the
+          transposition for the pedal notes will be used.
           So, if you want to disable transposition, you have to set this to 0
           (zero).
+          
+          Notes:
+          * The length of this list must be less or equal than the length of
+            OutChordChannel; otherwise an error will be raised.
+          * If the length of this list is less than the length of
+            OutChordChannel, then the transposition of the remaining elements
+            will be set according to the last value of the list.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
@@ -345,17 +390,17 @@
           its octave, which can go from -2 until 8. The only thing you need to
           know is that the maximum note is G8, so, giving a note like: A#8 will
           raise an error. If not given, then the value of the parent will be
-          assumed. If the parent isn't set, then 0 will be assumed. If you give
-          note numbers instead, then this number will be ignored.
+          assumed. If the parent isn't set, then 0 will be assumed.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
   </xs:complexType>
 
-  <xs:simpleType name="NoteVelocityType">
+  <xs:simpleType name="NoteVelocityListType">
     <xs:annotation>
       <xs:documentation xml:lang="en">
-        Type for Note velocities. It can be either 
+        Type for Note velocities. It is a comma separated list containing
+        either:
         * a number between 0 and 127
         * a relative velocity beginning with + or - and a number between 0 and
           127. Here the original velocity comming from the pedal controller will
@@ -390,42 +435,42 @@
     <xs:restriction base="xs:string">
       <xs:annotation>
         <xs:appinfo>
-          This attribute must be either a number between 0 and 127, or one of 
-          the symbols: s, pppp, ppp, pp, p, mp, mf, f, ff, fff, or ffff.
+          This attribute must be comma separated list containing either a number
+          between 0 and 127, or one of the symbols: s, pppp, ppp, pp, p, mp, mf,
+          f, ff, fff, or ffff.
         </xs:appinfo>
       </xs:annotation>
       <xs:pattern
-        value="s|pppp|ppp|pp|p|mp|mf|f|ff|fff|ffff|([+-]?([0-9]|[1-9][0-9]|1[0-2][0-7]))"
+        value="(s|pppp|ppp|pp|p|mp|mf|f|ff|fff|ffff|([+-]?([0-9]|[1-9][0-9]|1[0-2][0-7])))(,(s|pppp|ppp|pp|p|mp|mf|f|ff|fff|ffff|([+-]?([0-9]|[1-9][0-9]|1[0-2][0-7]))))*"
       />
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="OctaveTransposeType">
+  <xs:simpleType name="TransposeType">
     <xs:annotation>
       <xs:documentation xml:lang="en">
-        Type for octave transpose. It can be a value between -10 and 10. So, if
-        you set 2, then the note will be transposed by two higher octaves,
-        similarly, if you set -2, then the note will be trasposed by two lower
-        octaves. Note that here I won't transpose by using semitones; I don't
-        see any utility in transposing chords that way.
-     
-        Please also be aware that if the resulting note is lower than the
-        minimum possible note (C-2 or 0), then the octave -2 will be assumed.
-
-        Similarly, if the resulting note is bigger than the maximum possible
-        note (G8 or 127), then the following cases will be considered:
-        * If the note is between C and G, then the octave 8 will be assumed.
-        * If the note is between G# and B, then the octave 7 will be assumed.
+        Type for note transpose. It can be a comma separated list with values
+        between -127 and 127. This is the number of semitones that the notes
+        will be transposed according to the current octave. If the resulting
+        note is lower than 0 (C-2), then it will be transposed to a note on the
+        octave -2. If on the contrary, it is higher than 127 (G8), then the
+        following cases will be considered:
+        * If the note is between C and G, then it will be transposed to a note
+          on the octave 8.
+        * Otherwise, the note is between G# and B, then it will be transposed to
+          a note on the octave 7.
       </xs:documentation>
     </xs:annotation>
-    <xs:restriction base="xs:integer">
+    <xs:restriction base="xs:string">
       <xs:annotation>
         <xs:appinfo>
-          This attribute must be between -10 and 10.
+          This attribute is a comma separated list with values between -127 and
+          127
         </xs:appinfo>
       </xs:annotation>
-      <xs:minInclusive value="-10"/>
-      <xs:maxInclusive value="10"/>
+      <xs:pattern
+        value="([+-]?([0-9]|[1-9][0-9]|1[0-2][0-7]))(,[+-]?([0-9]|[1-9][0-9]|1[0-2][0-7]))*"
+      />
     </xs:restriction>
   </xs:simpleType>
 
@@ -471,6 +516,23 @@
       </xs:annotation>
       <xs:minInclusive value="1"/>
       <xs:maxInclusive value="16"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="MidiChannelListType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Type for MIDI channel list. Here you must enter a comma separated list
+        with values between 1 and 16.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:annotation>
+        <xs:appinfo>
+          A comma separated list with values between 1 and 16 must be entered.
+        </xs:appinfo>
+      </xs:annotation>
+      <xs:pattern value="([1-9]|1[0-6])(,([1-9]|1[0-6]))*"/>
     </xs:restriction>
   </xs:simpleType>
 

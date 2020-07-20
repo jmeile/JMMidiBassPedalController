@@ -51,10 +51,27 @@
     - First the MIDI in channel to which this controller will listen to:
       InChannel="1"
     - And finally the MIDI out ports for the bass pedal and chord notes:
-      OutBassPedalChannel="3" OutChordChannel="4"
-      Here I'm using two diffent channels since sometimes you may only want to
-      auto detect the chords, but not playing them. In some MIDI keyboards you
-      can set this special use case.
+      OutBassPedalChannel="3,5" OutChordChannel="4,1,3"
+      
+      Here you should use a comma separated with values between 1 and 16, the
+      order doesn't really matters, but you can't repeat any number. On this
+      specific example, I'm giving the following:
+      > OutBassPedalChannel="3,5" -> This means that two set of pedal notes will
+        be sent: one on channel 3 and other on channel 5. Please note that they
+        will be transposed and changed according to the values of:
+        BassPedalVelocity and BassPedalTranspose. This is really useful if you
+        want to play those pedal notes with different voices, so, you should
+        also setup your keyboard accordingly. If you don't need more than one
+        note, then you can just set one channel.
+        
+      > OutChordChannel="4,1,3" -> This means that three set of chord notes will
+        be sent: one on channel 4, on on channel 1, and other on channel 3.
+        Please note that they will be transposed and changed according to the
+        values of: ChordVelocity and ChordTranspose. This is really useful if
+        you want to play those chord notes with different voices, so, you should
+        also setup your keyboard accordingly. If you don't need more than one
+        chord, then you can just send one chanel.
+        
     Please note that these channels are optional; if not given, then channel '1'
     will be assumed.
   * Then setup the controller to either echo or not other MIDI messages comming
@@ -62,9 +79,9 @@
     MidiEcho="true"
     If not given, then it defaults to "true".
   * Next setup the bass pedal and chord notes velocities (volumes):
-    BassPedalVelocity="70" ChordVelocity="fff"
+    BassPedalVelocity="70,36" ChordVelocity="fff,p,mf"
     
-    Here you can either set:
+    Here you can either set a comma separated list containing either:
     * a number between 0 and 127
     * a relative velocity beginning with + or - and a number between 0 and 127.
       Here the original velocity comming from the pedal controller will be added
@@ -92,21 +109,27 @@
     - If "BassPedalVelocity" is not given, then the note velocity comming from
       your foot controller will be assumed.
     - If "ChordVelocity" is not given, then "BassPedalVelocity" will be assumed.
-  * Then setup the octave transposition for the bass pedal and chord notes:
-    BassPedalTranspose="-2" ChordTranspose="2"
-    The "Transpose" values are between -10 and 10. So, if you set 2, then the
-    note will be transposed by two higher octaves, similarly, if you set -2,
-    then the note will be trasposed by two lower octaves. Note that here I won't
-    transpose by using semitones; I don't see any utility in transposing chords
-    that way.
+    - The length of this lists must be less or equal than the length of
+      OutBassPedalChannel and OutChordChannel; otherwise an error will be
+      raised. On this example, we previously set OutBassPedalChannel to: "3,5",
+      so the length of BassPedalVelocity must be at most 2. The same applies for
+      ChordVelocity. 
+    * If the length of this lists are less than the length of
+      OutBassPedalChannel or OutChordChannel, then the velocities of the
+      remaining elements will be set according to the last value of the list.
+  * Then setup the note transposition for the bass pedal and chord notes:
+    BassPedalTranspose="-2,23" ChordTranspose="2,-25,127"
+    The "Transpose" values are between -127 and 127. So, if you set 2, then the
+    note will be transposed by two higher semitones, similarly, if you set -2,
+    then the note will be trasposed by two lower semitones.
            
-    Please also be aware that if the resulting note is lower than the minimum
-    possible note (C-2 or 0), then the octave -2 will be assumed.
-
-    Similarly, if the resulting note is bigger than the maximum possible note
-    (G8 or 127), then the following cases will be considered:
-    - If the note is between C and G, then the octave 8 will be assumed.
-    - If the note is between G# and B, then the octave 7 will be assumed.
+    If the resulting note is lower than 0 (C-2), then it will be transposed to a
+    note on the octave -2. If on the contrary, it is higher than 127 (G8), then
+    the following cases will be considered:
+    * If the note is between C and G, then it will be transposed to a note on
+      the octave 8.
+    * Otherwise, the note is between G# and B, then it will be transposed to a
+      note on the octave 7.
     
     Default values:
     - If "BassPedalTranspose" is not given, then it defaults to 0 (zero), which
@@ -114,6 +137,15 @@
     - On the contrary, if "ChordTranspose" is not given, then the same
       transposition of the pedal notes will be used. So, if you want to disable
       transposition, you have to set this to 0 (zero).
+      
+    Notes:
+    * The length of this lists must be less or equal than the length of
+      OutBassPedalChannel and OutChordChannel; otherwise an error will be
+      raised.
+    * If the length of this list is less than the length of OutBassPedalChannel
+      and OutChordChannel, then the transposition of the remaining elements will
+      be set according to the last value of the list.
+
   * Next set the MIDI controller that you are going to use for sending
     BankSelect messages:
     BankSelectController="32"
@@ -152,10 +184,10 @@
             xmlns="https://www.technosoft.solutions/xsd"
             InPort="MIDI In*" OutPort="MIDI Out*"
             InChannel="1"
-            OutBassPedalChannel="3" OutChordChannel="4"
+            OutBassPedalChannel="3,5" OutChordChannel="4,1,3"
             MidiEcho="true"
-            BassPedalVelocity="70" ChordVelocity="ffff"
-            BassPedalTranspose="-2" ChordTranspose="2"
+            BassPedalVelocity="70,36" ChordVelocity="fff,p,mf"
+            BassPedalTranspose="-2,23" ChordTranspose="2,-25,127"
             BankSelectController="32" InitialBank="2"
             MinVelocityNoteOff="true"
             Octave="2"
@@ -241,13 +273,22 @@
   -->
     
   <!--
-    The following bank overwrites the BassPedalVelocity, ChordVelocity, 
+    The following bank overwrites the BassPedalVelocity, ChordVelocity,
     BassPedalTranspose, ChordTranspose, and Octave settings comming from the
     Controller node.
+    
+    Since OutBassPedalChannel and OutChordChannel were set to ="3,5" and "4,1,3"
+    respectively, and BassPedalVelocity and ChordVelocity were set to: "p" and
+    "40,12" respectively, two sets of pedal notes will be sent on channels "3,5"
+    each with a velocity of "p"; one chord will be sent on channel "4" with a
+    velocity of "40", then two chords will be sent on channels: "1,3" with a
+    velocity of "12". Similarly, the two sets of pedal notes will be transposed
+    by -47 semitones, one chord by 27 semitones, and two chords will be
+    transposed by -16 semitones.
   -->
   <Bank Name="Bank names can be really long; they have literaly no limit and include unicode characters like: öèãí; In theory even chinese should be possible. just set the correct encoding, ie: UTF-8 or GB2312"
-        BassPedalVelocity="p" ChordVelocity="40"
-        BassPedalTranspose="-8" ChordTranspose="0"
+        BassPedalVelocity="p" ChordVelocity="40,12"
+        BassPedalTranspose="-47" ChordTranspose="27,-16"
         Octave="1">
     <!--
       Next you can define the different Pedal actions for each NOTE ON and OFF
@@ -271,24 +312,27 @@
     -->
         
     <!--
-      The following pedal will overwrite the values of BassPedalVelocity,
-      ChordVelocity, BassPedalTranspose, and ChordTranspose, and it will listen
-      to the note C1. Then it will send the bass note "C#-2" (-2 = Octave +
-      BassPedalTranspose = 1 - 3) and the chord notes: C#3, F3, G#3 (C# Major);
-      note that the octave was calculated according to the octave of the pedal
-      note and the chord transposition; in other words:
-      3 = Octave + ChordTranspose = 1 + 2 = 3
+      The following pedal will overwrite the values of OutBassPedalChannel,
+      OutChordChannel, BassPedalVelocity, ChordVelocity, BassPedalTranspose, and
+      ChordTranspose, and it will listen to the note C1. Then it will send the
+      bass note "A#0", which is what we get after transposing C1 by -3
+      semitones, and the chord: D#1, F#1, A#1, which is what we get after
+      transposing C# Major (C#1, F1, G#1) by two semitones.
       
       Please also be aware that the order of the chord notes matters when
       calculating the chord note octaves, ie: if you enter: G#, F, and C#, then
       the octaves will be calculated based on the first note: G#, so, the
-      resulting chord would be: G#3, F4, and C#5, which is called "spread
-      voicing". Anyway, normally you would work with standard inversions like:
-      G#3, C#2, and F2. Finally, the minimum length of a chord would be one
-      note; you can also set your keyboard to fingered note, so that's really
-      what you need on this case.
+      resulting chord would be: G#1, F2, and C#3, which is called "spread
+      voicing". Finally, the minimum length of a chord would be one note; you
+      can also set your keyboard to fingered note, so that's really what you
+      need on this case.
+      
+      Also noticed that the Channel attributes are no longer comma list; this
+      means that for this case, you will only send a pedal and a chord note set
+      at the time.
     -->
-    <Pedal BassPedalVelocity="pp" ChordVelocity="f"
+    <Pedal OutBassPedalChannel="1" OutChordChannel="1"
+           BassPedalVelocity="pp" ChordVelocity="f"
            BassPedalTranspose="-3" ChordTranspose="2"
            Note="C" BassNote="C#" ChordNotes="C#,F,G#"/>
 
@@ -319,11 +363,12 @@
     <Pedal Note="C#" BankSelect="2"/>
     
     <!--
-      The following pedal won't overwrite any value, then it will listen to the
-      note 60 (C3 or middle C). Next, the chord: G3, C4, and E4 will be send;
-      please note that the chord octave was calculated according to the octave
-      of the note 60, which is 3, and the ChordTranspose value, which will
-      assume 0, since is the one defined on the Bank node.
+      The following pedal will only override ChordTranspose by disabling it (0
+      semitones), then it will listen to the note 60 (C3 or middle C). Next, the
+      chord: G3, C4, and E4 will be send three times according to the value of
+      OutChordChannel comming from the Controller node, channels: 4, 1, and 3.
+      Please note that the chord octave was calculated according to the octave
+      of the note 60, which is 3.
       
       Finally, the next bank will be selected. Please note that if here you
       instead use 'Previous', and because this is the first bank, then the last
@@ -379,7 +424,7 @@
       <!--
         On a Yamaha Electone HS-8 organ, this command will turn on the upper
         combination voice, when pressing this note. Please note that since
-        "Trigger" defaults to "NoteOn", you can omit it if wanted.
+        "Trigger" defaults to "NoteOn", you can omit it, if you want.
       -->
       <Message Type="SysEx" Trigger="NoteOn" String="F0 43 70 72 41 30 01 F7"/>
 
@@ -400,10 +445,26 @@
   <!--
     The following bank won't overwrite the BassPedalVelocity, ChordVelocity,
     BassPedalTranspose, and ChordTranspose settings comming from the Controller
-    node (note that it is written without any attribute). It will only list the
-    bank names after the note 123 gets released (NOTE OFF message).
+    node (note that it is written without any attribute).
   -->
   <Bank>
+    <!--
+      The following pedal will only list the bank names after the note 123 gets
+      released (NOTE OFF message).
+    -->
     <Pedal Note="123" BankSelect="List"/>
+    <!--
+      The following pedal will override some values comming from the controller,
+      then some transposed bass pedals and chords will be sent.
+      
+      Please note the "+0" on the BassPedalVelocity and ChordVelocity values;
+      this indicates that the velocity comming from the pedal controller will be
+      used. Setting just "0" will set the velocity to zero, which is quite
+      diffent.
+    -->
+    <Pedal Note="124" OutBassPedalChannel="5,3,16" OutChordChannel="1,3"
+           BassPedalVelocity="-22,15,+0" ChordVelocity="+0,-33"
+           BassPedalTranspose="+0,+5,-3" ChordTranspose="+0,23"
+           Octave = "0" ChordNotes="G,C,E" BassNote="C"/>
   </Bank>
 </Controller>
