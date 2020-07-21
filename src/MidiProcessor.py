@@ -484,8 +484,8 @@ class MidiProcessor(MidiInputHandler):
     if attribute_values == None:
       zero_value = "0"
       if attribute_suffix == "Velocity":
-        zero_value = str("+0")
-      attribute_values = zero_value + ',' * len(out_channels)
+        zero_value = "+0"
+      attribute_values = (zero_value + ',') * len(out_channels)
       attribute_values = attribute_values.split(',')[:-1]
 
     if len(attribute_values) > len(out_channels):
