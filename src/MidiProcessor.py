@@ -45,8 +45,7 @@ class MidiProcessor(MidiInputHandler):
   """
   
   def __init__(self, xml_dict, midi_in, midi_out, ignore_sysex = True,
-               ignore_timing = True, ignore_active_sense = True,
-               default_velocity = 64):
+               ignore_timing = True, ignore_active_sense = True):
     """
     Calls the MidiInputHandler constructor and initializes the sub class
     attributes
@@ -56,13 +55,11 @@ class MidiProcessor(MidiInputHandler):
     * midi_in: MIDI IN interface to use
     * midi_out: MIDI OUT interface to use
     * ignore_* parameters: see the "_ignore_messages" method
-    * default_velocity: default velocity for NOTE_ON and NOTE_OFF messages
     """
     self.__log.debug("Initializing MidiProcessor")
     super().__init__(midi_in, midi_out, ignore_sysex, ignore_timing,
                      ignore_active_sense)
     self._xml_dict = xml_dict
-    self._default_velocity = default_velocity
     self._quit = False
     self._status = None
     self._panic_command = []
@@ -487,7 +484,7 @@ class MidiProcessor(MidiInputHandler):
     if attribute_values == None:
       zero_value = "0"
       if attribute_suffix == "Velocity":
-        zero_value = str(self._default_velocity)
+        zero_value = str("+0")
       attribute_values = zero_value + ',' * len(out_channels)
       attribute_values = attribute_values.split(',')[:-1]
 
