@@ -218,9 +218,21 @@ class MyMidiInputHandler(MidiInputHandler):
       - Second position: the sent message
     """
     status = NOTE_ON
+    note_velocity = self._note_velocity
     if user_option == '2':
       status = NOTE_OFF
-      
+      user_choice = ''
+      while user_choice not in ['1', '2']:
+        print('')
+        user_choice = input("Type of NOTE OFF? (1=Normal NOTE OFF, "
+                            "2=NOTE ON with zero velocity)? ")
+        if user_choice not in ['1', '2']:
+          self.__log.info("Wrong option. Please enter 1 or 2")
+                
+      if user_choice == '2':
+        status = NOTE_ON
+        note_velocity = 0
+
     status = status | self._midi_in_channel
     message = [status]
     validated = False
@@ -252,8 +264,9 @@ class MyMidiInputHandler(MidiInputHandler):
       if not validated:
         self.__log.info("\nWrong value. Posible values: [C:x, C#:x, D:x, D#:x, "
                         "..., or 0-127], where x is the octave")
+
     print('')
-    message += [note, self._note_velocity]
+    message += [note, note_velocity]
     self._print_message(message, "Sending")
     self._midi_out.send_message(message)
     return True, message
@@ -380,7 +393,18 @@ class MyMidiInputHandler(MidiInputHandler):
                 self.__log.info("Wrong option. Please enter 1 or 2")
 
             if user_choice == '1':
-              message[0] = NOTE_OFF | self._midi_in_channel
+              user_choice = ''
+              while user_choice not in ['1', '2']:
+                user_choice = input("Type of NOTE OFF? (1=Normal NOTE OFF, "
+                                    "2=NOTE ON with zero velocity)? ")
+                if user_choice not in ['1', '2']:
+                  self.__log.info("Wrong option. Please enter 1 or 2")
+              
+              status = NOTE_OFF
+              if user_choice == '2':
+                status = NOTE_ON
+                message[2] = 0
+              message[0] = status | self._midi_in_channel
               self._print_message(message, "Sending")
               self._midi_out.send_message(message)
               time.sleep(1)

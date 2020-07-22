@@ -529,17 +529,23 @@ class MidiProcessor(MidiInputHandler):
          status in [NOTE_ON, NOTE_OFF, CONTROL_CHANGE]:
         current_bank = self._xml_dict['Bank'][self._current_bank]
         if status in [NOTE_ON, NOTE_OFF]:
+          swapped_note_message = False
           note = message[1]
           current_pedal = current_bank["@PedalList"].get(note)
           if current_pedal != None:
+            self.__log.debug("Controller message was detected")
             self._current_velocity = message[2]
             if (self._current_velocity == 0) and \
                (self._xml_dict["@MinVelocityNoteOff"]):
+               self.__log.debug("Swapping NOTE ON message with a zero velocity "
+                                "to a NOTE OFF message")
+               swapped_note_message = True
                #NOTE_ON with a zero velocity will be interpreted as NOTE_OFF
                status = NOTE_OFF
 
             #First the NOTE ON AND OFF messages will be done
-            note_messages = self._set_note_velocity(current_pedal, status)
+            note_messages = self._set_note_velocity(current_pedal, status,
+                                                    swapped_note_message)
             messages += note_messages
             if (self._xml_dict["@PedalMonophony"]) and \
                (self._previous_pedal != None):
@@ -649,7 +655,8 @@ class MidiProcessor(MidiInputHandler):
         self._midi_out.send_message(message)
     self.__log.debug("MIDI message was sent")
 
-  def _set_note_velocity(self, pedal, message_type):
+  def _set_note_velocity(self, pedal, message_type,
+                         swapped_note_message = False):
     """
     Returns a list of NOTE_ON or NOTE_OFF messages with a modified velocity
     according to the values of: BassPedalVelocity, ChordVelocity, and
@@ -657,6 +664,11 @@ class MidiProcessor(MidiInputHandler):
     Parameters
     * Pedal: pedal for which the messages will be modified
     * message_type: it can be either NOTE_ON or NOTE_OFF
+    * swapped_note_message: indicates whether or not this a NOTE ON with a
+      velocity of zero, which was changed to NOTE OFF. This is the only case
+      where the velocity won't be changed and will be let as zero. Please note
+      that for normal NOTE OFF message the velocity won't be always zero; some
+      MIDI devices support NOTE OFF messages with a velocity.
     """
     self.__log.debug("Sending note velocity for message: %s", message_type)
     note_messages = pedal.get("@NoteMessages")
@@ -667,17 +679,20 @@ class MidiProcessor(MidiInputHandler):
     new_note_messages = []
     for note_message in note_messages:
       note_velocity = note_message[2]
-      if type(note_velocity) == type(''):
-        note_velocity = self._current_velocity + int(note_velocity)
-      
-      if note_velocity <= 0:
-        note_velocity = 1
-        self.__log.info("Pedal velocity was justed to 1. Please increase the "
-                        "relative velocity")
-      elif note_velocity > 127:
-        note_velocity = 127
-        self.__log.info("Pedal velocity was justed to 127. Please decrease the "
-                        "relative velocity")
+      if swapped_note_message:
+        note_velocity = 0
+      else:
+        if type(note_velocity) == type(''):
+          note_velocity = self._current_velocity + int(note_velocity)
+        
+        if note_velocity <= 0:
+          note_velocity = 1
+          self.__log.info("Pedal velocity was justed to 1. Please increase the "
+                          "relative velocity")
+        elif note_velocity > 127:
+          note_velocity = 127
+          self.__log.info("Pedal velocity was justed to 127. Please decrease the "
+                          "relative velocity")
       new_note_message = note_message[:]
       new_note_message[2] = note_velocity
       new_note_messages.append(new_note_message)

@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  JMMidiBassPedalController v1.4
+  File: src/conf/bass-pedal-config.xml
+  By:   Josef Meile <jmeile@hotmail.com> @ 05.07.2020
+  This project is licensed under the MIT License. Please see the LICENSE.md file
+  on the main folder of this code. An online version can be found here:
+  https://github.com/jmeile/JMMidiBassPedalController/blob/master/LICENSE.md
+
+  Configuration file to use with a bass pedal or a foot controller.
+
+  The following parameters were set:
+  * InPort and OutPort: The USB Uno MIDI Interface will be used to get the
+    messages from the pedal board and transmit them to the Tyros.
+  * OutBassPedalChannel: MIDI OUT channel for bass notes set to 3. This
+    parameter is optional and defaults to 1.
+  * OutChordChannel: MIDI OUT channel for chords set to 2. This parameter is
+    optional and defaults to 1.
+  * PedalMonophony: set to "true", multiple pedals won't be processed. This
+    parameter is optional and defaults to "false".
+  * Octave: set to 1, which is the octave comming from my pedal controller. This
+    parameter defaults to 0.
+  * ChordTranspose: set to "12". Chords will be transposed by 12 semitones (one
+    octave) relative to the controller octave. This parameter defaults to "0",
+    no transposition.
+  
+  The following parameters were omited from the configuration, so, their
+  default values will be used:
+  * Encoding: Bank names are codified with that encoding. It defaults to
+    "UTF-8". For other language, ie: chinese, set it to "GB2312".
+  * MidiEcho: This parameter defaults to "true", which means that other messages
+    not comming through channel 1 will be fordwarded. 
+  * InChannel: MIDI IN channel for catching messages. This parameter is defaults
+    to 1.
+  * BankSelectController: Controller for selecting banks. This parameter
+    defaults to 32 (20H).
+  * InitialBank: Initial selected bank. This defaults to 1.
+  * MinVelocityNoteOff: it defaults to "true", treat NOTE ON messages with a
+    zero velocity as NOTE OFF messages.
+  * BassPedalVelocity and ChordVelocity: velocites for bass and chord notes
+    respectively, default to "+0, the velocity of the pedal controller will be
+    used.
+  * BassPedalTranspose: Transposition of the bass pedal notes. It defaults to 0,
+    no transposition will be done.
+            InPort="USB Uno MIDI Interface*" OutPort="USB Uno MIDI Interface*"
+-->
+<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="https://www.technosoft.solutions/xsd 
+            MidiBassPedalController.xsd"
+            xmlns="https://www.technosoft.solutions/xsd"
+            InPort="MIDI In*" OutPort="MIDI Out*"
+            OutBassPedalChannel="3" OutChordChannel="2" PedalMonophony="true"
+            Octave="1" ChordTranspose="12">
+  <Start>
+    <!-- Sync Start -->
+    <Message Type="SysEx" String="F0 43 60 7A F7"/>
+    <!-- Sets INTRO D -->
+    <Message Type="SysEx" String="F0 43 7E 00 03 7F F7"/>
+  </Start>
+  <Stop>
+    <!-- Sends a rhythm stop -->
+    <Message Type="Midi" String="FC"/>
+  </Stop>
+  <Panic File="conf/unitor8_panic.txt"/>
+
+  <!--
+    On this bank I will test some basic features.
+    The "Name" attribute is optional; if not included then it defaults to:
+    Bank<bank_number>, for the first bank: Bank1, for the second: Bank2, and so
+    on.
+  -->
+  <Bank Name="Major chords">
+    <!-- The only required attribute is "Note" the rest are optional -->
+  
+    <!-- Catches the note C1, then sends bass note C1 and C major chord -->
+    <Pedal Note="C" BassNote="C" ChordNotes="G,C,E">
+      <!-- Triggers a SONG START during NOTE ON -->
+      <Message Type="Midi" String="FA"/>
+    </Pedal>
+
+    <!-- Catches the note C#1, then sends bass note C#1 and C# major chord -->
+    <Pedal Note="C#" BassNote="C#" ChordNotes="F,G#,C#">
+      <!-- Activates the ENDING D switch during NOTE OFF -->
+      <Message Type="SysEx" Trigger="NoteOff" String="F0 43 7E 00 23 7F F7"/>
+    </Pedal>
+    
+    <!--
+      Catches the note D1, then sends bass note D1 with a relative velocity of
+      "+50", and D major chord with a relative velocity of "+25". Relative
+      velocites will be added to the current velocity comming from the pedal
+      controller.
+    -->
+    <Pedal Note="D" BassNote="D" ChordNotes="F#,A,D"
+           BassPedalVelocity="+50" ChordVelocity="+25"/>
+    
+    <!--
+      Catches the note D#1, then sends bass note D#1 with an absolute velocity
+      of ffff (or 127) and D# major chord with an absolute velocity of f (or
+      88). Notes will always have the same velocity no matter how hard you hit
+      the pedal controller.
+    -->
+    <Pedal Note="D#" BassNote="D#" ChordNotes="G,A#,D#"
+           BassPedalVelocity="ffff" ChordVelocity="f"/>
+
+    <!-- Catches the note E1, then sends bass note E1 and E major chord -->
+    <Pedal Note="E" BassNote="E" ChordNotes="G#,B,E"
+           OutBassPedalChannel="3,1" OutChordChannel="2,4"
+           BassPedalTranspose="0,12" ChordTranspose="12,24"/>
+    
+    <!-- Catches the note F1, then sends bass note F1 and F major chord -->
+    <Pedal Note="F" BassNote="F" ChordNotes="F,A,C"/>
+
+    <!-- Catches the note F#1, then sends bass note F#1 and F# major chord -->
+    <Pedal Note="F#" BassNote="F#" ChordNotes="A#,C#,F#"/>
+    
+    <!-- Catches the note G1, then sends bass note G1 and G major chord -->
+    <Pedal Note="G" BassNote="G" ChordNotes="G,B,D"/>
+    
+    <!-- Catches the note G#1, then sends bass note G#1 and G# major chord -->
+    <Pedal Note="G#" BassNote="G#" ChordNotes="G#,C,D#"/>
+    
+    <!-- Catches the note A1, then sends bass note A1 and A major chord -->
+    <Pedal Note="A" BassNote="A" ChordNotes="A,C#,E"/>
+    
+    <!-- Catches the note A#1, then sends bass note A#1 and A# major chord -->
+    <Pedal Note="A#" BassNote="A#" ChordNotes="A#,D,F"/>
+    
+    <!-- Catches the note B1, then sends bass note B1 and B major chord -->
+    <Pedal Note="B" BassNote="B" ChordNotes="B,D#,F#"/>
+    
+    <!-- Catches the note C2, then the FILL IN AA (ON) SysEx for a Tyros 1 -->
+    <Pedal Note="C" Octave="2">
+      <Message Type="SysEx" String="F0 43 7E 00 10 7F F7"/>
+    </Pedal>
+    
+    <!-- Catches the note C#2, then the FILL IN BB (ON) SysEx for a Tyros 1 -->
+    <Pedal Note="C#" Octave="2">
+      <Message Type="SysEx" String="F0 43 7E 00 11 7F F7"/>
+    </Pedal>
+    
+    <!-- Catches the note D2, then the ENDING A (ON) SysEx for a Tyros 1 -->
+    <Pedal Note="D" Octave="2">
+      <Message Type="SysEx" String="F0 43 7E 00 20 7F F7"/>
+    </Pedal>
+    
+    <!-- Catches the note D#2, then switch to the next bank -->
+    <Pedal Note="D#" Octave="2" BankSelect="Next"/>
+
+    <!-- Catches the note E2, then reloads the configuration -->
+    <Pedal Note="E" Octave="2" BankSelect="Reload"/>
+  </Bank>
+  
+  <!--
+    On this bank I will define the pedals to send the seventh chords from C
+    until B. The last notes will be used for FILL INs, ENDING, and switch to the
+    previous bank
+  -->
+  <Bank Name="Seventh chords">
+    <!-- Catches the note C1, then sends bass note C1 and C7 chord -->
+    <Pedal Note="C" BassNote="C" ChordNotes="G,A#,C,E"/>
+    
+    <!-- Catches the note C#1, then sends bass note C#1 and C#7 chord -->
+    <Pedal Note="C#" BassNote="C#" ChordNotes="F,G#,B,C#"/>
+    
+    <!-- Catches the note D1, then sends bass note D1 and D7 chord -->
+    <Pedal Note="D" BassNote="D" ChordNotes="F#,A,C,D"/>
+    
+    <!-- Catches the note D#1, then sends bass note D#1 and D#7 chord -->
+    <Pedal Note="D#" BassNote="D#" ChordNotes="G,A#,C#,D#"/>
+
+    <!-- Catches the note E1, then sends bass note E1 and E7 chord -->
+    <Pedal Note="E" BassNote="E" ChordNotes="G#,B,D,E"/>
+    
+    <!-- Catches the note F1, then sends bass note F1 and F7 chord -->
+    <Pedal Note="F" BassNote="F" ChordNotes="A,C,D#,F"/>
+
+    <!-- Catches the note F#1, then sends bass note F#1 and F#7 chord -->
+    <Pedal Note="F#" BassNote="F#" ChordNotes="A#,C#,E,F#"/>
+    
+    <!-- Catches the note G1, then sends bass note G1 and G7 chord -->
+    <Pedal Note="G" BassNote="G" ChordNotes="G,B,D,F"/>
+    
+    <!-- Catches the note G#1, then sends bass note G#1 and G# chord -->
+    <Pedal Note="G#" BassNote="G#" ChordNotes="G#,C,D#,F#"/>
+    
+    <!-- Catches the note A1, then sends bass note A1 and A7 chord -->
+    <Pedal Note="A" BassNote="A" ChordNotes="A,C#,E,G"/>
+    
+    <!-- Catches the note A#1, then sends bass note A#1 and A#7 chord -->
+    <Pedal Note="A#" BassNote="A#" ChordNotes="A#,D,F,G#"/>
+    
+    <!-- Catches the note B1, then sends bass note B1 and B7 chord -->
+    <Pedal Note="B" BassNote="B" ChordNotes="B,D#,F#,A"/>
+    
+    <!-- Catches the note C2, then the FILL IN AA (ON) SysEx for a Tyros 1 -->
+    <Pedal Note="C" Octave="2">
+      <Message Type="SysEx" String="F0 43 7E 00 10 7F F7"/>
+    </Pedal>
+    
+    <!-- Catches the note C#2, then the FILL IN BB (ON) SysEx for a Tyros 1 -->
+    <Pedal Note="C#" Octave="2">
+      <Message Type="SysEx" String="F0 43 7E 00 11 7F F7"/>
+    </Pedal>
+    
+    <!-- Catches the note D2, then the FILL IN CC (ON) SysEx for a Tyros 1 -->
+    <Pedal Note="D" Octave="2">
+      <Message Type="SysEx" String="F0 43 7E 00 12 7F F7"/>
+    </Pedal>
+    
+    <!-- Catches the note D#2, then switch to the next bank -->
+    <Pedal Note="D#" Octave="2" BankSelect="Next"/>
+    
+    <!-- Catches the note E2, then reloads the configuration -->
+    <Pedal Note="E" Octave="2" BankSelect="Reload"/>
+  </Bank>
+</Controller>

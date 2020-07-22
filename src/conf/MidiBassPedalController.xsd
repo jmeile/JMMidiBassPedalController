@@ -369,10 +369,8 @@
       <xs:annotation>
         <xs:documentation xml:lang="en">
           Note transposition list for chord notes. If not given, then the
-          value of the parent node will be given. If it is there is no, then the
-          transposition for the pedal notes will be used.
-          So, if you want to disable transposition, you have to set this to 0
-          (zero).
+          value of the parent node will be given. If it is there is no parent
+          then 0 (zero / no transposition) will be assumed.
           
           Notes:
           * The length of this list must be less or equal than the length of
