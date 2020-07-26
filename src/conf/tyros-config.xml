@@ -48,7 +48,7 @@
             xsi:schemaLocation="https://www.technosoft.solutions/xsd 
             MidiBassPedalController.xsd"
             xmlns="https://www.technosoft.solutions/xsd"
-            InPort="MIDI In*" OutPort="MIDI Out*"
+            InPort="USB Uno MIDI*" OutPort="USB Uno MIDI*"
             OutBassPedalChannel="3" OutChordChannel="2" PedalMonophony="true"
             Octave="1" ChordTranspose="12">
   <Start>
