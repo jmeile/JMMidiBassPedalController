@@ -520,7 +520,7 @@ class MidiProcessor(MidiInputHandler):
     """
     Overrides the _send_midi_message method from MidiInputHandler.
     """
-    self.__log.debug("Sending MIDI message: %s", PrettyFormat(message))
+    self.__log.debug("Processing MIDI message: %s", PrettyFormat(message))
     messages = []
     if not self._panic_in_progress(message):
       status = message[0] & 0xF0
@@ -652,8 +652,9 @@ class MidiProcessor(MidiInputHandler):
 
     if messages != []:
       for message in messages:
+        self.__log.debug("Sending MIDI message: %s", PrettyFormat(message))
         self._midi_out.send_message(message)
-    self.__log.debug("MIDI message was sent")
+    self.__log.debug("MIDI message was processed")
 
   def _set_note_velocity(self, pedal, message_type,
                          swapped_note_message = False):
@@ -670,7 +671,7 @@ class MidiProcessor(MidiInputHandler):
       that for normal NOTE OFF message the velocity won't be always zero; some
       MIDI devices support NOTE OFF messages with a velocity.
     """
-    self.__log.debug("Sending note velocity for message: %s", message_type)
+    self.__log.debug("Setting note velocity for message: %s", message_type)
     note_messages = pedal.get("@NoteMessages")
     if note_messages == None:
       return []
