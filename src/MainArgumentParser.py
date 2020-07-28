@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# JMMidiBassPedalController v1.4
+# JMMidiBassPedalController v1.5
 # File: src/MainArgumentParser.py
-# By:   Josef Meile <jmeile@hotmail.com> @ 05.07.2020
+# By:   Josef Meile <jmeile@hotmail.com> @ 28.07.2020
 # This project is licensed under the MIT License. Please see the LICENSE.md file
 # on the main folder of this code. An online version can be found here:
 # https://github.com/jmeile/JMMidiBassPedalController/blob/master/LICENSE.md
