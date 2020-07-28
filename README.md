@@ -1,4 +1,4 @@
-# JMMidiBassPedalController v1.4
+# JMMidiBassPedalController v1.5
 **File: README.md**\
 **By:   Josef Meile <jmeile@hotmail.com> @ 05.07.2020**
 
@@ -266,12 +266,12 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
 
 # Installation
 The easiest way of installing the software is getting it from
-[here](https://github.com/jmeile/JMMidiBassPedalController/archive/1.4.zip) then
+[here](https://github.com/jmeile/JMMidiBassPedalController/archive/1.5.zip) then
 decompress the zip file and put it contents wherever you want.
 
 Alternatively, you can also clone the git repository:
 ```
-git clone https://github.com/jmeile/JMMidiBassPedalController.git -b 1.4
+git clone https://github.com/jmeile/JMMidiBassPedalController.git -b 1.5
 ```
 
 # Hardware connections
