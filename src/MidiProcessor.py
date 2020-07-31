@@ -87,10 +87,11 @@ class MidiProcessor(MidiInputHandler):
 
     #Internally midi channels begin with zero
     self._xml_dict['@InChannel'] -= 1
+    self._parse_panic()
     self._parse_banks()
     self._parse_start_stop("Start")
     self._parse_start_stop("Stop")
-    self._parse_panic()
+    #self._parse_panic()
     self.__log.debug("Got:\n%s", PrettyFormat(self._xml_dict))
 
   def _parse_out_channels(self, channel_name, current_node, parent_node = None):
@@ -343,6 +344,18 @@ class MidiProcessor(MidiInputHandler):
         else:
           message_list.append(hexadecimal_message)
       xml_node["@MessageList"] = message_list
+
+    if filter_by_trigger:
+      send_panic = xml_node.get('@SendPanic')
+      if send_panic:
+        self.__log.debug("SendPanic was detected. Appending panic command ")
+        message_list = xml_node.get("@MessageList")
+        if message_list == None:
+          message_list = {'NoteOff': []}
+          xml_node["@MessageList"] = message_list
+
+        message_list['NoteOff'].extend(self._panic_command)
+
     self.__log.debug("Messages were parsed")
 
   def _parse_chords(self, pedal):
@@ -571,24 +584,23 @@ class MidiProcessor(MidiInputHandler):
 
             midi_and_sysex = current_pedal.get("@MessageList")
             if midi_and_sysex != None:
+              self.__log.debug(NOTE_TRIGGERS[status])
               #First the MIDI and SysEx messages will be sent
-              messages += midi_and_sysex[NOTE_TRIGGERS[status]]
+              if NOTE_TRIGGERS[status] in midi_and_sysex:
+                self.__log.debug("Got messages")
+                messages += midi_and_sysex[NOTE_TRIGGERS[status]]
 
             if status == NOTE_OFF:
               #The BANK SELECT messages will be processed only on NOTE OFF
               bank_select = current_pedal.get("@BankSelect")
               if bank_select != None:
                 #Now the BANK SELECT message will be processed
-                if bank_select not in ["Panic", "Quit", "Reload", "Reboot", \
-                                       "Shutdown", "List"]:
+                if bank_select not in ["Quit", "Reload", "Reboot", "Shutdown", \
+                                       "List"]:
                   self._current_bank = bank_select
                   self.__log.info("Bank changed to: %d", bank_select + 1)
                 elif bank_select == "List":
                   messages = [self._xml_dict["@BanksSysEx"]]
-                elif bank_select == "Panic":
-                  messages = self._panic_command
-                  self.__log.debug("Sending software Panic:\n%s", \
-                                   PrettyFormat(self._panic_command))
                 else:
                   self._quit = True
                   self._status = bank_select
@@ -628,7 +640,7 @@ class MidiProcessor(MidiInputHandler):
               else:
                 self._quit = True
                 self._status = BANK_SELECT_FUNCTIONS[select_value]
-              if not self._quit and not send_panic and not send_bank_list:
+              if not self._quit and not send_bank_list:
                 if self._current_bank < 0:
                   self._current_bank = num_banks - 1
                 elif self._current_bank >= num_banks:
@@ -701,7 +713,7 @@ class MidiProcessor(MidiInputHandler):
 
   def _send_system_exclusive(self, message):
     """
-    Overrides the _send_midi_message method from MidiInputHandler.
+    Overrides the _send_system_exclusive method from MidiInputHandler.
     """
     self.__log.debug("Sending SysEx message: %s", PrettyFormat(message))
     if not self._receive_sysex(message) and self._xml_dict["@MidiEcho"]:

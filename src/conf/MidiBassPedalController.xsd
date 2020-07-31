@@ -674,7 +674,6 @@
             <xs:documentation xml:lang="en">
               Bank number that the controller will select after this pedal has
               been pressed. You can either enter a number between 1 and 119 or
-              'Panic' (sends a panic command - The Panic node needs to be set),
               'Next' (select next bank), 'Previous' (select previous bank),
               'Last' (select the last bank), 'Quit' (quit the controller
               software), 'Reload' (restart the controller; here the whole xml
@@ -684,6 +683,15 @@
               
               Note: there is no symbol for selecting the first bank; for doing
               this just send a '1'.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="SendPanic" type="xs:boolean" default="false">
+          <xs:annotation>
+            <xs:documentation xml:lang="en">
+              Whether or not to send the Panic command after pushing this pedal
+              (it triggers on NOTE OFF). For this to work, you will need to
+              define the "Panic" node.
             </xs:documentation>
           </xs:annotation>
         </xs:attribute>
@@ -752,16 +760,16 @@
     <xs:restriction base="xs:string">
       <xs:annotation>
         <xs:documentation>
-          This type is a value between 1 and 119 or 'Panic' (send a panic
-          message), 'Next' (select next bank), 'Previous' (select previous
-          bank), 'Last' (select the last bank), 'Quit' (quit the controller
-          software), 'Reload' (restart the controller; here the whole xml config
-          file will be reloaded), 'Reboot' (reboots the computer or
-          microcontroller running the software), or 'Shutdown' (shutdowns the
-          system), or 'List' (gets a list of the bank names and their indexes).
+          This type is a value between 1 and 119 or 'Next' (select next bank),
+          'Previous' (select previous bank), 'Last' (select the last bank),
+          'Quit' (quit the controller software), 'Reload' (restart the
+          controller; here the whole xml config file will be reloaded), 'Reboot'
+          (reboots the computer or microcontroller running the software), or
+          'Shutdown' (shutdowns the system), or 'List' (gets a list of the bank
+          names and their indexes).
         </xs:documentation>
       </xs:annotation>
-      <xs:pattern value="Panic|Next|Previous|Last|Quit|Reload|Reboot|Shutdown|List|[1-9]|[1-9][0-9]|1[0-1][0-9]"/>
+      <xs:pattern value="Next|Previous|Last|Quit|Reload|Reboot|Shutdown|List|[1-9]|[1-9][0-9]|1[0-1][0-9]"/>
     </xs:restriction>
   </xs:simpleType>
 

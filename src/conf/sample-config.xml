@@ -396,7 +396,6 @@
         * checksum is a byte to ensure that the data was properly transmited
           (see the file MidiBassPedalController.xsd for more details about the
           format of this byte).
-      - 'Panic': Sends a panic message.
       - 'Quit': Quits the controller software.
       - 'Reload': Stops and starts the controller software. Useful if you
         changed the configuration file, and want to reload it.
@@ -440,6 +439,15 @@
       -->
       <Message Type="SysEx" Trigger="NoteOff" String="F0 43 70 72 41 03 03 F7"/>
     </Pedal>
+    
+    <!--
+      Here a panic command will be sent when releasing the note 62. Please note
+      that "SendPanic" can be used together with other options, ie: sending
+      bass or chord notes, sending BankSelect messages, etc.. Please note that
+      if this is used together with other MIDI or SysEx messages, the panic
+      command is the last thing that will be excecuted.
+    -->
+    <Pedal Note="62" SendPanic="true"/>
   </Bank>
   
   <!--
