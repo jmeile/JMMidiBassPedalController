@@ -91,7 +91,6 @@ class MidiProcessor(MidiInputHandler):
     self._parse_banks()
     self._parse_start_stop("Start")
     self._parse_start_stop("Stop")
-    #self._parse_panic()
     self.__log.debug("Got:\n%s", PrettyFormat(self._xml_dict))
 
   def _parse_out_channels(self, channel_name, current_node, parent_node = None):
@@ -581,13 +580,10 @@ class MidiProcessor(MidiInputHandler):
             elif (self._previous_pedal == None) and (status == NOTE_ON):
               self._previous_pedal = current_pedal
 
-
             midi_and_sysex = current_pedal.get("@MessageList")
             if midi_and_sysex != None:
-              self.__log.debug(NOTE_TRIGGERS[status])
               #First the MIDI and SysEx messages will be sent
               if NOTE_TRIGGERS[status] in midi_and_sysex:
-                self.__log.debug("Got messages")
                 messages += midi_and_sysex[NOTE_TRIGGERS[status]]
 
             if status == NOTE_OFF:
