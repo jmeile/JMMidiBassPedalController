@@ -38,10 +38,10 @@ BANK_SELECT_FUNCTIONS = {
   127: 'Shutdown'
 }
 
-#String equivalences to the note trigger actions
+#Note trigger actions
 NOTE_TRIGGERS = {
-  NOTE_ON: 'NoteOn',
-  NOTE_OFF: 'NoteOff'
+  'NoteOn': NOTE_ON,
+  'NoteOff': NOTE_OFF
 }
 
 """

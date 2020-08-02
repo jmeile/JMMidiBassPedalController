@@ -303,7 +303,7 @@ class MidiProcessor(MidiInputHandler):
     messages = xml_node.get('Message')
     if messages != None:
       if filter_by_trigger:
-        message_list = {'NoteOn': [], 'NoteOff': []}
+        message_list = {NOTE_ON: [], NOTE_OFF: []}
       else:
         message_list = []
       for full_message in messages:
@@ -314,7 +314,7 @@ class MidiProcessor(MidiInputHandler):
         for hexadecimal_string in hexadecimal_strings:
           hexadecimal_message.append(int(hexadecimal_string, 16))
         if filter_by_trigger:
-          message_list[trigger].append(hexadecimal_message)
+          message_list[NOTE_TRIGGERS[trigger]].append(hexadecimal_message)
         else:
           message_list.append(hexadecimal_message)
       xml_node["@MessageList"] = message_list
@@ -325,10 +325,10 @@ class MidiProcessor(MidiInputHandler):
         self.__log.debug("SendPanic was detected. Appending panic command ")
         message_list = xml_node.get("@MessageList")
         if message_list == None:
-          message_list = {'NoteOff': []}
+          message_list = {NOTE_OFF: []}
           xml_node["@MessageList"] = message_list
 
-        message_list['NoteOff'].extend(self._panic_command)
+        message_list[NOTE_OFF].extend(self._panic_command)
 
     self.__log.debug("Messages were parsed")
 
@@ -557,8 +557,8 @@ class MidiProcessor(MidiInputHandler):
           midi_and_sysex = current_pedal.get("@MessageList")
           if midi_and_sysex != None:
             #First the MIDI and SysEx messages will be sent
-            if NOTE_TRIGGERS[status] in midi_and_sysex:
-              messages += midi_and_sysex[NOTE_TRIGGERS[status]]
+            if status in midi_and_sysex:
+              messages += midi_and_sysex[status]
 
           if status == NOTE_OFF:
             #The BANK SELECT messages will be processed only on NOTE OFF

@@ -253,7 +253,7 @@ class MyMidiInputHandler(MidiInputHandler):
             pass
           if validated and (FIRST_OCTAVE <= octave) and \
             (octave <= LAST_OCTAVE):
-            note, octave = parse_note(note, octave)
+            note = parse_note(note, octave)[0]
           else:
             validated = False
       elif (note.isdigit()):

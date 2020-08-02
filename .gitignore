@@ -7,3 +7,4 @@ src/conf/jm-*.xml
 ~*.~vsd
 *.swp
 .DS_Store
+vim.exe.stackdump
