@@ -167,6 +167,7 @@
     - "StopPlayback": triggers NOTE OFF messages for the current pushed pedals.
     - "ContinuePlayback": the current pushed pedals continue playing without any
       change.
+    If this attribute is omitted, then "StopPlayback" will be assumed.
   * Decide how you are going to treat NOTE ON messages with a  velocity of zero,
     for this purpose set MinVelocityNoteOff to true if they are going to be
     treated as NOTE OFF or set it to false otherwise. If omitted it defaults to
