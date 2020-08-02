@@ -137,7 +137,7 @@ class CustomLogger(logging.getLoggerClass()):
   def get_module_name():
     """
     Get's name of the module that created the Logger instance. This is
-    needed in order to know where the messages get logged; this is usefull
+    needed in order to know where the messages get logged; this is useful
     if using it in several modules at once
     """
     caller_module_name = inspect.stack()[1][1].split('.')[0]

@@ -326,7 +326,7 @@ sudo ./Start_FootController_Linux_Startup.sh install
 
 The script will be started automatically during boot.
 
-Here some usefull commands:
+Here some useful commands:
 - To manually starting it, run:
   ```
   sudo service JMMidiBassPedalController start

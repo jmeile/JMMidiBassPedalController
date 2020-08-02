@@ -244,6 +244,25 @@
               </xs:documentation>
             </xs:annotation>
           </xs:attribute>
+          <xs:attribute name="OnBankChange" type="OnBankChangeType"
+                        default="StopPlayback">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">
+                This attribute indicates what to do after a BankChange message
+                is detected. Possible values:
+                - "StopPlayback" (default): triggers NOTE OFF messages for the
+                  current pushed pedals.
+                - "ContinuePlayback": the current pushed pedals continue playing
+                  without any change.
+                - "QuickChange": the current pushed pedals will be changed by
+                  the respective pedals on the current bank; ie: if the pedal
+                  C#2 from bank 1 is being pushed and you changed to bank 2,
+                  then NOTE OFF messages for C#2 on bank 1 will be send and then
+                  C#2 from bank 2 will trigger the NOTE ON messages; if there is
+                  no C#2 on bank 2, then no new pedal will be activated.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
           <xs:attribute name="MinVelocityNoteOff" type="xs:boolean" default="true">
             <xs:annotation>
               <xs:documentation xml:lang="en">
@@ -565,6 +584,32 @@
       </xs:annotation>
       <xs:minInclusive value="1"/>
       <xs:maxInclusive value="119"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="OnBankChangeType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Actions after a BankChange message is detected.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:annotation>
+        <xs:appinfo>
+          Only the following values are possible:
+          - "StopPlayback": triggers NOTE OFF messages for the current pushed
+            pedals.
+          - "ContinuePlayback": the current pushed pedals continue playing
+            without any change.
+          - "QuickChange": the current pushed pedals will be changed by the
+            respective pedals on the current bank; ie: if the pedal C#2 from
+            bank 1 is being pushed and you changed to bank 2, then NOTE OFF
+            messages for C#2 on bank 1 will be send and then C#2 from bank 2
+            will trigger the NOTE ON messages; if there is no C#2 on bank 2,
+            then no new pedal will be activated.
+        </xs:appinfo>
+      </xs:annotation>
+      <xs:pattern value="StopPlayback|ContinuePlayback|QuickChange"/>
     </xs:restriction>
   </xs:simpleType>
 

@@ -154,6 +154,19 @@
     InitialBank="2"
     This is a number between 1 and the number of pedals that you setup here. The
     maximum posible value would be 124. If not given, then '1' will be assumed.
+  * We the OnBankChange attribute as follows:
+    OnBankChange="QuickChange"
+    This means that if a BankSelect message is detected and pedals are being
+    pushed, then the NOTE OFF messages for the previous bank will be sent and
+    then the NOTE ON messages from the current bank will be set. This is useful
+    if for example a C Major chord is being played and after the bank changes
+    you want to inmediatelly change it by a C Minor chord. Please note that if
+    there are no definitions for the active pushed pedals on the current bank,
+    then only the NOTE OFF messages will be sent. Here you also have this
+    options:
+    - "StopPlayback": triggers NOTE OFF messages for the current pushed pedals.
+    - "ContinuePlayback": the current pushed pedals continue playing without any
+      change.
   * Decide how you are going to treat NOTE ON messages with a  velocity of zero,
     for this purpose set MinVelocityNoteOff to true if they are going to be
     treated as NOTE OFF or set it to false otherwise. If omitted it defaults to
@@ -188,7 +201,7 @@
             MidiEcho="true"
             BassPedalVelocity="70,36" ChordVelocity="fff,p,mf"
             BassPedalTranspose="-2,23" ChordTranspose="2,-25,127"
-            BankSelectController="32" InitialBank="2"
+            BankSelectController="32" InitialBank="2" OnBankChange="QuickChange"
             MinVelocityNoteOff="true"
             Octave="2"
             PedalMonophony="false"
@@ -374,7 +387,7 @@
       instead use 'Previous', and because this is the first bank, then the last
       bank will be selected. Please note that if you are in a bank in the middle
       and you want to select the last bank, then you can also use 'Last' for
-      this; this is usefull if you are continuing changing your configuration,
+      this; this is useful if you are continuing changing your configuration,
       but the last bank always remains the same. Other posible values:
       - 'List': Sends a SysEx back with the bank names. This SysEx has the form:
         F0 7D 00 (lengh1.1) (lengh1.2) ... (bank_name1)
