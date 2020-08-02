@@ -323,7 +323,12 @@ class MidiProcessor(MidiInputHandler):
       send_panic = xml_node.get('@SendPanic')
       if send_panic:
         self.__log.debug("SendPanic was detected. Appending panic command ")
-        xml_node["@PanicMessage"] = self._panic_command
+        message_list = xml_node.get("@MessageList")
+        if message_list == None:
+          message_list = {NOTE_OFF: []}
+          xml_node["@MessageList"] = message_list
+
+        message_list[NOTE_OFF].extend(self._panic_command)
 
     self.__log.debug("Messages were parsed")
 
@@ -554,14 +559,6 @@ class MidiProcessor(MidiInputHandler):
             #First the MIDI and SysEx messages will be sent
             if status in midi_and_sysex:
               messages += midi_and_sysex[status]
-          
-          if status == NOTE_OFF:
-            #If there is a panic message, it will be sent on NOTE OFF
-            panic_message = current_pedal.get("@PanicMessage")
-            if panic_message != None:
-              self.__log.debug("Panic message will be sent after all messages: \n"
-                               "%s", PrettyFormat(panic_message))
-              messages.extend(panic_message)
 
           if status == NOTE_OFF:
             #The BANK SELECT messages will be processed only on NOTE OFF
