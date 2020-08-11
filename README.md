@@ -33,8 +33,8 @@ in **banks**, which can be switched through **CONTROL CHANGE** messages.
 - [Running the software](#running-the-software)
 - [Automatic start during system boot](#automatic-start-during-system-boot)
 - [Troubleshooting](#troubleshooting)
-  - [Using the ManualTester script together with "Virtual MIDI Piano Keyboard"]
-    (#using-the-manualtester-script)
+  - [Using the ManualTester script together with "Virtual MIDI Piano Keyboard"
+    ](#using-the-manualtester-script-together-with-virtual-midi-piano-keyboard)
   - [Use a software for intercepting MIDI messages
     ](#use-a-software-for-intercepting-midi-messages)
   - [Using a sequencer software](#using-a-sequencer-software)
@@ -656,9 +656,9 @@ python3 FootController.py --list
   - Start sending NOTE ON/OFF, BANK SELECT, CONTROL CHANGE, raw MIDI, or SysEx
     messages.
 
-For visualizing the notes, you can optionally use [Virtual MIDI Piano Keyboard]
-(https://vmpk.sourceforge.io). It can run parallelly to the ManualTester script;
-just start it and setup it as follows:
+For visualizing the notes, you can optionally use [Virtual MIDI Piano Keyboard
+](https://vmpk.sourceforge.io). It can run parallelly to the ManualTester
+script; just start it and setup it as follows:
 - Open the menu: "Edit > MIDI Connections" and set the dialog as follows:
   - Check: "Enable MIDI Input"
   - Check: "MIDI Omni Mode" -> With this setting, you will see everything
@@ -697,9 +697,9 @@ just start it and setup it as follows:
   
   Now you can send notes and bank select commands through the ManualTester
   script and you will see the results on the "Virtual MIDI Piano Keyboard". You
-  may also use the virtual keyboard to send note event; however, with a normal
-  mouse, you can only push a note at a time. I guess on a touch screen you
-  should be able to push more than one, but I'm not sure.
+  may also use the virtual keyboard to send note messages; however, with a
+  normal mouse, you can only push a note at a time. I guess on a touch screen
+  you should be able to push more than one, but I'm not sure.
 
 ## Use a software for intercepting MIDI messages
 
