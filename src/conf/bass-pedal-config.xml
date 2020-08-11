@@ -19,9 +19,14 @@
   * No default velocites for bass and chord notes were set, so, the ones comming
     from the controller will be assumed
   * Bass notes won't be transposed
-  * Chord notes will be transposed by one octave after the bass notes
+  * Chord notes will be transposed by one octave (12 semitones) after the bass
+    notes
   * Controller for selecting banks: 32 (20H) on channel 1 (MIDI IN channel)
   * Initial selected bank: 1
+  * OnBankChange: QuickChange. If a pedal is being played before doing a bank
+    change, then when the new bank becomes active, the previously played pedals
+    will be replaced by their equivalences on the new back. For example: if C1
+    is being played (the C Major chord), then it will be replaced by C7 chord.
   * Octave: 1. This is what my bass pedal controller uses by default
   * PedalMonophony: true. Multiple pedals won't be processed.
 -->
@@ -33,8 +38,8 @@
             InChannel="1"
             OutBassPedalChannel="3" OutChordChannel="2"
             MidiEcho="true"
-            BassPedalTranspose="0" ChordTranspose="1"
-            BankSelectController="32" InitialBank="1"
+            BassPedalTranspose="0" ChordTranspose="12"
+            BankSelectController="32" InitialBank="1" OnBankChange="QuickChange"
             Octave="1"
             PedalMonophony="true">
   <!--

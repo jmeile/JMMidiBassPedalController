@@ -19,8 +19,8 @@
             InChannel="1"
             OutBassPedalChannel="3" OutChordChannel="2"
             MidiEcho="true"
-            BassPedalTranspose="0" ChordTranspose="1"
-            BankSelectController="32" InitialBank="1"
+            BassPedalTranspose="0" ChordTranspose="12"
+            BankSelectController="32" InitialBank="1" OnBankChange="QuickChange"
             Octave="1"
             PedalMonophony="true">
   <!--

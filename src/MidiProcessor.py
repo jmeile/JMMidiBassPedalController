@@ -44,8 +44,9 @@ class MidiProcessor(MidiInputHandler):
   OFF, and CONTROL CHANGE messages
   """
   
-  def __init__(self, xml_dict, midi_in, midi_out, ignore_sysex = True,
-               ignore_timing = True, ignore_active_sense = True):
+  def __init__(self, xml_dict, midi_in, midi_out,
+               ignore_sysex = True, ignore_timing = True,
+               ignore_active_sense = True):
     """
     Calls the MidiInputHandler constructor and initializes the sub class
     attributes
@@ -71,9 +72,8 @@ class MidiProcessor(MidiInputHandler):
     """Parses the xml dict"""
     self.__log.debug("Parsing xml file")
     self._current_bank = self._xml_dict['@InitialBank'] - 1
-    self._previous_pedal = None
+    self._previous_pedals = {}
     self.__log.info("Current Bank: %s", self._xml_dict['@InitialBank'])
-    self._current_velocity = 0
     self._parse_out_channels('BassPedal', self._xml_dict)
     self._parse_out_channels('Chord', self._xml_dict)
     self._parse_velocity_transpose("BassPedal", "Velocity", self._xml_dict)
@@ -506,148 +506,270 @@ class MidiProcessor(MidiInputHandler):
     messages = []
     status = message[0] & 0xF0
     channel = message[0] & 0x0F
-    if (self._xml_dict['@InChannel'] == channel) and \
-       status in [NOTE_ON, NOTE_OFF, CONTROL_CHANGE]:
+    is_controller_message = True
+    note_messages = []
+    bank_select_messages = []
+    midi_and_sysex_messages = []
+    panic_message = []
+    bank_select = None
+    current_velocity = None
+    if (self._xml_dict['@InChannel'] == channel):
       current_bank = self._xml_dict['Bank'][self._current_bank]
+      process_bank_select = False
+      current_pedal = None
       if status in [NOTE_ON, NOTE_OFF]:
-        swapped_note_message = False
-        note = message[1]
-        current_pedal = current_bank["@PedalList"].get(note)
+        self.__log.debug("NOTE message was sent to controller, checking if "
+                        "there is a pedal")
+        current_note = message[1]
+        current_pedal = current_bank["@PedalList"].get(current_note)
         if current_pedal != None:
-          self.__log.debug("Controller message was detected")
-          self._current_velocity = message[2]
-          if (self._current_velocity == 0) and \
-             (self._xml_dict["@MinVelocityNoteOff"]):
-             self.__log.debug("Swapping NOTE ON message with a zero velocity "
-                              "to a NOTE OFF message")
-             swapped_note_message = True
-             #NOTE_ON with a zero velocity will be interpreted as NOTE_OFF
-             status = NOTE_OFF
+          self.__log.debug("Registered NOTE message was found, processing "
+                           "actions")
+          swapped_note_message = False
+          current_velocity = message[2]
+          if (current_velocity == 0) and self._xml_dict["@MinVelocityNoteOff"]:
+            self.__log.debug("Swapping NOTE ON message with a zero velocity "
+                             "to a NOTE OFF message")
+            status = NOTE_OFF
+            swapped_note_message = True
 
-          #First the NOTE ON AND OFF messages will be done
-          note_messages = self._set_note_velocity(current_pedal, status,
-                                                  swapped_note_message)
-          messages += note_messages
-          if (self._xml_dict["@PedalMonophony"]) and \
-             (self._previous_pedal != None):
-            #Only one pedal at the time is allowed and a pedal was already
-            #pushed or released
-            if (status == NOTE_ON):
-              #This means that a previous pedal was pushed, so the NOTE OFF
-              #messages for that pedal will be sent first
-              note_messages = self._set_note_velocity(self._previous_pedal,
-                                                      NOTE_OFF)
-              messages = note_messages + messages
-              self._previous_pedal = current_pedal
-            elif current_pedal != self._previous_pedal:
-              #This means that the released pedal is not the same as the one
-              #that was pushed before, so, nothing will be done
-              messages = []
-            else:
-              #We reset the previous pedal to None
-              self._previous_pedal = None
-          elif (self._previous_pedal == None) and (status == NOTE_ON):
-            self._previous_pedal = current_pedal
-
-          midi_and_sysex = current_pedal.get("@MessageList")
-          if midi_and_sysex != None:
-            #First the MIDI and SysEx messages will be sent
-            if status in midi_and_sysex:
-              messages += midi_and_sysex[status]
-          
-          if status == NOTE_OFF:
-            #If there is a panic message, it will be sent on NOTE OFF
-            panic_message = current_pedal.get("@PanicMessage")
-            if panic_message != None:
-              self.__log.debug("Panic message will be sent after all messages: \n"
-                               "%s", PrettyFormat(panic_message))
-              messages.extend(panic_message)
-
-          if status == NOTE_OFF:
-            #The BANK SELECT messages will be processed only on NOTE OFF
-            bank_select = current_pedal.get("@BankSelect")
-            if bank_select != None:
-              #Now the BANK SELECT message will be processed
-              if bank_select not in ["Quit", "Reload", "Reboot", "Shutdown", \
-                                     "List"]:
-                self._current_bank = bank_select
-                self.__log.info("Bank changed to: %d", bank_select + 1)
-              elif bank_select == "List":
-                messages = [self._xml_dict["@BanksSysEx"]]
-              else:
-                self._quit = True
-                self._status = bank_select
-        elif self._xml_dict["@MidiEcho"]:
-          #This is an unregistered note, so fordward it whatever it is
-          messages = [message]
-      else:
-        #Here it is a CONTROL CHANGE message.
+          note_messages, midi_and_sysex_messages, panic_message, bank_select = \
+            self._process_note_message(status, current_velocity,
+                                       swapped_note_message, current_pedal,
+                                       current_note)
+          process_bank_select = (bank_select != None)
+        else:
+          is_controller_message = False
+          self.__log.debug("Unregistered NOTE message, going to check MIDI "
+                           "echo")
+      elif status == CONTROL_CHANGE:
         controller = message[1]
         if controller == self._xml_dict["@BankSelectController"]:
-          #If it is the BankSelectController, then the respective BANK SELECT
-          #message will be excecuted
-          select_value = message[2]
-          if select_value < 119:
-            if select_value >= len(self._xml_dict["Bank"]):
-              select_value = len(self._xml_dict["Bank"]) - 1
-            self._current_bank = select_value
-            self.__log.info("Bank changed to: %d", self._current_bank + 1)
-          else:
-            send_panic = False
-            send_bank_list = False
-            num_banks = len(self._xml_dict["Bank"])
-            if select_value == 119:
-              messages = [self._xml_dict["@BanksSysEx"]]
-              send_bank_list = True
-            elif select_value == 120:
-              self._current_bank -= 1
-            elif select_value == 121:
-              self._current_bank += 1
-            elif select_value == 122:
-              self._current_bank = num_banks - 1
-            elif select_value == 123:
-              send_panic = True
-              messages = self._panic_command
-              self.__log.debug("Sending software Panic:\n%s", \
-                               PrettyFormat(self._panic_command))
-            else:
-              self._quit = True
-              self._status = BANK_SELECT_FUNCTIONS[select_value]
-            if not self._quit and not send_bank_list:
-              if self._current_bank < 0:
-                self._current_bank = num_banks - 1
-              elif self._current_bank >= num_banks:
-                self._current_bank = 0
-              self.__log.info("Bank changed to: %d", self._current_bank + 1)
-        elif self._xml_dict["@MidiEcho"]:
-          #This is another CONTROL CHANGE message, so it will be fordwarded
-          messages = [message]
-    elif self._xml_dict["@MidiEcho"]:
-      #Fordward the message whatever it is
+          process_bank_select = True
+        else:
+          is_controller_message = False
+          self.__log.debug("CONTROL CHANGE message detected, going to check "
+                           "MIDI echo")
+      if process_bank_select:
+        self.__log.debug("SelectBank message was detected, processing "
+                         "actions")
+        bank_select_messages = self._process_bank_select(message, bank_select)
+
+      messages.extend(midi_and_sysex_messages + note_messages + 
+                      bank_select_messages + panic_message)
+    else:
+      self.__log.debug("Non controller message was catched, going to check "
+                       "MIDI echo")
+      is_controller_message = False
+
+    if not is_controller_message and self._xml_dict["@MidiEcho"]:
+      self.__log.debug("Midi echo was enabled")
       messages = [message]
+    elif not self._xml_dict["@MidiEcho"]:
+      self.__log.debug("Midi echo is disabled. Message won't be sent")
 
-    if self._quit and (self._previous_pedal != None):
-      #Before quitting, the NOTE OFF for the previous pedal need to be
-      #sent
-      note_messages = self._set_note_velocity(self._previous_pedal,
-                                              NOTE_OFF)
-      messages += note_messages
+    for message in messages:
+      self.__log.debug("Sending MIDI message: %s", PrettyFormat(message))
+      self._midi_out.send_message(message)
 
-    if messages != []:
-      for message in messages:
-        self.__log.debug("Sending MIDI message: %s", PrettyFormat(message))
-        self._midi_out.send_message(message)
-    self.__log.debug("MIDI message was processed")
+  def _process_note_message(self, status, current_velocity, swapped_note_message, 
+                            current_pedal, current_note):
+    """
+    Proceses the note messages for the current pedal
+    Parameters:
+    * status: current MIDI status; either NOTE ON or NOTE OFF
+    * current_velocity: current velocity of the catched note
+    * swapped_note_message: inidicated if this was a NOTE ON message with a
+      velocity of zero, which was changed to NOTE OFF. On this case, the
+      velocity won't be adjusted
+    * current_pedal: current catched pedal
+    * current_note: current MIDI note
+    Returns a tuple with the following elements:
+    * Note messages to send: bass pedal and chord notes.
+    * Other MIDI messages to send: it contains first the General MIDI and
+      SysEx messages, and the the bass and chord notes of other pedals.
+    * Panic message if SendPanic is True.
+    * The last element is the BankSelect message to excecute; it can be:
+      - None: no BankSelect was found or it is not a NOTE OFF message
+      - 'Next': select the next bank
+      - 'Previous': select previous bank
+      - 'Last': select the last bank
+      - 'Quit': quit the controller software
+      - 'Reload': restart the controller; here the whole xml
+      - 'Reboot': reboots the computer or microcontroller running the software
+      - 'Shutdown': shutdowns the system
+      - 'List': sends a SysEx back with the bank names.
+      Those messages are always processed during NOTE OFF and after all other
+      messages.
+    """
+    note_messages = self._set_note_velocity(current_pedal, status,
+                                            current_velocity,
+                                            swapped_note_message)
+    messages = []
+    midi_and_sysex = current_pedal.get("@MessageList")
+    if (midi_and_sysex != None) and status in midi_and_sysex:
+      messages = midi_and_sysex[status]
 
-  def _set_note_velocity(self, pedal, message_type,
+    if (len(note_messages) > 0):
+      if (status == NOTE_ON):
+        if self._xml_dict["@PedalMonophony"]:
+          self.__log.debug("Only one pedal is allowed at the time, so, notes for "
+                           "previous pedals will be muted")
+          self.__log.debug("Sending NOTE OFF for previous pedals and then "
+                           "remove them:\n%s",
+                           PrettyFormat(self._previous_pedals))
+          pedal_list = list(self._previous_pedals.keys())
+          for pedal_index in pedal_list:
+            pedal = self._previous_pedals[pedal_index]['pedal']
+            messages.extend(self._set_note_velocity(pedal, NOTE_OFF,
+                                                    current_velocity, False))
+            self._previous_pedals.pop(pedal_index)
+        self.__log.debug("Adding pedal to previous pedal list")
+        self._previous_pedals[current_note] = {
+          'pedal': current_pedal,
+          'velocity': current_velocity
+        }
+      else:
+        if current_note in self._previous_pedals:
+          self.__log.debug("Removing pedal from previous pedal list")
+          self._previous_pedals.pop(current_note)
+
+    panic_message = []
+    if status == NOTE_OFF:
+      panic_message = current_pedal.get("@PanicMessage", [])
+      if panic_message != []:
+        self.__log.debug("Panic message will be sent after processing messages")
+
+    bank_select = None
+    if status == NOTE_OFF:
+      #The BANK SELECT messages will be processed only on NOTE OFF
+      bank_select = current_pedal.get("@BankSelect")
+
+    self.__log.debug("Previous pedals after processing:\n%s",
+                     PrettyFormat(self._previous_pedals))
+
+    return note_messages, messages, panic_message, bank_select
+
+  def _process_bank_select(self, message, bank_select):
+    """
+      Process the BankSelect message for the current pedal
+      Parameters:
+      * message: last message catched by the controller
+      * bank_select: BankSelect operation:
+        - None: no BankSelect was found or it is not a NOTE OFF message
+        - 'Next': select the next bank
+        - 'Previous': select previous bank
+        - 'Last': select the last bank
+        - 'Quit': quit the controller software
+        - 'Reload': restart the controller; here the whole xml
+        - 'Reboot': reboots the computer or microcontroller running the software
+        - 'Shutdown': shutdowns the system
+        - 'List': sends a SysEx back with the bank names.
+      Returns the resulting messages after processing the BankSelect message
+    """
+    self.__log.debug("Previous pedals before processing Bank Select:\n%s",
+                     PrettyFormat(self._previous_pedals))
+    messages = []
+    previous_bank = self._current_bank
+    if (bank_select != None):
+      if bank_select not in ["Quit", "Reload", "Reboot", "Shutdown", "List"]:
+        self._current_bank = bank_select
+        self.__log.info("Bank changed to: %d", bank_select + 1)
+      elif bank_select == "List":
+        messages = [self._xml_dict["@BanksSysEx"]]
+      else:
+        self._quit = True
+        self._status = bank_select
+    else:
+      select_value = message[2]
+      if select_value < 119:
+        if select_value >= len(self._xml_dict["Bank"]):
+          select_value = len(self._xml_dict["Bank"]) - 1
+        self._current_bank = select_value
+        self.__log.info("Bank changed to: %d", self._current_bank + 1)
+      else:
+        send_panic = False
+        send_bank_list = False
+        num_banks = len(self._xml_dict["Bank"])
+        if select_value == 119:
+          messages = [self._xml_dict["@BanksSysEx"]]
+          send_bank_list = True
+        elif select_value == 120:
+          self._current_bank -= 1
+        elif select_value == 121:
+          self._current_bank += 1
+        elif select_value == 122:
+          self._current_bank = num_banks - 1
+        elif select_value == 123:
+          send_panic = True
+          messages = self._panic_command
+          self.__log.debug("Sending software Panic:\n%s", \
+                           PrettyFormat(self._panic_command))
+        else:
+          self._quit = True
+          self._status = BANK_SELECT_FUNCTIONS[select_value]
+        if not self._quit and not send_bank_list:
+          if self._current_bank < 0:
+            self._current_bank = num_banks - 1
+          elif self._current_bank >= num_banks:
+            self._current_bank = 0
+          self.__log.info("Bank changed to: %d", self._current_bank + 1)
+
+    if previous_bank != self._current_bank:
+      on_bank_change = self._xml_dict.get("@OnBankChange")
+      if on_bank_change != "ContinuePlayback":
+        current_bank = self._xml_dict['Bank'][self._current_bank]
+        pedal_list = current_bank["@PedalList"]
+        self.__log.debug("Processing previous pedals for OnBankChange = %s" % \
+                         on_bank_change)
+        pedal_operation = "Stopping previous pedals playback"
+        if on_bank_change == "QuickChange":
+          pedal_operation = "Replacing previous pedals according to current" + \
+                            " bank"
+        self.__log.debug(pedal_operation)
+        previous_pedals = list(self._previous_pedals.keys())
+        for pedal_index in previous_pedals:
+          note_messages = []
+          pedal = self._previous_pedals[pedal_index]['pedal']
+          current_velocity = self._previous_pedals[pedal_index]['velocity']
+          remove_pedal = False
+          if on_bank_change == "StopPlayback":
+            remove_pedal = True
+          else:
+            #QuickChange
+            new_pedal = pedal_list.get(pedal_index)
+            if (new_pedal == None):
+              remove_pedal = True
+            else:
+              #Replace this pedal
+              self._previous_pedals[pedal_index]['pedal'] = new_pedal
+              self._previous_pedals[pedal_index]['velocity'] = current_velocity
+              #First NOTE_OFF messages for previous pedal will be sent
+              note_messages = self._set_note_velocity(pedal, NOTE_OFF,
+                                                      current_velocity, False)
+              #Then the NOTE_ON messages for the new pedal will be sent
+              note_messages.extend(self._set_note_velocity(new_pedal, NOTE_ON,
+                                                           current_velocity,
+                                                           False))
+          if remove_pedal:
+            self._previous_pedals.pop(pedal_index)
+            note_messages = self._set_note_velocity(pedal, NOTE_OFF,
+                                                    current_velocity, False)
+          messages.extend(note_messages)
+      self.__log.debug("Previous pedals after processing Bank Select:\n%s",
+                       PrettyFormat(self._previous_pedals))
+    return messages
+
+  def _set_note_velocity(self, pedal, message_type, current_velocity,
                          swapped_note_message = False):
     """
     Returns a list of NOTE_ON or NOTE_OFF messages with a modified velocity
     according to the values of: BassPedalVelocity, ChordVelocity, and
-    _current_velocity
+    current_velocity
     Parameters
     * Pedal: pedal for which the messages will be modified
     * message_type: it can be either NOTE_ON or NOTE_OFF
+    * current_velocity: note velocity comming from the pedal controller.
     * swapped_note_message: indicates whether or not this a NOTE ON with a
       velocity of zero, which was changed to NOTE OFF. This is the only case
       where the velocity won't be changed and will be let as zero. Please note
@@ -667,7 +789,7 @@ class MidiProcessor(MidiInputHandler):
         note_velocity = 0
       else:
         if type(note_velocity) == type(''):
-          note_velocity = self._current_velocity + int(note_velocity)
+          note_velocity = current_velocity + int(note_velocity)
         
         if note_velocity <= 0:
           note_velocity = 1
