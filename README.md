@@ -33,7 +33,8 @@ in **banks**, which can be switched through **CONTROL CHANGE** messages.
 - [Running the software](#running-the-software)
 - [Automatic start during system boot](#automatic-start-during-system-boot)
 - [Troubleshooting](#troubleshooting)
-  - [Using the ManualTester script](#using-the-manualtester-script)
+  - [Using the ManualTester script together with "Virtual MIDI Piano Keyboard"]
+    (#using-the-manualtester-script)
   - [Use a software for intercepting MIDI messages
     ](#use-a-software-for-intercepting-midi-messages)
   - [Using a sequencer software](#using-a-sequencer-software)
@@ -636,7 +637,7 @@ For seeing the available MIDI ports, you can run:
 python3 FootController.py --list
 ```
 
-## Using the ManualTester script
+## Using the ManualTester script together with "Virtual MIDI Piano Keyboard"
 
 - First create two virtual ports.
 - Then setup the ports as follows:
@@ -654,6 +655,51 @@ python3 FootController.py --list
   - Default velocity for NOTE ON messages: here you can use whatever you want
   - Start sending NOTE ON/OFF, BANK SELECT, CONTROL CHANGE, raw MIDI, or SysEx
     messages.
+
+For visualizing the notes, you can optionally use [Virtual MIDI Piano Keyboard]
+(https://vmpk.sourceforge.io). It can run parallelly to the ManualTester script;
+just start it and setup it as follows:
+- Open the menu: "Edit > MIDI Connections" and set the dialog as follows:
+  - Check: "Enable MIDI Input"
+  - Check: "MIDI Omni Mode" -> With this setting, you will see everything
+                               comming out from the FootController software
+  - On "MIDI IN Driver" choose: "Windows MM"
+  - On "Input MIDI Connection" choose: "Virtual Port 2"
+  - Uncheck: "Enable MIDI Thru on MIDI Output" -> If you don't do this, then
+                                                  your NOTE messages will be
+                                                  sent in an infinite loop
+  - On "MIDI OUT Driver" choose: "Windows MM"
+  - On "Output MIDI Connection" choose: "Virtual Port 1"
+  - Uncheck: "Show Advanced Connections" -> Not needed
+- Open the menu: "Edit > Preferences" and set it as follows:
+  - "Number of keys": here you are free to choose what ever you want. Normally
+    you will see: "61". The maximum is 121. This depends on how many octaves you
+    are going to use.
+  - "Starting Key": "C"
+  - "Note highlight color": "MIDI Channels" -> different colors will be used for
+                                               each MIDI channel
+  - "Instruments file": leave the default, which is: "gmgsxg.ins". I think this
+    doesn't really matter
+  - "Instrument": "General MIDI"
+  - "Keyboard Map" and "Raw Keyboard Map": "default". I think this also doesn't
+    matter
+  - "Drums Channel": "10"
+  - Uncheck: "MIDI channel state consistency" -> I don't know what this is
+                                                 supposed to do
+  - Check: "Translate MIDI velocity to key pressed color tint"
+  - Check: "Always On Top"
+  - Set whatever you want under: "Enable Computer Keyboard Input" and "Raw
+    Computer Keyboard".
+  - Check: "Enable Mouse Input"
+  - Set whatever you want under: "Enable Touch Screen Input"
+  
+  You may change other settings to fit your needs.
+  
+  Now you can send notes and bank select commands through the ManualTester
+  script and you will see the results on the "Virtual MIDI Piano Keyboard". You
+  may also use the virtual keyboard to send note event; however, with a normal
+  mouse, you can only push a note at a time. I guess on a touch screen you
+  should be able to push more than one, but I'm not sure.
 
 ## Use a software for intercepting MIDI messages
 
