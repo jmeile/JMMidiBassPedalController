@@ -202,7 +202,7 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
   here you can leave the standard options. No more is needed. Be aware that
   this will require 2 GB of free space.
 
-- [Python 3.9](https://www.python.org/downloads/release/python-390. After you
+- [Python 3.9](https://www.python.org/downloads/release/python-390). After you
   have installed it, you need to do update some built-in packages:
   ```
   pip3 install --upgrade setuptools
