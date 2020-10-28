@@ -1,7 +1,7 @@
 # Automatic start during system boot / logon
-**JMMidiBassPedalController v2.0**\
+**JMMidiBassPedalController v3.0**\
 **File: src/Automation/README.md**\
-**By:   Josef Meile <jmeile@hotmail.com> @ 02.08.2020**
+**By:   Josef Meile <jmeile@hotmail.com> @ 28.10.2020**
 
 If you are planning to use the software, but you don't want to always start it
 manually, then you can use scheduled tasks on Windows, a service on Linux, or

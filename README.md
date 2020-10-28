@@ -1,6 +1,6 @@
-# JMMidiBassPedalController v2.0
+# JMMidiBassPedalController v3.0
 **File: README.md**\
-**By:   Josef Meile <jmeile@hotmail.com> @ 02.08.2020**
+**By:   Josef Meile <jmeile@hotmail.com> @ 28.10.2020**
 
 This software translates **NOTE ON/OFF** messages comming from a
 **foot controller** to **chords**. It allows you to save several configurations
@@ -196,12 +196,17 @@ sudo <install_command>
 
 Under Windows run a "**cmd**" (Command propt) as Administrator.
 
-- [Python 3.7](https://www.python.org/downloads/release/python-376)\
-  Under Windows, I tried the pip3 installation with python 3.8 and it didn't
-  work, it fired this error:
+- For Microsoft Windows from branch 3.0, you need the  [Microsoft C++ Build 
+  Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools). Once
+  you execute the installer, you only need to select: **"C++ build tools"**;
+  here you can leave the standard options. No more is needed. Be aware that
+  this will require 2 GB of free space.
+
+- [Python 3.9](https://www.python.org/downloads/release/python-390. After you
+  have installed it, you need to do update some built-in packages:
   ```
-  TypeError: stat:
-  path should be string, bytes, os.PathLike or integer, not NoneType
+  pip3 install --upgrade setuptools
+  pip3 install --upgrade pip
   ```
 
 - [Python rtmidi module](https://pypi.org/project/python-rtmidi)\
@@ -267,12 +272,12 @@ Under Windows run a "**cmd**" (Command propt) as Administrator.
 
 # Installation
 The easiest way of installing the software is getting it from
-[here](https://github.com/jmeile/JMMidiBassPedalController/archive/2.0.zip) then
+[here](https://github.com/jmeile/JMMidiBassPedalController/archive/3.0.zip) then
 decompress the zip file and put it contents wherever you want.
 
 Alternatively, you can also clone the git repository:
 ```
-git clone https://github.com/jmeile/JMMidiBassPedalController.git -b 2.0
+git clone https://github.com/jmeile/JMMidiBassPedalController.git -b 3.0
 ```
 
 # Hardware connections

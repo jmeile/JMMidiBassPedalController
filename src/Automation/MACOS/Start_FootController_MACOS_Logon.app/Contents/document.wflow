@@ -59,7 +59,7 @@
 				<key>ActionParameters</key>
 				<dict>
 					<key>COMMAND_STRING</key>
-					<string># JMMidiBassPedalController v2.0
+					<string># JMMidiBassPedalController v3.0
 # File: src/Automation/Start_FootController_MACOS_Logon.app
 # By:   Josef Meile &lt;jmeile@hotmail.com&gt; @ 02.08.2020
 # This project is licensed under the MIT License. Please see the LICENSE.md file
