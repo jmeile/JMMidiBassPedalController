@@ -33,8 +33,12 @@ in **banks**, which can be switched through **CONTROL CHANGE** messages.
 - [Running the software](#running-the-software)
 - [Automatic start during system boot](#automatic-start-during-system-boot)
 - [Troubleshooting](#troubleshooting)
+  - [Using two "Virtual MIDI Piano Keyboars"
+    ](#using-two-two-virtual-midi-piano-keyboards)
   - [Using the ManualTester script together with "Virtual MIDI Piano Keyboard"
     ](#using-the-manualtester-script-together-with-virtual-midi-piano-keyboard)
+    - [Mapping MIDI notes to computer keyboard keys on Virtual MIDI Piano Keyboard
+	  ](#mapping-midi-notes-to-computer-keyboard-keys-on-virtual-midi-piano-keyboard)
   - [Use a software for intercepting MIDI messages
     ](#use-a-software-for-intercepting-midi-messages)
   - [Using a sequencer software](#using-a-sequencer-software)
@@ -642,6 +646,67 @@ For seeing the available MIDI ports, you can run:
 python3 FootController.py --list
 ```
 
+## Using two "Virtual MIDI Piano Keyboars"
+- First create two virtual ports: MIDI In and MIDI Out
+- Then start two "Virtual MIDI Piano Keyboards"
+- The first instance will emulate the pedal board, here setup the following
+  parameters:
+  - Channel: 1
+  - Base Octave: 3
+  - Transpose: 0
+  - Velocity: set whatever you want; this will determine the volume of your
+    notes.
+  - Then Go to "Edit > MIDI Connections" and setup this:
+    - Enable MIDI Input: disabled
+    - MIDI OUT Driver: Windors MM
+    - Output MIDI Connection: MIDI In
+  - Go to: "Edit > Preferences" and press: "Restore Defaults"
+  - Optionally, if you want to see what happens when pressing two or more bass
+    notes simultaneously, then you can load the keyboard map located in the
+    assets folder. For achieving this, do the following:
+    - Go to: "Edit > Keyboard Map"
+    - Press "Open"
+    - Go to the assets folder and choose: "Virtual_Keyboard_Map.xml"
+    - Hit "OK"
+    This will file will map the computer keyboard keys to the MIDI notes. You
+    can find the keyboard map file equivalences [here
+    ](#mapping-midi-notes-to-computer-keyboard-keys-on-virtual-midi-piano-keyboard)
+
+- The second instance will emulate the bass and left hand voices, here setup
+  the following parameters:
+  - Go to: "Edit > MIDI Connections" and setup this:
+    - Enable MIDI Input: enabled
+	- MIDI Omni Mode: enabled -> this will allow the software to process
+	  several MIDI channels at the same time
+	- MIDI IN Driver: Windors MM
+	- Input MIDI Connection: MIDI OUT
+	- Enable MIDI Thru on MIDI Output: enabled
+	- MIDI OUT Driver: Windors MM
+	- Output MIDI Connection:
+      - On Microsoft Windows: Microsoft GS Wavetable Synth
+      - On other operating systems: choose the software MIDI syntheziser
+        offered by your operating system
+    - Go to: "Edit > Preferences" and do this:
+      - Press: "Restore Defaults"
+	  - Set "Note highlight color" to: "MIDI Channels"
+  - On the main interface set this:
+    - Base Octave: 3
+    - Transpose: 0
+    - Velocity: this value doesn't really matter; it will be set by the
+      software
+    - Change channel to 2 and under Bank set:
+      - Bank: General MIDI
+      - Program: Set the voice you want to hear for the bass pedals
+      - Do the same for channel 3, which is where the chords will be played
+- Now start the controller software and start it as follows:
+  ```
+  python FootController.py --config=conf\virtual-midi-keyboards.xml --verbose
+  ```
+- Finally play the first octave notes of the first Virtual MIDI Piano Keyboard
+  instance. If every is ok, then you should see the bass pedals in color blue
+  and the chord notes in color green at the second Virtual MIDI Piano Keyboard;
+  you should also hear the voices you setup.
+
 ## Using the ManualTester script together with "Virtual MIDI Piano Keyboard"
 
 - First create two virtual ports.
@@ -686,7 +751,7 @@ script; just start it and setup it as follows:
   - Instruments file: leave the default, which is: "gmgsxg.ins". I think this
     doesn't really matter
   - Instrument: General MIDI
-  - Keyboard Map: load the map: Virtual_Keyboard_Map.xml located on the assets/Behringer_FCB1010
+  - Keyboard Map: load the map: Virtual_Keyboard_Map.xml located on the assets
     folder
   - Raw Keyboard Map: default. I think this also doesn't matter
   - Drums Channel: 10
@@ -704,11 +769,9 @@ script; just start it and setup it as follows:
   - Transpose: 0
   - Velocity: set whatever you want
   
-  With those parameters, the first key on that keyboard will be 36 = C1. The
-  keyboard map file with have the following equivalences: Q = C1, W = C#1,
-  E = D1, and so on. Open the map file: Virtual_Keyboard_Map.xml and see the
-  equivalences. Basically I'm only using the letters from Q to P (excluding Z
-  and Y) and from A to K.
+  With those parameters, the first key on that keyboard will be 36 = C1. You
+  can find the keyboard map file equivalences [here
+  ](#mapping-midi-notes-to-computer-keyboard-keys-on-virtual-midi-piano-keyboard)
   
   You may change other settings to fit your needs.
   
@@ -720,6 +783,34 @@ script; just start it and setup it as follows:
   simultaneous key press by pressing simultaneous letters from your computer
   keyboard, ie: pressing and holding Q and W will send NOTE ON for: C1 and C#1;
   when releasing them, then the NOTE OFF messages will be sent.
+
+### Mapping MIDI notes to computer keyboard keys on Virtual MIDI Piano Keyboard
+
+Inside this project, you will find a file called: Virtual_Keyboard_Map.xml,
+which setups the following equivalences:
+
+| Number | Note | Keyboard key |
+| ------ | ---- |--------------|
+| 0      | C1   | C            |
+| 1      | C#1  | V            |
+| 2      | D1   | D            |
+| 3      | D#1  | W            |
+| 4      | E1   | E            |
+| 5      | F1   | F            |
+| 6      | F#1  | R            |
+| 7      | G1   | G            |
+| 8      | G#1  | H            |
+| 9      | A1   | A            |
+| 10     | A#1  | S            |
+| 11     | B1   | B            |
+| 12     | C2   | M            |
+| 13     | C#2  | M            |
+| 14     | D2   | J            |
+| 15     | D#2  | K            |
+| 16     | E2   | L            |
+
+If you want to have your own map, then open that file and change the respective
+key mappings.
 
 ## Use a software for intercepting MIDI messages
 

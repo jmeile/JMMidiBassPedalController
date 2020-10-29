@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE keyboardmap>
 <keyboardmap version="1.0">
-    <mapping key="Q" note="0"/>
-    <mapping key="W" note="1"/>
-    <mapping key="E" note="2"/>
-    <mapping key="R" note="3"/>
-    <mapping key="T" note="4"/>
-    <mapping key="U" note="5"/>
-    <mapping key="I" note="6"/>
-    <mapping key="O" note="7"/>
-    <mapping key="P" note="8"/>
+    <mapping key="C" note="0"/>
+    <mapping key="V" note="1"/>
+    <mapping key="D" note="2"/>
+    <mapping key="W" note="3"/>
+    <mapping key="E" note="4"/>
+    <mapping key="F" note="5"/>
+    <mapping key="R" note="6"/>
+    <mapping key="G" note="7"/>
+    <mapping key="H" note="8"/>
     <mapping key="A" note="9"/>
     <mapping key="S" note="10"/>
-    <mapping key="D" note="11"/>
-    <mapping key="F" note="12"/>
-    <mapping key="G" note="13"/>
-    <mapping key="H" note="14"/>
-    <mapping key="J" note="15"/>
-    <mapping key="K" note="16"/>
+    <mapping key="B" note="11"/>
+    <mapping key="N" note="12"/>
+    <mapping key="M" note="13"/>
+    <mapping key="J" note="14"/>
+    <mapping key="K" note="15"/>
+    <mapping key="L" note="16"/>
 </keyboardmap>
