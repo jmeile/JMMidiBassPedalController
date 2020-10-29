@@ -78,7 +78,7 @@
     <!-- Catches the note D#2, then switch to the next bank -->
     <Pedal Note="51" BankSelect="Next"/>
     
-    <!-- Catches the note E2, then exits -->
+    <!-- Catches the note E2, then reloads the configuration -->
     <Pedal Note="52" BankSelect="Reload"/>
   </Bank>
   
@@ -137,7 +137,7 @@
     <!-- Catches the note D#2, then switch to the next bank -->
     <Pedal Note="51" BankSelect="Next"/>
     
-    <!-- Catches the note E2, then exits -->
+    <!-- Catches the note E2, then reloads the configuration -->
     <Pedal Note="52" BankSelect="Reload"/>
   </Bank>
 </Controller>

@@ -667,7 +667,9 @@ python3 FootController.py --list
     - Enable MIDI Input: disabled
     - MIDI OUT Driver: Windors MM
     - Output MIDI Connection: MIDI In
-  - Go to: "Edit > Preferences" and press: "Restore Defaults"
+  - Go to: "Edit > Preferences" and do this:
+    - Press: "Restore Defaults"
+    - Set "Note highlight color" to: "MIDI Channels"
   - Optionally, if you want to see what happens when pressing two or more bass
     notes simultaneously, then you can load the keyboard map located in the
     assets folder. For achieving this, do the following:
