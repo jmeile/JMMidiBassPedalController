@@ -34,7 +34,7 @@ in **banks**, which can be switched through **CONTROL CHANGE** messages.
 - [Automatic start during system boot](#automatic-start-during-system-boot)
 - [Troubleshooting](#troubleshooting)
   - [Using two "Virtual MIDI Piano Keyboars"
-    ](#using-two-two-virtual-midi-piano-keyboards)
+    ](#using-two-virtual-midi-piano-keyboars)
   - [Using the ManualTester script together with "Virtual MIDI Piano Keyboard"
     ](#using-the-manualtester-script-together-with-virtual-midi-piano-keyboard)
     - [Mapping MIDI notes to computer keyboard keys on Virtual MIDI Piano Keyboard
