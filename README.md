@@ -392,7 +392,7 @@ In order to make this to work, you will have to do the following steps:
   figure out, which channel your keyboard uses; usually old keyboards have one
   or two voices for the right hand, and one voice for the left hand. and they use
   consecutive **MIDI channels**, so, if you have one right voice and one left
-  voice, then the used channels would be channel 1 and channel 2 respectivelly.
+  voice, then the used channels would be channel 1 and channel 2 respectively.
 
 - If you want also want to play bass notes, then setup a **MIDI channel** on your
   keyboard for doing this. If you have an old keyboard, then you can select the
@@ -648,7 +648,14 @@ python3 FootController.py --list
 
 ## Using two "Virtual MIDI Piano Keyboars"
 - First create two virtual ports: MIDI In and MIDI Out
-- Then start two "Virtual MIDI Piano Keyboards"
+- Then start the controller software and start it as follows:
+  ```
+  python FootController.py --config=conf\virtual-midi-keyboards.xml --verbose
+  ```
+  That configuration configuration file will use the ports MIDI In and Out for
+  receiving messages from the pedal controller and sending the respective bass
+  and chord notes to the keyboard respectively.
+- Next start two "Virtual MIDI Piano Keyboards"
 - The first instance will emulate the pedal board, here setup the following
   parameters:
   - Channel: 1
@@ -698,10 +705,6 @@ python3 FootController.py --list
       - Bank: General MIDI
       - Program: Set the voice you want to hear for the bass pedals
       - Do the same for channel 3, which is where the chords will be played
-- Now start the controller software and start it as follows:
-  ```
-  python FootController.py --config=conf\virtual-midi-keyboards.xml --verbose
-  ```
 - Finally play the first octave notes of the first Virtual MIDI Piano Keyboard
   instance. If every is ok, then you should see the bass pedals in color blue
   and the chord notes in color green at the second Virtual MIDI Piano Keyboard;

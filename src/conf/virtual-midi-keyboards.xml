@@ -23,7 +23,7 @@
             BassPedalTranspose="0" ChordTranspose="12"
             BankSelectController="32" InitialBank="1" OnBankChange="QuickChange"
             Octave="1"
-            PedalMonophony="true">
+            PedalMonophony="false">
   <!--
     On this bank I will define the pedals to send the major chords from C until
     B. The last notes will be used for FILL INs, ENDING, and switch to the next
