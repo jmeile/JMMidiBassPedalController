@@ -161,8 +161,7 @@ From time to time, I use the following terms on my software:
 
 - **Note Transposition:** usually you can move notes by semitones, tones, and
   octaves, ie: if you have a C3 (middle C), you can transpose it by a semitone,
-  then you get: C#3 or by an octave: C4. On the software, I will only use octave
-  transposition; I don't see any utility on trasposing chords.
+  then you get: C#3 or by an octave: C4.
 
 - **Note velocity**: it is the pressure you apply to hit a key on your keyboard
   or bass pedal controller. It is commonly associated to the volume (see MIDI for
