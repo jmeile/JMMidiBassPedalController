@@ -152,7 +152,7 @@
     If not given, it default to controller 32.
   * Set the bank that will be select when running starting the software:
     InitialBank="2"
-    This is a number between 1 and the number of pedals that you setup here. The
+    This is a number between 1 and the number of banks that you setup here. The
     maximum posible value would be 124. If not given, then '1' will be assumed.
   * We the OnBankChange attribute as follows:
     OnBankChange="QuickChange"
